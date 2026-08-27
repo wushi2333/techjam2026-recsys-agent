@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 
 from fm import FM
+from sampling import iter_user_batches
 
 
 def load_cfg(trial_dir: Path) -> dict:
@@ -32,6 +33,8 @@ def maybe_trim(splits: dict, cfg: dict) -> dict:
 def _stepper(model, loss: str):
     if loss == "bpr":
         return model.step_bpr
+    if loss == "bpr_global":
+        return model.step_bpr_global
     if loss == "listwise":
         return model.step_listwise
     return model.step_logloss
@@ -64,15 +67,20 @@ def train_fm(enc, cfg, evaluate):
     curves = []
     epochs = 1 if cfg.get("smoke") else cfg["epochs"]
     bs = cfg["batch"]
+    loss_name = str(cfg.get("loss") or "logloss")
     for ep in range(1, epochs + 1):
-        idx = rng.permutation(len(ytr))
         t0 = time.time()
         losses = []
-        for i in range(0, len(idx), bs):
-            sl = idx[i : i + bs]
+        if loss_name in ("bpr", "listwise"):
+            slices = iter_user_batches(utr, bs, rng)
+        else:
+            perm = rng.permutation(len(ytr))
+            slices = (perm[i : i + bs] for i in range(0, len(perm), bs))
+        for sl in slices:
             hh = None if Htr is None else Htr[sl]
             mm = None if Mtr is None else Mtr[sl]
-            losses.append(step(Xtr[sl], ytr[sl], hh, mm, [utr[j] for j in sl]))
+            users = [utr[int(j)] for j in sl]
+            losses.append(step(Xtr[sl], ytr[sl], hh, mm, users))
         va = evaluate(uva, yva, model.predict(Xva, Hva, Mva))
         row = {
             "epoch": ep,

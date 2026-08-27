@@ -32,7 +32,7 @@ ARM_KEYS = {
     "features": set(),
     "draft": set(),
 }
-LOSS_VALUES = {"logloss", "bpr", "listwise"}
+LOSS_VALUES = {"logloss", "bpr", "bpr_global", "listwise"}
 SEQ_MODES = {"none", "pool", "din"}
 SEQ_LENS = {0, 10, 20, 50, 100}
 

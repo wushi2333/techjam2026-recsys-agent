@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "templates"))
 
 from fm import FM  # noqa: E402
+from sampling import iter_user_batches  # noqa: E402
 
 
 class TrainExtTest(unittest.TestCase):
@@ -35,3 +36,22 @@ class TrainExtTest(unittest.TestCase):
         self.assertTrue(np.isfinite(loss))
         self.assertEqual(len(scores), 8)
         self.assertTrue(np.isfinite(scores).all())
+
+    def test_bpr_within_user_not_cross_user(self):
+        x = np.arange(4, dtype=np.int32).reshape(4, 1).repeat(5, axis=1)
+        y = np.array([1, 0, 1, 0], dtype=np.float32)
+        mixed = ["a", "b", "a", "b"]
+        m = FM(8, k=4, lr=0.01, seed=0)
+        loss = m.step_bpr(x, y, users=mixed)
+        self.assertTrue(np.isfinite(loss))
+
+    def test_user_batches_keep_groups(self):
+        users = ["u0"] * 3 + ["u1"] * 5 + ["u2"] * 2
+        rng = np.random.default_rng(0)
+        seen = []
+        for sl in iter_user_batches(users, batch_rows=6, rng=rng):
+            batch_users = [users[int(i)] for i in sl]
+            seen.extend(batch_users)
+            for u in set(batch_users):
+                self.assertEqual(batch_users.count(u), users.count(u))
+        self.assertEqual(sorted(seen), sorted(users))

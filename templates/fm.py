@@ -27,6 +27,7 @@ class FM:
         self.mVs = np.zeros_like(self.Vseq)
         self.vVs = np.zeros_like(self.Vseq)
         self.t = 0
+        self.rng = rng
 
     def snapshot(self):
         return (
@@ -116,6 +117,38 @@ class FM:
         return float(-np.mean(y * np.log(p + 1e-9) + (1 - y) * np.log(1 - p + 1e-9)))
 
     def step_bpr(self, X, y, H=None, M=None, users=None):
+        if users is None:
+            return self.step_logloss(X, y, H, M)
+        z, E, S, extra = self.logits(X, H, M)
+        g = np.zeros(len(y), dtype=np.float32)
+        loss = 0.0
+        npairs = 0
+        buckets: dict = {}
+        for i, user in enumerate(users):
+            buckets.setdefault(user, []).append(i)
+        for idxs in buckets.values():
+            pos = [idxs[j] for j, v in enumerate(y[idxs]) if v > 0.5]
+            neg = [idxs[j] for j, v in enumerate(y[idxs]) if v <= 0.5]
+            if not pos or not neg:
+                continue
+            n_samp = min(len(pos) * len(neg), 32)
+            for _ in range(n_samp):
+                p = pos[int(self.rng.integers(len(pos)))]
+                n = neg[int(self.rng.integers(len(neg)))]
+                s = sigmoid(z[p] - z[n])
+                loss += float(-np.log(s + 1e-9))
+                c = float(s - 1.0)
+                g[p] += c
+                g[n] -= c
+                npairs += 1
+        if npairs == 0:
+            return self.step_logloss(X, y, H, M)
+        g /= npairs
+        self._apply_grads(X, E, S, g, extra, H)
+        return loss / npairs
+
+    def step_bpr_global(self, X, y, H=None, M=None, users=None):
+        """Cross-user pairwise margin. Empirically stronger here; not within-user BPR."""
         z, E, S, extra = self.logits(X, H, M)
         pos = np.where(y > 0.5)[0]
         neg = np.where(y <= 0.5)[0]

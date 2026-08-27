@@ -41,9 +41,10 @@ def dummy_plan(
     if arm.arm_id == "loss":
         cur = str(cfg.get("loss") or "logloss")
         if cur == "logloss":
-            patch, text = {"loss": "bpr"}, "Switch loss to bpr to align with ranking metrics."
-        elif cur == "bpr":
-            patch, text = {"loss": "listwise"}, "Switch BPR to listwise softmax over the user impression list."
+            patch, text = {"loss": "bpr_global"}, "Try cross-user pairwise margin (bpr_global)."
+        elif cur in ("bpr_global", "bpr"):
+            nxt = "bpr" if cur == "bpr_global" else "listwise"
+            patch, text = {"loss": nxt}, f"Switch loss to {nxt}."
         else:
             text = "Listwise already on; skip further loss swaps."
             return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)

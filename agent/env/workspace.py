@@ -12,6 +12,7 @@ TEMPLATE_FILES = (
     "fm.py",
     "train.py",
     "seqdata.py",
+    "sampling.py",
     "trial_config.json",
 )
 

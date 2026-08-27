@@ -25,7 +25,8 @@ Reply with a JSON object only:
 Allowed trial_config keys by arm:
 - optimizer: lr, batch, epochs, patience
 - regularization: l2
-- loss: loss in {logloss, bpr, listwise}
+- loss: loss in {logloss, bpr, bpr_global, listwise}
+  (bpr = within-user pairs; bpr_global = cross-user margin, empirically strong but not classic BPR)
 - sequence: seq_len in {0,10,20,50,100}, seq_mode in {none, pool, din}
 - time_shift: use_hour (bool; adds hour-of-day field)
 Other arms (architecture, multitask, watch_time): skip=true.
