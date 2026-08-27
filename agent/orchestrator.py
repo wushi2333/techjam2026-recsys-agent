@@ -111,6 +111,7 @@ class Orchestrator:
             tokens_out=tout,
         )
         self._record(node)
+        self.router.update(arm, False)
         self._emit("skipped", trial=trial_id, arm=arm, reason=change.skip_reason)
         self._refresh(
             {"trial_id": trial_id, "arm": arm, "op": stage, "stage": stage}

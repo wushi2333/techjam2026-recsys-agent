@@ -10,7 +10,7 @@ SEED = """# Experiment Skill
 ## Organizer priors
 - Do not spend trials on extra static features or larger embedding k.
 - User-side first-order terms cannot change within-user ranking.
-- Prefer loss (BPR / listwise), then sequences, then multi-task aux for long_view.
+- Prefer loss (BPR / listwise), then DIN-lite sequences (seq_len/seq_mode), then hour, then lr.
 
 ## Live
 No successful edits yet.

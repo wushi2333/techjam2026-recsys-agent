@@ -39,13 +39,27 @@ def dummy_plan(
         text = f"Adjust l2 {l2} -> {patch['l2']}."
         return Hypothesis(text, arm.arm_id), Change("diff", config_patch=patch)
     if arm.arm_id == "loss":
-        if cfg.get("loss", "logloss") == "bpr":
-            text = "BPR already improved ranking alignment; do not revert to logloss."
-            return Hypothesis(text, arm.arm_id), Change(
-                "diff", skip=True, skip_reason=text
-            )
-        patch = {"loss": "bpr"}
-        text = "Switch loss to bpr to align with ranking metrics."
+        cur = str(cfg.get("loss") or "logloss")
+        if cur == "logloss":
+            patch, text = {"loss": "bpr"}, "Switch loss to bpr to align with ranking metrics."
+        elif cur == "bpr":
+            patch, text = {"loss": "listwise"}, "Switch BPR to listwise softmax over the user impression list."
+        else:
+            text = "Listwise already on; skip further loss swaps."
+            return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)
         return Hypothesis(text, arm.arm_id), Change("diff", config_patch=patch)
+    if arm.arm_id == "sequence":
+        if int(cfg.get("seq_len") or 0) <= 0:
+            patch = {"seq_len": 20, "seq_mode": "din"}
+            text = "Turn on DIN-lite over the last 20 videos per user."
+            return Hypothesis(text, arm.arm_id), Change("diff", config_patch=patch)
+        text = "Sequence already enabled; skip a second architecture jump."
+        return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)
+    if arm.arm_id == "time_shift":
+        if not cfg.get("use_hour"):
+            text = "Add hour-of-day as a categorical field for diurnal drift."
+            return Hypothesis(text, arm.arm_id), Change("diff", config_patch={"use_hour": True})
+        text = "Hour field already on; skip."
+        return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)
     text = f"Arm {arm.arm_id} has no config mutation yet; skip instead of retraining."
     return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)

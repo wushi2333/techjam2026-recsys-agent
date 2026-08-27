@@ -6,21 +6,35 @@ from typing import Any
 
 from agent.types import Change, Hypothesis
 
-ALLOWED_KEYS = {"k", "lr", "l2", "epochs", "batch", "patience", "seed", "loss"}
+ALLOWED_KEYS = {
+    "k",
+    "lr",
+    "l2",
+    "epochs",
+    "batch",
+    "patience",
+    "seed",
+    "loss",
+    "seq_len",
+    "seq_mode",
+    "use_hour",
+}
 ARM_KEYS = {
     "optimizer": {"lr", "batch", "epochs", "patience"},
     "regularization": {"l2"},
     "loss": {"loss"},
     "capacity": {"k"},
-    "time_shift": set(),
-    "sequence": set(),
+    "time_shift": {"use_hour"},
+    "sequence": {"seq_len", "seq_mode"},
     "architecture": set(),
     "multitask": set(),
     "watch_time": set(),
     "features": set(),
     "draft": set(),
 }
-LOSS_VALUES = {"logloss", "bpr"}
+LOSS_VALUES = {"logloss", "bpr", "listwise"}
+SEQ_MODES = {"none", "pool", "din"}
+SEQ_LENS = {0, 10, 20, 50, 100}
 
 
 def extract_json(text: str) -> dict[str, Any]:
@@ -42,6 +56,17 @@ def sanitize_patch(arm_id: str, patch: dict[str, Any]) -> dict[str, Any]:
         if key not in allowed:
             continue
         if key == "loss" and value not in LOSS_VALUES:
+            continue
+        if key == "seq_mode" and value not in SEQ_MODES:
+            continue
+        if key == "seq_len":
+            value = int(value)
+            if value not in SEQ_LENS:
+                continue
+            out[key] = value
+            continue
+        if key == "use_hour":
+            out[key] = bool(value)
             continue
         if key in {"lr", "l2"}:
             out[key] = float(value)

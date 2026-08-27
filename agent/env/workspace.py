@@ -7,7 +7,13 @@ from pathlib import Path
 
 from agent.config import Settings
 
-TEMPLATE_FILES = ("pipeline.py", "fm.py", "train.py", "trial_config.json")
+TEMPLATE_FILES = (
+    "pipeline.py",
+    "fm.py",
+    "train.py",
+    "seqdata.py",
+    "trial_config.json",
+)
 
 
 @dataclass(frozen=True)

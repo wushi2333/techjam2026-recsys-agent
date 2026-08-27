@@ -29,14 +29,39 @@ def maybe_trim(splits: dict, cfg: dict) -> dict:
     return splits
 
 
+def _stepper(model, loss: str):
+    if loss == "bpr":
+        return model.step_bpr
+    if loss == "listwise":
+        return model.step_listwise
+    return model.step_logloss
+
+
+def _hist(enc, name):
+    packed = enc.get("hist") or {}
+    if name not in packed:
+        return None, None
+    return packed[name]
+
+
 def train_fm(enc, cfg, evaluate):
-    Xtr, ytr, _ = enc["train"]
+    Xtr, ytr, utr = enc["train"]
     Xva, yva, uva = enc["valid"]
-    model = FM(int(enc["dim"]), k=cfg["k"], lr=cfg["lr"], l2=cfg["l2"], seed=cfg["seed"])
+    Htr, Mtr = _hist(enc, "train")
+    Hva, Mva = _hist(enc, "valid")
+    model = FM(
+        int(enc["dim"]),
+        k=cfg["k"],
+        lr=cfg["lr"],
+        l2=cfg["l2"],
+        seed=cfg["seed"],
+        seq_len=int(cfg.get("seq_len") or 0),
+        seq_mode=str(cfg.get("seq_mode") or "none"),
+    )
     rng = np.random.default_rng(cfg["seed"])
+    step = _stepper(model, str(cfg.get("loss") or "logloss"))
     best, state, bad = -1.0, None, 0
     curves = []
-    step = model.step_bpr if cfg.get("loss") == "bpr" else model.step_logloss
     epochs = 1 if cfg.get("smoke") else cfg["epochs"]
     bs = cfg["batch"]
     for ep in range(1, epochs + 1):
@@ -45,8 +70,10 @@ def train_fm(enc, cfg, evaluate):
         losses = []
         for i in range(0, len(idx), bs):
             sl = idx[i : i + bs]
-            losses.append(step(Xtr[sl], ytr[sl]))
-        va = evaluate(uva, yva, model.predict(Xva))
+            hh = None if Htr is None else Htr[sl]
+            mm = None if Mtr is None else Mtr[sl]
+            losses.append(step(Xtr[sl], ytr[sl], hh, mm, [utr[j] for j in sl]))
+        va = evaluate(uva, yva, model.predict(Xva, Hva, Mva))
         row = {
             "epoch": ep,
             "loss": float(np.mean(losses)),
@@ -63,14 +90,14 @@ def train_fm(enc, cfg, evaluate):
         )
         if va["primary"] > best + 1e-5:
             best, bad = va["primary"], 0
-            state = (model.V.copy(), model.W.copy(), np.float32(model.b))
+            state = model.snapshot()
         else:
             bad += 1
             if bad >= cfg["patience"]:
                 print(f"  early stop at epoch {ep}", flush=True)
                 break
-    model.V, model.W, model.b = state
-    return model, evaluate(uva, yva, model.predict(Xva)), curves
+    model.restore(state)
+    return model, evaluate(uva, yva, model.predict(Xva, Hva, Mva)), curves
 
 
 def write_curves(path: Path, curves: list[dict]) -> None:
@@ -92,19 +119,38 @@ def write_submission(path: Path, rows, scores) -> None:
 
 def main() -> None:
     attach_kit()
-    from data import load, encode
     from evaluate import evaluate
 
     trial = Path(os.environ["KUAI_TRIAL_DIR"])
     cfg = load_cfg(trial)
     if cfg.get("eval_split") == "test":
         raise RuntimeError("search must not score hidden test")
-    splits = maybe_trim(load(os.environ["KUAI_DATA_DIR"]), cfg)
-    enc, dim = encode(splits)
-    enc["dim"] = dim
+    seq_len = int(cfg.get("seq_len") or 0)
+    use_hour = bool(cfg.get("use_hour"))
+    data_dir = os.environ["KUAI_DATA_DIR"]
+    if seq_len > 0 or use_hour:
+        from seqdata import encode_extended
+
+        splits, enc = encode_extended(data_dir, cfg)
+        cap = cfg.get("max_train_rows")
+        if cap:
+            n = int(cap)
+            x, y, u = enc["train"]
+            enc["train"] = (x[:n], y[:n], u[:n])
+            if enc.get("hist"):
+                h, m = enc["hist"]["train"]
+                enc["hist"]["train"] = (h[:n], m[:n])
+            splits["train"] = splits["train"][:n]
+    else:
+        from data import encode, load
+
+        splits = maybe_trim(load(data_dir), cfg)
+        enc, dim = encode(splits)
+        enc["dim"] = dim
     model, metrics, curves = train_fm(enc, cfg, evaluate)
     Xva, yva, uva = enc["valid"]
-    scores = model.predict(Xva)
+    Hva, Mva = _hist(enc, "valid")
+    scores = model.predict(Xva, Hva, Mva)
     payload = {k: (float(v) if hasattr(v, "item") else v) for k, v in metrics.items()}
     (trial / "metrics.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
     write_curves(trial / "curves.csv", curves)

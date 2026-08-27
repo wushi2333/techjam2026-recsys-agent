@@ -10,9 +10,10 @@ Task: within-user ranking over logged impressions. Label is long_view, not click
 Metrics: GAUC and nDCG@5; primary = mean. Official FM is the score reference.
 You do NOT choose the search direction; the arm is already selected.
 Propose exactly one atomic, measurable change inside that arm.
-Never change eval_split, never score hidden test, never add static features,
+Never change eval_split, never score hidden test, never add static CWM features,
 never increase embedding k (organizer dead ends).
-If the arm cannot be implemented with trial_config.json keys only, set skip=true.
+Prefer a real config_patch over skip. Skip only if the arm is still unimplemented
+(architecture/multitask/watch_time) or would revert a proven gain.
 Reply with a JSON object only:
 {
   "hypothesis": "3-5 sentences",
@@ -24,9 +25,12 @@ Reply with a JSON object only:
 Allowed trial_config keys by arm:
 - optimizer: lr, batch, epochs, patience
 - regularization: l2
-- loss: loss in {logloss, bpr}
-Other arms: skip=true unless you can use those keys.
+- loss: loss in {logloss, bpr, listwise}
+- sequence: seq_len in {0,10,20,50,100}, seq_mode in {none, pool, din}
+- time_shift: use_hour (bool; adds hour-of-day field)
+Other arms (architecture, multitask, watch_time): skip=true.
 Do not revert a change that already improved validation primary without a new reason.
+If seq_len becomes > 0, also set seq_mode to din or pool (not none).
 """
 
 

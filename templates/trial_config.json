@@ -7,6 +7,9 @@
   "patience": 4,
   "seed": 0,
   "loss": "logloss",
+  "seq_len": 0,
+  "seq_mode": "none",
+  "use_hour": false,
   "smoke": false,
   "max_train_rows": null,
   "eval_split": "valid"

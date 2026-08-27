@@ -24,18 +24,28 @@ class SchemaTest(unittest.TestCase):
         self.assertEqual(patch, {})
 
     def test_empty_patch_becomes_skip(self):
-        hyp, change = plan_from_payload("sequence", {"hypothesis": "try DIN"})
+        hyp, change = plan_from_payload("architecture", {"hypothesis": "try DeepFM"})
         self.assertTrue(change.skip)
 
-    def test_dummy_skips_sequence(self):
+    def test_dummy_enables_sequence(self):
         arm = Arm("sequence", "local", 1, 1)
-        hyp, change = dummy_plan("improve", arm, None, {"lr": 0.001})
-        self.assertTrue(change.skip)
+        hyp, change = dummy_plan("improve", arm, None, {"seq_len": 0})
+        self.assertFalse(change.skip)
+        self.assertEqual(change.config_patch["seq_len"], 20)
+        self.assertEqual(change.config_patch["seq_mode"], "din")
 
-    def test_dummy_does_not_revert_bpr(self):
+    def test_dummy_bpr_to_listwise(self):
         arm = Arm("loss", "local", 1, 1)
         hyp, change = dummy_plan("improve", arm, None, {"loss": "bpr"})
-        self.assertTrue(change.skip)
+        self.assertEqual(change.config_patch["loss"], "listwise")
+
+    def test_sanitize_sequence_and_listwise(self):
+        patch = sanitize_patch("sequence", {"seq_len": 20, "seq_mode": "din", "lr": 0.1})
+        self.assertEqual(patch, {"seq_len": 20, "seq_mode": "din"})
+        patch = sanitize_patch("loss", {"loss": "listwise"})
+        self.assertEqual(patch["loss"], "listwise")
+        patch = sanitize_patch("time_shift", {"use_hour": True, "eval_split": "test"})
+        self.assertEqual(patch, {"use_hour": True})
 
     def test_auto_uses_key_when_present(self):
         llm = build_llm(load_settings())
