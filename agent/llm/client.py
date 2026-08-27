@@ -52,6 +52,8 @@ class OpenAIClient(LLMClient):
                 model=self.model,
                 messages=messages,
                 temperature=self.temperature,
+                timeout=180,
+                extra_body=deepseek_extra(self.base_url),
             )
         except LLMError as exc:
             self.last_error = str(exc)
@@ -68,12 +70,19 @@ class OpenAIClient(LLMClient):
 
 
 def _env_key() -> str:
-    return os.environ.get("OPENAI_API_KEY") or os.environ.get("XAI_API_KEY") or ""
+    return (
+        os.environ.get("OPENAI_API_KEY")
+        or os.environ.get("DEEPSEEK_API_KEY")
+        or os.environ.get("XAI_API_KEY")
+        or ""
+    )
 
 
 def _env_base() -> str:
     if os.environ.get("OPENAI_BASE_URL"):
         return os.environ["OPENAI_BASE_URL"]
+    if os.environ.get("DEEPSEEK_API_KEY") and not os.environ.get("OPENAI_API_KEY"):
+        return "https://api.deepseek.com"
     if os.environ.get("XAI_API_KEY") and not os.environ.get("OPENAI_API_KEY"):
         return "https://api.x.ai/v1"
     return "https://api.openai.com/v1"
@@ -84,9 +93,21 @@ def _env_model(base_url: str, configured: str) -> str:
         return os.environ["LLM_MODEL"]
     if configured:
         return configured
+    if "deepseek.com" in base_url:
+        return "deepseek-v4-flash"
     if "x.ai" in base_url:
         return "grok-3-mini"
     return "gpt-4o-mini"
+
+
+def deepseek_extra(base_url: str) -> dict:
+    if "deepseek.com" not in base_url:
+        return {}
+    effort = os.environ.get("LLM_REASONING_EFFORT") or "max"
+    return {
+        "thinking": {"type": "enabled"},
+        "reasoning_effort": effort,
+    }
 
 
 def build_llm(settings: Settings) -> LLMClient:

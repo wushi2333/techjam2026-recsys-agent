@@ -42,10 +42,10 @@ backend = "token_overlap"
 topk = 3
 
 [llm]
-# auto: OpenAI-compatible if OPENAI_API_KEY or XAI_API_KEY is set, else dummy
+# auto: uses .env key if present, else dummy
 provider = "auto"
-model = ""
-base_url = ""
+model = "deepseek-v4-flash"
+base_url = "https://api.deepseek.com"
 temperature = 0.3
 
 [observe]

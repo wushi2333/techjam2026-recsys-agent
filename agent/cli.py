@@ -43,6 +43,7 @@ def cmd_ping(_args: argparse.Namespace) -> None:
     if llm.provider == "dummy":
         print("no API key; copy .env.example to .env and set OPENAI_API_KEY or XAI_API_KEY")
         return
+    from agent.llm.client import deepseek_extra
     from agent.llm.openai_compat import chat_completions
 
     text, tin, tout = chat_completions(
@@ -54,6 +55,8 @@ def cmd_ping(_args: argparse.Namespace) -> None:
             {"role": "user", "content": "ping"},
         ],
         temperature=0,
+        timeout=180,
+        extra_body=deepseek_extra(llm.base_url),
     )
     print(f"ok tokens_in={tin} tokens_out={tout}")
     print(text[:300])

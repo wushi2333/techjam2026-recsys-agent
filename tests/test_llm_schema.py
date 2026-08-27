@@ -37,6 +37,10 @@ class SchemaTest(unittest.TestCase):
         hyp, change = dummy_plan("improve", arm, None, {"loss": "bpr"})
         self.assertTrue(change.skip)
 
-    def test_auto_without_key_is_dummy(self):
+    def test_auto_uses_key_when_present(self):
         llm = build_llm(load_settings())
-        self.assertEqual(llm.provider, "dummy")
+        if llm.api_key:
+            self.assertEqual(llm.provider, "openai")
+            self.assertTrue(llm.model)
+        else:
+            self.assertEqual(llm.provider, "dummy")

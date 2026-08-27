@@ -17,6 +17,7 @@ def chat_completions(
     messages: list[dict],
     temperature: float,
     timeout: int = 60,
+    extra_body: dict | None = None,
 ) -> tuple[str, int, int]:
     url = base_url.rstrip("/") + "/chat/completions"
     body = {
@@ -25,6 +26,8 @@ def chat_completions(
         "temperature": temperature,
         "response_format": {"type": "json_object"},
     }
+    if extra_body:
+        body.update(extra_body)
     data = json.dumps(body).encode("utf-8")
     req = urllib.request.Request(
         url,
@@ -48,6 +51,7 @@ def chat_completions(
                 messages=messages,
                 temperature=temperature,
                 timeout=timeout,
+                extra_body=extra_body,
             )
         raise LLMError(f"HTTP {exc.code}: {detail}") from exc
     return _parse_chat(raw)
@@ -61,9 +65,12 @@ def chat_completions_plain(
     messages: list[dict],
     temperature: float,
     timeout: int = 60,
+    extra_body: dict | None = None,
 ) -> tuple[str, int, int]:
     url = base_url.rstrip("/") + "/chat/completions"
     body = {"model": model, "messages": messages, "temperature": temperature}
+    if extra_body:
+        body.update(extra_body)
     req = urllib.request.Request(
         url,
         data=json.dumps(body).encode("utf-8"),
@@ -80,7 +87,8 @@ def chat_completions_plain(
 
 def _parse_chat(raw: dict) -> tuple[str, int, int]:
     try:
-        text = raw["choices"][0]["message"]["content"] or ""
+        msg = raw["choices"][0]["message"]
+        text = msg.get("content") or msg.get("reasoning_content") or ""
     except (KeyError, IndexError, TypeError) as exc:
         raise LLMError(f"bad chat payload: {raw!r}"[:400]) from exc
     usage = raw.get("usage") or {}
