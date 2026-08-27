@@ -13,8 +13,9 @@ over an official Factorization Machine, scored only by the starter-kit
 4. Stops at ε = 0.002 over N = 3 rounds, or when the iteration cap hits.
 5. Writes a `row_id,user_id,video_id,score` CSV for the designated split.
 
-Dummy LLM is the default: no API key. It mutates `trial_config.json`
-(learning rate, L2, loss) so the loop is real without a model vendor.
+LLM provider is `auto`: if `OPENAI_API_KEY` or `XAI_API_KEY` is set, Improve
+uses that OpenAI-compatible model; otherwise Dummy mutates `trial_config.json`.
+Draft 0 always reproduces the official FM and does not call the LLM.
 
 ## Layout
 
@@ -45,11 +46,15 @@ python -m agent status
 
 `--smoke` uses 1 epoch and a row cap so a laptop can finish in minutes.
 
-Full search (still dummy LLM, real data):
+Full search:
 
 ```powershell
+copy .env.example .env   # then fill OPENAI_API_KEY or XAI_API_KEY
+python -m agent ping-llm
 python -m agent run
 ```
+
+Without a key, `provider=auto` stays on Dummy.
 
 Watch without intervening:
 

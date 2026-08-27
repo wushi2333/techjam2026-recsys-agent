@@ -49,6 +49,10 @@ L0  Contract      official FM = s0, ranking only, interventions = 0
 
 UCT and island evolution are **not** the default. Greedy + atomic Improve is.
 
+LLM: `provider=auto` uses an OpenAI-compatible Chat Completions endpoint when
+`OPENAI_API_KEY` or `XAI_API_KEY` is set. Draft 0 never calls the LLM.
+Empty / invalid patches are skipped so a no-op arm does not retrain.
+
 ## Observability (watch-only)
 
 Humans may read `run/status.json`, `run/journal.jsonl`, `run/events.jsonl`,

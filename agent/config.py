@@ -4,6 +4,8 @@ import tomllib
 from dataclasses import dataclass
 from pathlib import Path
 
+from agent.dotenv import load_dotenv
+
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_TOML = ROOT / "config" / "default.toml"
 
@@ -37,10 +39,13 @@ class Settings:
     error_memory_topk: int
     llm_provider: str
     llm_model: str
+    llm_base_url: str
+    llm_temperature: float
     heartbeat_sec: int
 
 
 def load_settings(path: Path | None = None) -> Settings:
+    load_dotenv(ROOT / ".env")
     raw = tomllib.loads((path or DEFAULT_TOML).read_text(encoding="utf-8"))
     paths = raw["paths"]
     search = raw["search"]
@@ -77,6 +82,8 @@ def load_settings(path: Path | None = None) -> Settings:
         error_memory_backend=str(err["backend"]),
         error_memory_topk=int(err["topk"]),
         llm_provider=str(llm["provider"]),
-        llm_model=str(llm["model"]),
+        llm_model=str(llm.get("model") or ""),
+        llm_base_url=str(llm.get("base_url") or ""),
+        llm_temperature=float(llm.get("temperature") or 0.3),
         heartbeat_sec=int(observe["heartbeat_sec"]),
     )

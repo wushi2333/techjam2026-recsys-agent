@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import random
 from pathlib import Path
 
@@ -71,11 +70,15 @@ class Orchestrator:
         result = self.runtime.run(dest, self.settings.trial_timeout_sec)
         return dest, result
 
+    def _usage(self) -> tuple[int, int]:
+        return int(self.llm.tokens_in), int(self.llm.tokens_out)
+
     def _node(self, trial_id, parent, stage, arm, hyp, diff, result) -> Node:
         buggy = (not result.ok) or result.metrics is None
         recovery = None
         if stage == "debug" and not buggy:
             recovery = "debug recovered"
+        tin, tout = self._usage()
         return Node(
             node_id=trial_id,
             parent_id=parent,
@@ -87,8 +90,32 @@ class Orchestrator:
             is_buggy=buggy,
             recovery=recovery,
             error=result.error,
+            tokens_in=tin,
+            tokens_out=tout,
             gpu_seconds=result.elapsed_sec,
         )
+
+    def _skip_node(self, trial_id, parent, stage, arm, hyp, change) -> Node:
+        tin, tout = self._usage()
+        node = Node(
+            node_id=trial_id,
+            parent_id=parent,
+            stage=stage,
+            arm=arm,
+            hypothesis=hyp.text,
+            diff="skip",
+            metrics=None,
+            is_buggy=False,
+            error=change.skip_reason or "skipped",
+            tokens_in=tin,
+            tokens_out=tout,
+        )
+        self._record(node)
+        self._emit("skipped", trial=trial_id, arm=arm, reason=change.skip_reason)
+        self._refresh(
+            {"trial_id": trial_id, "arm": arm, "op": stage, "stage": stage}
+        )
+        return node
 
     def _maybe_promote(self, node: Node, dest: Path) -> bool:
         if node.is_buggy or node.primary is None:
@@ -146,10 +173,19 @@ class Orchestrator:
             self.phase = "2_jump"
         trial_id = self._make_id(arm.arm_id)
         self.hb.note = trial_id
-        dest = seed_trial(self.lay, trial_id)
         hyp, change = op_improve(self.llm, self.journal, arm, parent, cfg)
-        diff = apply_change(dest, change, self.settings.kit_dir)
         self.phase = "2_jump" if self.router.jump_open else "1_local"
+        if change.skip:
+            return self._skip_node(
+                trial_id,
+                parent.node_id if parent else None,
+                "improve",
+                arm.arm_id,
+                hyp,
+                change,
+            )
+        dest = seed_trial(self.lay, trial_id)
+        diff = apply_change(dest, change, self.settings.kit_dir)
         self._emit("trial_start", trial=trial_id, op="improve", arm=arm.arm_id)
         dest, result = self._execute(trial_id)
         node = self._node(trial_id, parent.node_id if parent else None, "improve", arm.arm_id, hyp, diff, result)
@@ -164,8 +200,12 @@ class Orchestrator:
         cfg = read_config(self.lay.incumbent)
         trial_id = self._make_id("debug")
         self.hb.note = trial_id
-        dest = seed_trial(self.lay, trial_id)
         hyp, change = op_debug(self.llm, self.journal, parent, cfg, self.memory)
+        if change.skip:
+            return self._skip_node(
+                trial_id, parent.node_id, "debug", parent.arm, hyp, change
+            )
+        dest = seed_trial(self.lay, trial_id)
         diff = apply_change(dest, change, self.settings.kit_dir)
         self._emit("trial_start", trial=trial_id, op="debug")
         dest, result = self._execute(trial_id)

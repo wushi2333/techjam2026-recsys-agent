@@ -1,21 +1,22 @@
-# 阶段总结 01：调研定调 + 六层框架落地
+# 阶段总结 01：调研定调 + 六层框架落地 + 全量自检
 
 **日期：** 2026-08-27  
 **仓库：** `D:\tictokJam\recsys-agent`  
-**Git：** `0881fab`（65 files，初始脚手架）  
-**目的：** 给后续 Devpost / 书面报告 / 答辩提供可引用事实，不代替最终成绩表。
+**Git：** `0881fab` 脚手架 → `8f99a82` 本报告初稿 → 本文件为全量实验后的补充  
+**目的：** 给后续 Devpost / 书面报告 / 答辩提供可引用事实，不代替最终 hidden-test 成绩表。
 
 ---
 
 ## 1. 本阶段完成了什么
 
-三件事，按顺序：
+四件事，按顺序：
 
 1. **读题并调研**公开的 Autonomous ML Research Agent 与推荐系统自迭代文献，确定可获奖路线，而不是去复现某篇 SOTA 表。
 2. **把路线收成六层架构**，并明确哪些优点互相冲突、不能同时打开。
-3. **在本地新建 git 工作区并搭出可跑的脚手架**：官方 FM 为 root，Dummy LLM 就能闭环，人只读观测、零干预。
+3. **在本地新建 git 工作区并搭出可跑的脚手架**：Draft 0 复现官方 FM，Dummy LLM 就能闭环，人只读观测、零干预。
+4. **关掉 smoke，全量复现官方 FM，并在同一份 FM 上做了几轮 Dummy 局部搜索**（见 §6.1 / §6.2）。
 
-本阶段**没有**用全量数据对齐官方 validation primary 0.6016，也**没有**在 hidden test 上出分。烟雾测试只验证搜索环，不作为成绩。
+**官方 FM 是评分参照，也是 Task 1 必须打到的分数；不是比赛的全部。** Agent 应当自己写后续阶段的代码。本阶段 Dummy 只改了 `trial_config`（损失 / 学习率），还没有让模型改 `pipeline.py`。Hidden test 未评。
 
 ---
 
@@ -155,7 +156,7 @@ L0  Contract      官方 FM = s0、只做 ranking、干预 = 0
 | 2–4 并行 trial | `[parallel]` | `max_workers=4`；默认 `n_workers=1` |
 | UCT | `agent/search/uct.py` | 函数在，策略未切换 |
 | 统一 diff 应用到 `.py` | Coder | Dummy 走 `config_patch`；完整 patch parser 未做 |
-| 真 LLM | `[llm] provider` | 仅 `dummy` |
+| 真 LLM | `[llm] provider` | 已接 OpenAI 兼容接口；无 key 时回退 dummy |
 
 外部资源只**引用路径**，不拷进仓库：`kuairand-starter-kit`、`KuaiRand-Pure/data`、`NISE`、`torch-rechub`、`CWM`。
 
@@ -178,6 +179,49 @@ L0  Contract      官方 FM = s0、只做 ranking、干预 = 0
 - 全量对齐官方分数是下一阶段的第一件事。
 
 过程中的工程修复：kit `evaluate.py` 返回 numpy `float32`，直接 `json.dumps` 会崩。现已在写入 `metrics.json` 前转为 Python float。这是 Robustness 的一个实例（失败可定位、可修、可留日志）。
+
+### 6.1 全量复现官方 FM（Task 1，可写进报告）
+
+命令：`python -m agent run --max-iters 1`（无 `--smoke`）  
+数据：完整 train 1,141,112 / valid 124,909。人工干预 0。
+
+| | GAUC | nDCG@5 | **primary** |
+|---|---|---|---|
+| Kit 公布 valid | 0.6674 | 0.5357 | **0.6016** |
+| 本机 `000_fm_baseline` | 0.6671 | 0.5358 | **0.6015** |
+
+差 0.0001，落在 5-seed std 0.0008 内。Early stop 在 epoch 11，约 48s。  
+**结论：Task 1「复现官方 baseline」成立。** 实现上是把 kit `baseline.py` 的 FM 数学搬进 `templates/fm.py`，数据/划分/5 域特征/`evaluate.py` 均走 kit，不是另起模型。
+
+### 6.2 全量 Dummy 搜索（合法但不充分）
+
+在 `000` 晋升之后继续跑，`--max-iters 10`，实际 5 个 trial 后按 ε=0.002、N=3 收敛。
+
+| Trial | 改动 | valid primary | 相对本机 FM | 晋升 |
+|---|---|---|---|---|
+| `000_fm_baseline` | 官方 FM，logloss，lr=0.001 | 0.6015 | — | 是 |
+| `001_loss` | loss → BPR | 0.6039 | +0.0024 | 是 |
+| `002_sequence` | Dummy 不会改序列，整次重跑 | 0.6039 | +0.0024 | 否（空操作） |
+| `003_loss` | Dummy 又切回 logloss | 0.6015 | 0 | 否 |
+| `004_optimizer` | 在 BPR 上 lr 0.001→0.0005 | **0.6041** | **+0.0026** | 是（incumbent） |
+
+Incumbent：`loss=bpr`，`lr=0.0005`，其余与官方 FM 相同。  
+相对 kit 公布 valid 0.6016：**+0.0025**（约 3σ）。**只是 validation，不是 hidden-test 成绩。**
+
+暴露的 Dummy 缺陷（正是要接真 LLM 的原因）：
+
+- `sequence` 臂不会写代码，却完整重训一遍。  
+- 已涨分的 BPR 被下一轮 `loss` 臂切回去。  
+- 搜索仍停在配置空间，没有改 pipeline 源码。
+
+### 6.3 官方 baseline 在规则里的位置（避免写报告时说错）
+
+题目同时要求两件事，不要混成「只能在官方代码上拧螺丝」或「完全不要官方代码」：
+
+1. **必须复现官方 baseline 的 validation 分数**（Task 1）。官方 pipeline 是固定参照；队伍自制起步管线不能当评分基准。  
+2. **必须自主迭代并超过它**。各阶段代码原则上由 agent 写，不限于改官方 FM 的超参。最终排名是 hidden test 相对官方 FM test primary 0.5946 的绝对提升。
+
+Starter kit 的「从哪里开始改」指向 `baseline.py`，因此从官方 FM **起步是允许的**。本阶段做完了（1）和极弱的（2）。
 
 ---
 
@@ -210,13 +254,14 @@ Get-Content run\journal.jsonl -Tail 5
 
 按对 Technical 分的 ROI：
 
-1. **关掉 `--smoke`，全量复现官方 FM**，确认 valid primary ≈ 0.6016（5 seed std 0.0008 量级）。对不上则后续无效。  
-2. 在 Dummy 或真 LLM 下，把 **loss arm（BPR / listwise）** 作为第一条正式 Improve。  
-3. 接真 LLM：Planner 出 hypothesis，Coder 出 config_patch 或单文件 diff。  
-4. 把 DeepFM / DCNv2 从 reserved 做成 PaperImpl（NISE / torch-rechub），仅在 jump 解锁后启用。  
-5. 多任务辅助头：主任务仍是 `long_view`。  
-6. 收敛后跑 2–4 次消融，再 `finalize` 一次 hidden test。  
-7. 从 Journal 自动生成 Devpost 表格：delta、干预次数、token、GPU-hours。
+1. ~~关掉 `--smoke`，全量复现官方 FM。~~ **已完成**（valid 0.6015 vs 0.6016）。  
+2. ~~Dummy 下 loss=BPR。~~ **已完成**（valid 0.6039）；真 LLM 后应禁止无理由切回。  
+3. **接真 LLM**：Planner 出 hypothesis，Coder 出 config_patch；空改动跳过，避免 `002` 那种空训。  
+4. 让 Improve 开始改 `train.py` / 序列 / listwise，而不只拧 `trial_config`。  
+5. 把 DeepFM / DCNv2 从 reserved 做成 PaperImpl，仅在 jump 解锁后启用。  
+6. 多任务辅助头：主任务仍是 `long_view`。  
+7. 收敛后跑消融，再 `finalize` 一次 hidden test。  
+8. 从 Journal 自动生成 Devpost 表格：delta、干预次数、token、GPU-hours。
 
 不要做：Pure 收敛前开 1K/27K；召回/ANN；用测试标签预训练；无日志进化搜索。
 
@@ -230,10 +275,8 @@ Get-Content run\journal.jsonl -Tail 5
 
 ## 10. 本阶段未覆盖（写报告时不要夸大）
 
-- 全量数据上相对官方 FM 的真实 delta。  
-- Hidden test 一次提交。  
-- 真 LLM 的 token 成本。  
+- Hidden test 一次提交（valid +0.0025 **不能**写成比赛成绩）。  
+- 真 LLM 驱动的代码级改动与 token 成本（接口已接，跑数取决于 key）。  
 - DeepFM / DCNv2 / DIN / ESMM 的可运行实现。  
 - 并行 trial 的实测加速。  
-- 1K / 27K bonus。  
-- 明天（若仍适用）技术分享里对「GAUC/nDCG@5 vs NDCG@10/Recall@50」的口头澄清——以 kit 为准已足够写进方法部分。
+- 1K / 27K bonus。

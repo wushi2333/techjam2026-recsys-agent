@@ -42,6 +42,8 @@ class Change:
     diff: str = ""
     config_patch: dict[str, Any] = field(default_factory=dict)
     files: dict[str, str] = field(default_factory=dict)
+    skip: bool = False
+    skip_reason: str = ""
 
 
 @dataclass

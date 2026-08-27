@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 
 from agent.config import ROOT, load_settings
+from agent.llm.client import build_llm
 from agent.orchestrator import Orchestrator
 
 
@@ -35,6 +36,29 @@ def cmd_init(_args: argparse.Namespace) -> None:
     print(f"run dir ready: {_run_dir()}")
 
 
+def cmd_ping(_args: argparse.Namespace) -> None:
+    settings = load_settings()
+    llm = build_llm(settings)
+    print(f"provider={llm.provider} model={llm.model or '(none)'} base={llm.base_url or '(none)'}")
+    if llm.provider == "dummy":
+        print("no API key; copy .env.example to .env and set OPENAI_API_KEY or XAI_API_KEY")
+        return
+    from agent.llm.openai_compat import chat_completions
+
+    text, tin, tout = chat_completions(
+        base_url=llm.base_url,
+        api_key=llm.api_key,
+        model=llm.model,
+        messages=[
+            {"role": "system", "content": 'Reply with JSON {"ok": true}'},
+            {"role": "user", "content": "ping"},
+        ],
+        temperature=0,
+    )
+    print(f"ok tokens_in={tin} tokens_out={tout}")
+    print(text[:300])
+
+
 def main(argv: list[str] | None = None) -> None:
     p = argparse.ArgumentParser(prog="agent")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -46,6 +70,8 @@ def main(argv: list[str] | None = None) -> None:
     s.set_defaults(func=cmd_status)
     i = sub.add_parser("init")
     i.set_defaults(func=cmd_init)
+    g = sub.add_parser("ping-llm")
+    g.set_defaults(func=cmd_ping)
     args = p.parse_args(argv)
     args.func(args)
 
