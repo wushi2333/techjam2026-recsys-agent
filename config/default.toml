@@ -1,0 +1,49 @@
+[paths]
+kit_dir = "D:/tictokJam/kuairand-starter-kit"
+data_dir = "D:/tictokJam/Kuairand/KuaiRand-Pure/data"
+paper_roots = [
+  "D:/tictokJam/NISE",
+  "D:/tictokJam/torch-rechub",
+  "D:/tictokJam/CWM",
+]
+
+[search]
+num_drafts = 1
+max_debug_depth = 3
+debug_prob = 0.5
+epsilon = 0.002
+patience_n = 3
+max_iterations = 30
+trial_timeout_sec = 600
+
+[parallel]
+# Reserved: 2–4 isolated trials. Default off; greedy remains the search policy.
+enabled = false
+n_workers = 1
+max_workers = 4
+
+[jump]
+# Reserved: unlock DeepFM / DCNv2 after validation stagnation.
+enabled = true
+auto_unlock = true
+stagnation_rounds = 3
+delta_threshold = 0.002
+architectures = ["deepfm", "dcnv2"]
+
+[multitask]
+# Reserved. Kit pins long_view as the scored task; click is auxiliary.
+enabled = false
+main_task = "long_view"
+auxiliary = ["is_click", "is_like", "is_follow", "is_comment", "is_forward"]
+
+[error_memory]
+enabled = true
+backend = "token_overlap"
+topk = 3
+
+[llm]
+provider = "dummy"
+model = ""
+
+[observe]
+heartbeat_sec = 15
