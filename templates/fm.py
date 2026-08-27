@@ -20,6 +20,8 @@ class FM:
         self.seq_mode = seq_mode if self.seq_len > 0 else "none"
         self.Vseq = rng.normal(0, 0.01, k).astype(np.float32)
         self.bseq = np.float32(0.0)
+        self.b_click = np.float32(0.0)
+        self.b_cwm = np.float32(0.0)
         self.mV = np.zeros_like(self.V)
         self.vV = np.zeros_like(self.V)
         self.mW = np.zeros_like(self.W)
@@ -36,10 +38,12 @@ class FM:
             np.float32(self.b),
             self.Vseq.copy(),
             np.float32(self.bseq),
+            np.float32(self.b_click),
+            np.float32(self.b_cwm),
         )
 
     def restore(self, state):
-        self.V, self.W, self.b, self.Vseq, self.bseq = state
+        self.V, self.W, self.b, self.Vseq, self.bseq, self.b_click, self.b_cwm = state
 
     def fm_logits(self, X):
         E = self.V[X]
@@ -108,15 +112,46 @@ class FM:
         self._adam_pair(self.W, gW, self.mW, self.vW)
         self.b -= self.lr * g.sum()
 
-    def step_logloss(self, X, y, H=None, M=None, users=None):
+    def _mix_aux(self, z, g, aux):
+        if not aux:
+            return 0.0
+        extra = 0.0
+        click = aux.get("click")
+        w_click = float(aux.get("w_click") or 0.0)
+        if click is not None and w_click:
+            p = sigmoid(z + self.b_click)
+            extra += w_click * float(
+                -np.mean(click * np.log(p + 1e-9) + (1 - click) * np.log(1 - p + 1e-9))
+            )
+            g += (w_click * (p - click) / max(len(z), 1)).astype(np.float32)
+            self.b_click -= np.float32(self.lr * w_click * float((p - click).mean()))
+        play = aux.get("play")
+        dur = aux.get("dur")
+        w_cwm = float(aux.get("w_cwm") or 0.0)
+        if play is not None and dur is not None and w_cwm:
+            dur_s = np.maximum(dur, 1.0)
+            ratio = sigmoid(z + self.b_cwm)
+            that = ratio * dur_s
+            cens = play >= 0.95 * dur_s
+            resid = that - play
+            extra += w_cwm * float(np.mean(resid * resid))
+            dr = ratio * (1.0 - ratio) * dur_s
+            g_c = (2.0 * resid * dr / max(len(z), 1)).astype(np.float32)
+            g_c[cens] = np.minimum(g_c[cens], 0.0)
+            g += w_cwm * g_c
+            self.b_cwm -= np.float32(self.lr * w_cwm * float(g_c.mean()))
+        return extra
+
+    def step_logloss(self, X, y, H=None, M=None, users=None, aux=None):
         B = len(y)
         z, E, S, extra = self.logits(X, H, M)
         g = ((sigmoid(z) - y) / B).astype(np.float32)
+        aux_l = self._mix_aux(z, g, aux)
         self._apply_grads(X, E, S, g, extra, H)
         p = sigmoid(z)
-        return float(-np.mean(y * np.log(p + 1e-9) + (1 - y) * np.log(1 - p + 1e-9)))
+        return float(-np.mean(y * np.log(p + 1e-9) + (1 - y) * np.log(1 - p + 1e-9))) + aux_l
 
-    def step_bpr(self, X, y, H=None, M=None, users=None):
+    def step_bpr(self, X, y, H=None, M=None, users=None, aux=None):
         if users is None:
             return self.step_logloss(X, y, H, M)
         z, E, S, extra = self.logits(X, H, M)
@@ -142,18 +177,19 @@ class FM:
                 g[n] -= c
                 npairs += 1
         if npairs == 0:
-            return self.step_logloss(X, y, H, M)
+            return self.step_logloss(X, y, H, M, aux=aux)
         g /= npairs
+        aux_l = self._mix_aux(z, g, aux)
         self._apply_grads(X, E, S, g, extra, H)
-        return loss / npairs
+        return loss / npairs + aux_l
 
-    def step_bpr_global(self, X, y, H=None, M=None, users=None):
+    def step_bpr_global(self, X, y, H=None, M=None, users=None, aux=None):
         """Cross-user pairwise margin. Empirically stronger here; not within-user BPR."""
         z, E, S, extra = self.logits(X, H, M)
         pos = np.where(y > 0.5)[0]
         neg = np.where(y <= 0.5)[0]
         if len(pos) == 0 or len(neg) == 0:
-            return self.step_logloss(X, y, H, M)
+            return self.step_logloss(X, y, H, M, aux=aux)
         n = min(len(pos), len(neg), len(y))
         pi = pos[np.arange(n) % len(pos)]
         ni = neg[np.arange(n) % len(neg)]
@@ -162,10 +198,11 @@ class FM:
         g = np.zeros(len(y), dtype=np.float32)
         np.add.at(g, pi, gpair)
         np.add.at(g, ni, -gpair)
+        aux_l = self._mix_aux(z, g, aux)
         self._apply_grads(X, E, S, g, extra, H)
-        return float(-np.mean(np.log(sig + 1e-9)))
+        return float(-np.mean(np.log(sig + 1e-9))) + aux_l
 
-    def step_listwise(self, X, y, H=None, M=None, users=None):
+    def step_listwise(self, X, y, H=None, M=None, users=None, aux=None):
         z, E, S, extra = self.logits(X, H, M)
         g = np.zeros(len(y), dtype=np.float32)
         loss = 0.0
@@ -189,10 +226,11 @@ class FM:
             loss += float(-(yn * np.log(p + 1e-9)).sum())
             n_groups += 1
         if n_groups == 0:
-            return self.step_logloss(X, y, H, M)
+            return self.step_logloss(X, y, H, M, aux=aux)
         g /= n_groups
+        aux_l = self._mix_aux(z, g, aux)
         self._apply_grads(X, E, S, g, extra, H)
-        return loss / n_groups
+        return loss / n_groups + aux_l
 
     def predict(self, X, H=None, M=None, bs=200_000):
         outs = []

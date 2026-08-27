@@ -2,19 +2,16 @@ from __future__ import annotations
 
 import json
 
+from agent.benchmarks import planner_context
+from agent.config import load_settings
 from agent.memory.journal import Journal, Node
 from agent.recsys.arms import Arm
 
-SYSTEM = """You are the planner for a KuaiRand-Pure ranking agent.
-Task: within-user ranking over logged impressions. Label is long_view, not click.
-Metrics: GAUC and nDCG@5; primary = mean. Official FM is the score reference.
-You do NOT choose the search direction; the arm is already selected.
-Propose exactly one atomic, measurable change inside that arm.
-Never change eval_split, never score hidden test, never add static CWM features,
-never increase embedding k (organizer dead ends).
-Prefer a real config_patch over skip. Skip only if the arm is still unimplemented
-(architecture/multitask/watch_time) or would revert a proven gain.
-Reply with a JSON object only:
+SYSTEM = """You are the planner for a ranking research agent.
+The arm is already selected; propose one atomic config_patch inside it.
+Never change eval_split, never train on hidden test or log_random.
+Knowledge below is a prior you may falsify with one cheap trial, not a ban.
+Reply with JSON only:
 {
   "hypothesis": "3-5 sentences",
   "diagnosis": "implementation|hypothesis|unknown",
@@ -22,16 +19,17 @@ Reply with a JSON object only:
   "skip": false,
   "skip_reason": ""
 }
-Allowed trial_config keys by arm:
+Allowed keys by arm:
 - optimizer: lr, batch, epochs, patience
 - regularization: l2
-- loss: loss in {logloss, bpr, bpr_global, listwise}
-  (bpr = within-user pairs; bpr_global = cross-user margin, empirically strong but not classic BPR)
+- loss: logloss | bpr | bpr_global | listwise
 - sequence: seq_len in {0,10,20,50,100}, seq_mode in {none, pool, din}
-- time_shift: use_hour (bool; adds hour-of-day field)
-Other arms (architecture, multitask, watch_time): skip=true.
-Do not revert a change that already improved validation primary without a new reason.
-If seq_len becomes > 0, also set seq_mode to din or pool (not none).
+- time_shift: use_hour
+- multitask: aux_click (bool), aux_click_weight (float)
+- watch_time: cwm_censor (bool), cwm_weight (float)
+- capacity: k
+- architecture / features: skip unless a key exists
+Do not revert a proven validation gain without a new reason.
 """
 
 
@@ -50,4 +48,5 @@ def user_prompt(
         f"incumbent_config: {json.dumps(cfg)}\n"
         f"parent: {parent_bit}\n"
         f"journal:\n{journal.summary() or '(empty)'}\n"
+        f"\n--- domain pack ---\n{planner_context(load_settings().paper_roots)}\n"
     )

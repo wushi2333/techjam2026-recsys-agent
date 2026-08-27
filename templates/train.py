@@ -40,6 +40,21 @@ def _stepper(model, loss: str):
     return model.step_logloss
 
 
+def _aux_slice(enc, name, sl, cfg):
+    pack = (enc.get("aux") or {}).get(name)
+    if not pack:
+        return None
+    out = {}
+    if cfg.get("aux_click"):
+        out["click"] = pack["click"][sl]
+        out["w_click"] = float(cfg.get("aux_click_weight") or 0.3)
+    if cfg.get("cwm_censor"):
+        out["play"] = pack["play"][sl]
+        out["dur"] = pack["dur"][sl]
+        out["w_cwm"] = float(cfg.get("cwm_weight") or 0.2)
+    return out or None
+
+
 def _hist(enc, name):
     packed = enc.get("hist") or {}
     if name not in packed:
@@ -80,7 +95,8 @@ def train_fm(enc, cfg, evaluate):
             hh = None if Htr is None else Htr[sl]
             mm = None if Mtr is None else Mtr[sl]
             users = [utr[int(j)] for j in sl]
-            losses.append(step(Xtr[sl], ytr[sl], hh, mm, users))
+            aux = _aux_slice(enc, "train", sl, cfg)
+            losses.append(step(Xtr[sl], ytr[sl], hh, mm, users, aux))
         va = evaluate(uva, yva, model.predict(Xva, Hva, Mva))
         row = {
             "epoch": ep,
@@ -135,8 +151,9 @@ def main() -> None:
         raise RuntimeError("search must not score hidden test")
     seq_len = int(cfg.get("seq_len") or 0)
     use_hour = bool(cfg.get("use_hour"))
+    need_aux = bool(cfg.get("aux_click") or cfg.get("cwm_censor"))
     data_dir = os.environ["KUAI_DATA_DIR"]
-    if seq_len > 0 or use_hour:
+    if seq_len > 0 or use_hour or need_aux:
         from seqdata import encode_extended
 
         splits, enc = encode_extended(data_dir, cfg)
@@ -148,6 +165,8 @@ def main() -> None:
             if enc.get("hist"):
                 h, m = enc["hist"]["train"]
                 enc["hist"]["train"] = (h[:n], m[:n])
+            if enc.get("aux"):
+                enc["aux"]["train"] = {k: v[:n] for k, v in enc["aux"]["train"].items()}
             splits["train"] = splits["train"][:n]
     else:
         from data import encode, load

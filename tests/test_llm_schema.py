@@ -46,6 +46,8 @@ class SchemaTest(unittest.TestCase):
         self.assertEqual(patch["loss"], "listwise")
         patch = sanitize_patch("time_shift", {"use_hour": True, "eval_split": "test"})
         self.assertEqual(patch, {"use_hour": True})
+        patch = sanitize_patch("multitask", {"aux_click": True, "aux_click_weight": 0.2})
+        self.assertEqual(patch["aux_click"], True)
 
     def test_auto_uses_key_when_present(self):
         llm = build_llm(load_settings())

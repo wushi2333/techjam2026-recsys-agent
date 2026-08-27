@@ -62,5 +62,29 @@ def dummy_plan(
             return Hypothesis(text, arm.arm_id), Change("diff", config_patch={"use_hour": True})
         text = "Hour field already on; skip."
         return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)
+    if arm.arm_id == "multitask":
+        if not cfg.get("aux_click"):
+            text = "Add click as an auxiliary BCE head; main task stays long_view."
+            return Hypothesis(text, arm.arm_id), Change(
+                "diff", config_patch={"aux_click": True, "aux_click_weight": 0.3}
+            )
+        text = "Click aux already on; skip."
+        return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)
+    if arm.arm_id == "watch_time":
+        if not cfg.get("cwm_censor"):
+            text = "Add censored watch-time loss when play_time hits duration."
+            return Hypothesis(text, arm.arm_id), Change(
+                "diff", config_patch={"cwm_censor": True, "cwm_weight": 0.2}
+            )
+        text = "CWM censor already on; skip."
+        return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)
+    if arm.arm_id == "capacity":
+        k = int(cfg.get("k") or 16)
+        if k == 16:
+            return Hypothesis("Try smaller k=8 (low prior).", arm.arm_id), Change(
+                "diff", config_patch={"k": 8}
+            )
+        text = "k already moved; skip."
+        return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)
     text = f"Arm {arm.arm_id} has no config mutation yet; skip instead of retraining."
     return Hypothesis(text, arm.arm_id), Change("diff", skip=True, skip_reason=text)

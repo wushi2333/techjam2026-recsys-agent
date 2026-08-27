@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from agent.benchmarks import load_spec
 from agent.config import Settings
 from agent.recsys.jump import jump_unlocked
 
@@ -17,17 +18,23 @@ class Arm:
 
 
 def catalog() -> list[Arm]:
+    priors = (load_spec() or {}).get("arm_priors") or {}
+
+    def prior(arm_id: str, a: float, b: float) -> tuple[float, float]:
+        raw = priors.get(arm_id) or {}
+        return float(raw.get("alpha", a)), float(raw.get("beta", b))
+
     return [
-        Arm("loss", "local", 4.0, 2.0, note="BPR/listwise; organizer top pick"),
-        Arm("optimizer", "local", 3.0, 2.0, note="lr / batch / scheduler"),
-        Arm("regularization", "local", 3.0, 2.0),
-        Arm("sequence", "local", 4.0, 2.0, note="DIN-lite / mean-pool over last N videos"),
-        Arm("time_shift", "local", 3.0, 2.0, note="hour-of-day field"),
-        Arm("features", "local", 1.0, 8.0, True, "organizer: no gain"),
-        Arm("capacity", "local", 1.0, 8.0, True, "organizer: k unchanged"),
-        Arm("architecture", "jump", 2.0, 3.0, note="DeepFM / DCNv2"),
-        Arm("multitask", "jump", 2.0, 3.0, note="aux heads, long_view main"),
-        Arm("watch_time", "jump", 2.0, 3.0, note="CWM"),
+        Arm("loss", "local", *prior("loss", 4.0, 2.0), note="ranking losses"),
+        Arm("optimizer", "local", *prior("optimizer", 3.0, 2.0), note="lr / batch"),
+        Arm("regularization", "local", *prior("regularization", 3.0, 2.0)),
+        Arm("sequence", "local", *prior("sequence", 4.0, 2.0), note="DIN-lite"),
+        Arm("time_shift", "local", *prior("time_shift", 3.0, 2.0), note="hour-of-day"),
+        Arm("multitask", "local", *prior("multitask", 3.0, 2.0), note="aux click"),
+        Arm("watch_time", "local", *prior("watch_time", 3.0, 2.0), note="censored play time"),
+        Arm("features", "local", *prior("features", 1.0, 19.0), note="low prior: static IDs"),
+        Arm("capacity", "local", *prior("capacity", 1.0, 19.0), note="low prior: embedding k"),
+        Arm("architecture", "jump", *prior("architecture", 2.0, 3.0), note="DeepFM / DCNv2"),
     ]
 
 
@@ -44,10 +51,6 @@ class ArmRouter:
             if arm.avoid:
                 continue
             if arm.group == "jump" and not self.jump_open:
-                continue
-            if arm.arm_id == "multitask" and not self.settings.mtl_enabled:
-                continue
-            if arm.arm_id == "architecture" and not self.settings.jump_enabled:
                 continue
             out.append(arm)
         return out or [a for a in self.arms if a.arm_id == "optimizer"]

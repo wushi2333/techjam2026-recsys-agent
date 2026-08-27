@@ -39,6 +39,8 @@ def load_extended(data_dir: str) -> dict:
                         1 if r["long_view"] != "0" else 0,
                         int(r["time_ms"]),
                         hourmin // 100,
+                        1 if r["is_click"] != "0" else 0,
+                        float(r["play_time_ms"]),
                     )
                 )
     out = {}
@@ -82,7 +84,8 @@ def encode_extended(data_dir: str, cfg: dict):
 
     seq_len = int(cfg.get("seq_len") or 0)
     use_hour = bool(cfg.get("use_hour"))
-    if seq_len <= 0 and not use_hour:
+    need_aux = bool(cfg.get("aux_click") or cfg.get("cwm_censor"))
+    if seq_len <= 0 and not use_hour and not need_aux:
         splits = kit_load(data_dir)
         enc, dim = kit_encode(splits)
         enc["dim"] = dim
@@ -105,4 +108,13 @@ def encode_extended(data_dir: str, cfg: dict):
             x, y, users = enc[name]
             packed[name] = _histories(hist, users, x[:, 1], seq_len)
         enc["hist"] = packed
+    if need_aux:
+        aux = {}
+        for name, rows in raw.items():
+            aux[name] = {
+                "click": np.array([x[9] for x in rows], dtype=np.float32),
+                "play": np.array([x[10] for x in rows], dtype=np.float32),
+                "dur": np.array([x[5] for x in rows], dtype=np.float32),
+            }
+        enc["aux"] = aux
     return splits, enc

@@ -1,0 +1,21 @@
+{
+  "name": "kuairand-pure",
+  "task": "within-user ranking over logged impressions",
+  "label": "long_view",
+  "metrics": ["GAUC", "nDCG@5"],
+  "primary": "mean(GAUC, nDCG@5)",
+  "evaluator": "kit evaluate.py",
+  "submission": ["row_id", "user_id", "video_id", "score"],
+  "arm_priors": {
+    "loss": {"alpha": 4, "beta": 2},
+    "optimizer": {"alpha": 3, "beta": 2},
+    "regularization": {"alpha": 3, "beta": 2},
+    "sequence": {"alpha": 4, "beta": 2},
+    "time_shift": {"alpha": 3, "beta": 2},
+    "multitask": {"alpha": 3, "beta": 2},
+    "watch_time": {"alpha": 3, "beta": 2},
+    "features": {"alpha": 1, "beta": 19},
+    "capacity": {"alpha": 1, "beta": 19},
+    "architecture": {"alpha": 2, "beta": 3}
+  }
+}

@@ -19,7 +19,7 @@ def default_modules(paper_roots: tuple[Path, ...]) -> tuple[PaperModule, ...]:
     return (
         PaperModule("deepfm", "reserved", str(nise or rechub), "jump architecture"),
         PaperModule("dcnv2", "reserved", str(nise or rechub), "jump architecture"),
-        PaperModule("esmm_aux", "reserved", str(nise), "multitask aux heads"),
-        PaperModule("cwm_watch_time", "reserved", str(cwm), "duration-bias loss"),
-        PaperModule("bpr_loss", "ready", "templates/train.py", "local loss arm"),
+        PaperModule("esmm_aux", "ready", "templates/train.py aux_click", "click BCE aux"),
+        PaperModule("cwm_watch_time", "ready", "templates/train.py cwm_censor", "censored play time"),
+        PaperModule("bpr_loss", "ready", "templates/train.py", "within-user and global pairwise"),
     )

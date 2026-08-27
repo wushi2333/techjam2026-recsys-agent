@@ -10,6 +10,10 @@
   "seq_len": 0,
   "seq_mode": "none",
   "use_hour": false,
+  "aux_click": false,
+  "aux_click_weight": 0.3,
+  "cwm_censor": false,
+  "cwm_weight": 0.2,
   "smoke": false,
   "max_train_rows": null,
   "eval_split": "valid"

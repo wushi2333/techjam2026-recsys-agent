@@ -53,6 +53,11 @@ LLM: `provider=auto` uses an OpenAI-compatible Chat Completions endpoint when
 `OPENAI_API_KEY` or `XAI_API_KEY` is set. Draft 0 never calls the LLM.
 Empty / invalid patches are skipped so a no-op arm does not retrain.
 
+Domain knowledge is a pack under `benchmarks/kuairand/` injected into the
+planner. Organizer "no gain" notes are low priors, not hard bans.
+`aux_click` and `cwm_censor` are real config modules (click BCE, censored
+watch time), not skip-only arms.
+
 ## Observability (watch-only)
 
 Humans may read `run/status.json`, `run/journal.jsonl`, `run/events.jsonl`,

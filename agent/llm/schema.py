@@ -10,6 +10,10 @@ ALLOWED_KEYS = {
     "k",
     "lr",
     "l2",
+    "aux_click",
+    "aux_click_weight",
+    "cwm_censor",
+    "cwm_weight",
     "epochs",
     "batch",
     "patience",
@@ -26,9 +30,9 @@ ARM_KEYS = {
     "capacity": {"k"},
     "time_shift": {"use_hour"},
     "sequence": {"seq_len", "seq_mode"},
+    "multitask": {"aux_click", "aux_click_weight"},
+    "watch_time": {"cwm_censor", "cwm_weight"},
     "architecture": set(),
-    "multitask": set(),
-    "watch_time": set(),
     "features": set(),
     "draft": set(),
 }
@@ -65,8 +69,11 @@ def sanitize_patch(arm_id: str, patch: dict[str, Any]) -> dict[str, Any]:
                 continue
             out[key] = value
             continue
-        if key == "use_hour":
+        if key in {"use_hour", "aux_click", "cwm_censor"}:
             out[key] = bool(value)
+            continue
+        if key in {"aux_click_weight", "cwm_weight"}:
+            out[key] = float(value)
             continue
         if key in {"lr", "l2"}:
             out[key] = float(value)

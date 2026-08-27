@@ -20,12 +20,17 @@ Draft 0 always reproduces the official FM and does not call the LLM.
 ## Layout
 
 ```
-agent/          L0–L6 implementation
-templates/      runnable FM pipeline copied into each trial
-config/         default.toml
-docs/           architecture
-run/            live logs (gitignored)
+agent/                    generic engine (search, memory, sandbox, operators)
+benchmarks/kuairand/      task pack: spec.json + knowledge.md (priors, not bans)
+templates/                FM pipeline (task adapter)
 ```
+
+The harness does not import KuaiRand except through the pack and templates.
+Swap a dataset by replacing `benchmarks/<name>/spec.json`, the loader, and
+the evaluator adapter. Kit conclusions live in `knowledge.md` as **overridable
+priors** (e.g. static features have low Thompson prior, they are not
+`avoid=True`). `python -m unittest tests.test_synthetic_harness` runs the
+pipeline on a few synthetic rows without the full dump.
 
 ## Setup
 

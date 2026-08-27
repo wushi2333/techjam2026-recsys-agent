@@ -12,13 +12,15 @@ from agent.types import Metrics
 
 
 class ArmsTest(unittest.TestCase):
-    def test_avoids_dead_ends(self):
+    def test_low_prior_arms_are_available(self):
         router = ArmRouter(load_settings())
         with tempfile.TemporaryDirectory() as td:
             j = Journal(Path(td) / "j.jsonl")
             ids = {a.arm_id for a in router.available(j)}
-            self.assertNotIn("features", ids)
-            self.assertNotIn("capacity", ids)
+            self.assertIn("features", ids)
+            self.assertIn("capacity", ids)
+            self.assertIn("multitask", ids)
+            self.assertIn("watch_time", ids)
             self.assertNotIn("architecture", ids)
 
     def test_jump_unlocks_architecture(self):
