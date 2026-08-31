@@ -3,7 +3,7 @@
       <desc id="flowchart-desc">Top-down loop: propose one atomic change, screen on one seed, ablate on three seeds, promote or reject, then stop at ε=0.002 / N=3 or the 50-iteration / 6 h cap and finalize the CSV.</desc>
       <defs>
         <marker id="flow-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
-        <marker id="flow-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="flow-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a9ec9"/></marker>
         <marker id="flow-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
       </defs>
 
@@ -61,7 +61,7 @@
       <text x="500" y="472" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">3/3 same-sign</text>
 
       <rect x="40" y="420" width="160" height="80" rx="6" fill="#f5f5f5"/>
-      <rect x="40" y="420" width="160" height="80" rx="6" fill="rgba(235,108,54,0.10)" stroke="#eb6c36" stroke-width="1"/>
+      <rect x="40" y="420" width="160" height="80" rx="6" fill="rgba(74,158,201,0.10)" stroke="#4a9ec9" stroke-width="1"/>
       <text x="120" y="460" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Promote</text>
       <text x="120" y="476" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">new incumbent · bag</text>
 
@@ -82,6 +82,6 @@
       <text x="316" y="864" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace">step</text>
       <polygon points="456,860 468,852 480,860 468,868" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
       <text x="488" y="864" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace">decision</text>
-      <rect x="600" y="852" width="16" height="16" rx="3" fill="rgba(235,108,54,0.10)" stroke="#eb6c36" stroke-width="1"/>
+      <rect x="600" y="852" width="16" height="16" rx="3" fill="rgba(74,158,201,0.10)" stroke="#4a9ec9" stroke-width="1"/>
       <text x="624" y="864" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace">promote</text>
     </svg>

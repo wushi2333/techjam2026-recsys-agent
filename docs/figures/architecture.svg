@@ -3,7 +3,7 @@
       <desc id="architecture-desc">Three-row architecture: the orchestrator proposes one-arm changes to an isolated trial scored by kit evaluate.py, promotion gates write a verdict into memory, and on stop finalize writes submission.csv. Test labels are never read during search.</desc>
       <defs>
         <marker id="arch-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
-        <marker id="arch-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="arch-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a9ec9"/></marker>
         <marker id="arch-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
       </defs>
 
@@ -63,9 +63,9 @@
       <text x="120" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">deepseek-v4-flash</text>
 
       <rect x="256" y="92" width="208" height="96" rx="6" fill="#f5f5f5"/>
-      <rect x="256" y="92" width="208" height="96" rx="6" fill="rgba(235,108,54,0.10)" stroke="#eb6c36" stroke-width="1"/>
-      <rect x="264" y="98" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.40)" stroke-width="0.8"/>
-      <text x="278" y="107" fill="rgba(235,108,54,0.90)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CORE</text>
+      <rect x="256" y="92" width="208" height="96" rx="6" fill="rgba(74,158,201,0.10)" stroke="#4a9ec9" stroke-width="1"/>
+      <rect x="264" y="98" width="28" height="12" rx="2" fill="transparent" stroke="rgba(74,158,201,0.40)" stroke-width="0.8"/>
+      <text x="278" y="107" fill="rgba(74,158,201,0.90)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CORE</text>
       <text x="360" y="140" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Orchestrator</text>
       <text x="360" y="156" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">champion-challenger</text>
 
@@ -77,9 +77,9 @@
       <text x="640" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">numpy FM + BPR</text>
 
       <rect x="776" y="100" width="160" height="80" rx="6" fill="#f5f5f5"/>
-      <rect x="776" y="100" width="160" height="80" rx="6" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
-      <rect x="784" y="106" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.40)" stroke-width="0.8"/>
-      <text x="798" y="115" fill="rgba(235,108,54,0.90)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">KIT</text>
+      <rect x="776" y="100" width="160" height="80" rx="6" fill="rgba(74,158,201,0.05)" stroke="rgba(74,158,201,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
+      <rect x="784" y="106" width="28" height="12" rx="2" fill="transparent" stroke="rgba(74,158,201,0.40)" stroke-width="0.8"/>
+      <text x="798" y="115" fill="rgba(74,158,201,0.90)" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">KIT</text>
       <text x="856" y="144" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">kit evaluate.py</text>
       <text x="856" y="160" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">GAUC · nDCG@5</text>
 
@@ -117,8 +117,8 @@
       <text x="160" y="576" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace">control / scores</text>
       <line x1="320" y1="572" x2="352" y2="572" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3"/>
       <text x="360" y="576" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace">read journal</text>
-      <rect x="500" y="564" width="16" height="12" rx="2" fill="rgba(235,108,54,0.10)" stroke="#eb6c36" stroke-width="1"/>
+      <rect x="500" y="564" width="16" height="12" rx="2" fill="rgba(74,158,201,0.10)" stroke="#4a9ec9" stroke-width="1"/>
       <text x="524" y="576" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace">orchestrator</text>
-      <rect x="680" y="564" width="16" height="12" rx="2" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
+      <rect x="680" y="564" width="16" height="12" rx="2" fill="rgba(74,158,201,0.05)" stroke="rgba(74,158,201,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
       <text x="704" y="576" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace">kit contract</text>
     </svg>
