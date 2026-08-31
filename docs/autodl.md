@@ -1,6 +1,6 @@
 # AutoDL 1K job
 
-This run is a **KuaiRand-1K task instance**, pinned at launch (`--data-scale 1k` or `config/autodl.toml`). That is the job spec, not a mid-run intervention. The agent still chooses `fm|gbm|torch` keys, loss, seq, and architecture. Contest hidden test remains Pure and is a different ID space.
+Bonus 1K is a **KuaiRand-1K task instance**, pinned at launch (`--data-scale 1k` or `config/autodl.toml`). That is the job spec, not a mid-search intervention. The agent still chooses `fm|gbm|torch` keys, loss, seq, and architecture. Contest hidden test remains Pure and is a different ID space.
 
 ## Upload (do not upload `video_features_statistic_1k.csv`)
 

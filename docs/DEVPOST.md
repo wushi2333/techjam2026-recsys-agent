@@ -7,13 +7,13 @@ An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the o
 | | GAUC | nDCG@5 | primary |
 |---|---|---|---|
 | Official FM (valid) | 0.6674 | 0.5357 | 0.6016 |
-| This run (valid) | 0.67105 | 0.53774 | **0.60440** |
+| Submitted Pure (valid) | 0.67105 | 0.53774 | **0.60440** |
 
-50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
+Submitted Pure: 50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. Contest CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
 
 Bonus KuaiRand-1K (different id space, not in that CSV): official FM 0.64203 → **0.65001** (+0.00798). Stopped on the 6 h wall at 31/50. Snapshot: `deliverables/1k/`.
 
-We first shipped a run that looked much stronger on valid: recency features could see valid `long_view`, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 when we scored it on test — worse than the official FM. The numbers in the table are from the rerun, where decay / last-k only update from train 0/1 and test stays missing.
+We first shipped a leaky Pure search that looked much stronger on valid: recency features could see valid `long_view`, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 when we scored it on test — worse than the official FM. The numbers in the table are **submitted Pure**, where decay / last-k only update from train 0/1 and test stays missing.
 
 ## Tools
 
@@ -37,7 +37,7 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 ## Limits
 
-Debug never fired on the submitted Pure job — recovery is covered by `scripts/fault_matrix.py`. Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. 1K is a finished bonus; 27K was not attempted.
+Debug never fired on submitted Pure — recovery is covered by `scripts/fault_matrix.py`. Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. Bonus 1K is finished; 27K was not attempted.
 
 ## Walkthrough (last)
 

@@ -1,6 +1,6 @@
-# Notes on the KuaiRand-Pure run
+# Notes on submitted Pure
 
-This is the write-up for the Pure experiment in `deliverables/pure-v5/`. Numbers below are **validation** unless said otherwise. The test CSV is scored by the official evaluator on the hidden split; we did not use test labels to pick the model.
+Write-up for the contest search in `deliverables/pure-v5/`. Numbers below are **validation** unless said otherwise. The contest CSV is scored by the official evaluator on the hidden split; we did not use test labels to pick the model.
 
 - [Summary first](#summary-first)
 - [Task](#task)
@@ -8,9 +8,9 @@ This is the write-up for the Pure experiment in `deliverables/pure-v5/`. Numbers
 - [Submitted numbers](#submitted-numbers)
 - [Bonus: KuaiRand-1K](#bonus-kuairand-1k)
 - [Features and labels](#features-and-labels)
-- [An earlier run that looked better on valid](#an-earlier-run-that-looked-better-on-valid)
-- [Walk-through of the submitted run](#walk-through-of-the-submitted-run)
-- [Failures other than the leaky run](#failures-other-than-the-leaky-run)
+- [Leaky Pure looked better on valid](#leaky-pure-looked-better-on-valid)
+- [Walk-through of submitted Pure](#walk-through-of-submitted-pure)
+- [Failures other than leaky Pure](#failures-other-than-leaky-pure)
 - [Compute and autonomy](#compute-and-autonomy)
 - [Limits](#limits)
 
@@ -18,11 +18,11 @@ This is the write-up for the Pure experiment in `deliverables/pure-v5/`. Numbers
 
 **Submitted:** 3-seed rank average of `loss=bpr_global` on the numpy FM. Valid primary **0.60440** vs official FM **0.6016** (delta **+0.00280**). 50/50 billed iterations, 2.91 h, 862,773 tokens, 0 GPU-hours, **0 runtime interventions**.
 
-**The most useful thing we learned was a failure.** An earlier run (`run_pure_v4`) stacked recency features while valid labels still flowed into them and stored unseen test labels as 0. Its search bag read **valid 0.63975**. Scored once afterwards, that same CSV gave **test 0.56790** — below the official FM's published 0.5946. Valid and test moved in opposite directions by 0.07.
+**The most useful thing we learned was a failure.** Leaky Pure (`run_pure_v4`) stacked recency features while valid labels still flowed into them and stored unseen test labels as 0. Its search bag read **valid 0.63975**. Scored once afterwards, that same CSV gave **test 0.56790** — below the official FM's published 0.5946. Valid and test moved in opposite directions by 0.07.
 
-We rebuilt the label handling (test labels behind a finalize token and stored as *missing*, not 0; decay and last-k updated only from train) and re-ran. The submitted run reads valid 0.60440 — a much smaller number, and one we trust. The same after-the-fact check on the new file is **0.59766** against the FM's 0.5946.
+We rebuilt the label handling (test labels behind a finalize token and stored as *missing*, not 0; decay and last-k updated only from train) and searched again. **Submitted Pure** reads valid 0.60440 — a much smaller number, and one we trust. The same after-the-fact check on the contest CSV is **0.59766** against the FM's 0.5946.
 
-That gap between "a number that went up" and "a model that got better" is the whole reason the harness screens against a bag, both halves of valid, and a paired interval rather than picking the best single seed. Details in [An earlier run that looked better on valid](#an-earlier-run-that-looked-better-on-valid).
+That gap between "a number that went up" and "a model that got better" is the whole reason the harness screens against a bag, both halves of valid, and a paired interval rather than picking the best single seed. Details in [Leaky Pure looked better on valid](#leaky-pure-looked-better-on-valid).
 
 ## Task
 
@@ -48,9 +48,9 @@ A few mechanics that matter for the numbers:
 2. **One change at a time**, then a 3-seed ablate if the 1-seed looks interesting. We compare against the current bag (or confirmed mean), not against a single lucky seed.
 3. **Bagging.** Same config, three seeds, rank-average. That step does not train a new model; it is not billed against the 50-iteration cap.
 4. **Sequences.** If decay / last-k / last-1 are on, only **train** 0/1 updates the running state. Valid and test rows are missing labels (`-1`), not zeros. More on that below.
-5. **Stop.** ε = 0.002 over N = 3 billed steps with no real incumbent move, or 50 billed iterations, or 6 hours. This Pure run hit the cap.
+5. **Stop.** ε = 0.002 over N = 3 billed steps with no real incumbent move, or 50 billed iterations, or 6 hours. Submitted Pure hit the iteration cap.
 
-The LLM (DeepSeek, OpenAI-compatible) fills in hypotheses and patches. If it proposes a duplicate or an empty arm, the journal records a skip and the loop continues. There is a dummy planner if no API key is set; the submitted run used the LLM.
+The LLM (DeepSeek, OpenAI-compatible) fills in hypotheses and patches. If it proposes a duplicate or an empty arm, the journal records a skip and the loop continues. There is a dummy planner if no API key is set; submitted Pure used the LLM.
 
 ## Submitted numbers
 
@@ -65,7 +65,7 @@ Members: trials `012`, `013`, `014` (seeds 0/1/2), numpy FM, pairwise BPR. Final
 
 Search’s last incumbent was `098`: DeepFM plus `seq_len=50` DIN, confirmed mean 0.60395. Finalize looks at ≥2-seed bags and prefers a stable valid number (min of the two date halves of valid, then fewer extra flags). The BPR bag sat a little above `098` on that criterion, so that is the CSV. Both beat the official FM on valid.
 
-Resources for this run: 50 / 50 billed iterations, 2.91 h wall-clock, 544,687 + 318,086 tokens, 0 GPU-hours (a GPU was present; the submitted path is numpy). No runtime intervention. Five older build-time notes sit in `interventions.jsonl` (scripts and one template bug); they were not mid-run direction changes.
+Resources for submitted Pure: 50 / 50 billed iterations, 2.91 h wall-clock, 544,687 + 318,086 tokens, 0 GPU-hours (a GPU was present; the submitted path is numpy). No runtime intervention. Five older build-time notes sit in `interventions.jsonl` (scripts and one template bug); they were not mid-search direction changes.
 
 ## Bonus: KuaiRand-1K
 
@@ -98,7 +98,7 @@ The current code therefore:
 - refuses `eval_split=test` during search
 - updates decay and last-k only when `observed_label` is 0 or 1, which on this pipeline is train
 
-## An earlier run that looked better on valid
+## Leaky Pure looked better on valid
 
 Before that change we ran a full Pure search (`run_pure_v4`) with rolling valid labels and test-as-zero. Search bag primary was 0.63931. Finalize blended six members and got valid **0.63975** (GAUC 0.71748, nDCG@5 0.56202).
 
@@ -110,13 +110,13 @@ Three things stacked:
 2. Test zeros poisoned decay on test.
 3. Selection mixed a 1-seed mean with a bag CI, then blended siblings that all used the same leaky flags, so valid was maximized twice.
 
-`log_random` on that run was already weak (≈ 0.39). We had not used it as a stop rule.
+`log_random` on leaky Pure was already weak (≈ 0.39). We had not used it as a stop rule.
 
-After the label handling above, plus screening against the bag (CI lower bound, both valid halves, nDCG not down), skipping a 3-seed if the 1-seed CI is entirely negative, resetting the next trial from the confirmed identity, and refusing blends that share those leaky flags, we ran again. That is the submitted run. Valid is 0.60440, not 0.64. We are more comfortable with that.
+After the label handling above, plus screening against the bag (CI lower bound, both valid halves, nDCG not down), skipping a 3-seed if the 1-seed CI is entirely negative, resetting the next trial from the confirmed identity, and refusing blends that share those leaky flags, we searched again. That search is **submitted Pure**. Valid is 0.60440, not 0.64. We are more comfortable with that.
 
 (The same after-the-fact CSV check on the new file is 0.59766 vs FM 0.5946. It is not how the model was chosen.)
 
-## Walk-through of the submitted run
+## Walk-through of submitted Pure
 
 Logs: `deliverables/pure-v5/progress.log` and `journal.jsonl`. Times below are from the progress file.
 
@@ -138,9 +138,9 @@ Logs: `deliverables/pure-v5/progress.log` and `journal.jsonl`. Times below are f
 
 Stop: `cap`, 50/50, incumbent `098` mean 0.60395, wall 2.91 h.
 
-## Failures other than the leaky run
+## Failures other than leaky Pure
 
-On this run, nothing crashed (0 buggy, 0 Debug, 0 timeouts). That is not the same as “recovery was tested in production.” What we did see:
+On submitted Pure, nothing crashed (0 buggy, 0 Debug, 0 timeouts). That is not the same as “recovery was tested in production.” What we did see:
 
 - Duplicate proposals skipped instead of retrained.
 - A leaky fingerprint from the previous run skipped instead of restacked.
@@ -148,9 +148,11 @@ On this run, nothing crashed (0 buggy, 0 Debug, 0 timeouts). That is not the sam
 
 The harness also has, and unit-tests, a few other exits: timeout can recover the best epoch from `curves.csv`; a trial `SystemExit` is a crash node and the policy’s next step is Debug (capped at 3), not a blank restart; `evaluate.py` cannot be patched; test `long_view` without a token raises; journal and wall-clock survive a process kill. `python scripts/fault_matrix.py` runs those injects. They are small tests. They do not stand in for a six-hour job.
 
-The earlier 0.64 valid run did not crash. It drifted on the metric. Handling missing labels is part of keeping the loop from that kind of drift.
+Leaky Pure did not crash. It drifted on the metric. Handling missing labels is part of keeping the loop from that kind of drift.
 
 ## Compute and autonomy
+
+These numbers are **submitted Pure**.
 
 | | |
 |---|---|
@@ -164,7 +166,7 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 
 ## Limits
 
-- Debug never ran on this Pure job. Recovery in the log is skips, not a patched crash.
+- Debug never ran on submitted Pure. Recovery in the log is skips, not a patched crash.
 - Weak 3/3 agreement can still confirm a tiny delta (`098`). Finalize’s bag rule is the main backstop.
 - KuaiRand-1K / 27K are optional and use different id spaces. 1K finished as a bonus (`deliverables/1k/`); 27K was not attempted. Neither is in the Pure CSV.
 - A tree model on a properly continuous encoding is still untested under the current label rules. We would let the loop try it, not paste a finished config.

@@ -15,11 +15,11 @@
 | [`1k/`](1k/) | Bonus 1K snapshot (metrics, journal) |
 | Extra tables / 1K CSV / dumps | [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) |
 
-## Pure (`pure-v5/`)
+## Submitted Pure (`pure-v5/`)
 
-Designated KuaiRand-Pure run. 3-seed pairwise BPR on the numpy FM. 50/50 billed iterations, 2.91 h, 0 runtime interventions.
+Contest search. 3-seed pairwise BPR on the numpy FM. 50/50 billed iterations, 2.91 h, 0 runtime interventions.
 
-## 1K (bonus)
+## Bonus 1K
 
 Public snapshot: [`1k/`](1k/). Finalize bag valid **0.65001** vs 1K FM **0.64203**. Search stopped on the 6 h wall at 31/50.
 

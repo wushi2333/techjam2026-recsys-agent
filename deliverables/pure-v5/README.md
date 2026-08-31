@@ -1,4 +1,4 @@
-# Pure run (`run_pure_v5`)
+# Submitted Pure (`run_pure_v5`)
 
 Validation, kit `evaluate.py`:
 

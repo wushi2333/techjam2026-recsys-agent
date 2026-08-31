@@ -9,15 +9,15 @@ KuaiRand-Pure — label `long_view`, primary = mean(GAUC, nDCG@5). Kit `evaluate
 | | GAUC | nDCG@5 | primary | Δ vs FM |
 |---|---|---|---|---|
 | Official FM (valid) | 0.6674 | 0.5357 | 0.6016 | — |
-| **This run (valid)** 3-seed BPR bag | 0.67105 | 0.53774 | **0.60440** | **+0.00280** |
+| **Submitted Pure (valid)** 3-seed BPR bag | 0.67105 | 0.53774 | **0.60440** | **+0.00280** |
 | Official FM (published test) | 0.6610 | 0.5282 | 0.5946 | — |
-| This CSV, scored once after search | — | — | **0.59766** | +0.00306 |
+| Contest CSV, scored once after search | — | — | **0.59766** | +0.00306 |
 
 The after-the-fact test number was **not** used to pick the model. CSV: [`deliverables/pure-v5/submission.csv`](deliverables/pure-v5/submission.csv) (170,588 rows). Write-up: [`docs/report.md`](docs/report.md).
 
-We first shipped a run that looked much stronger on valid: recency features could see valid labels, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 on test — worse than the official FM. The table above is the rerun, with decay / last-k updating from train only.
+We first shipped a leaky Pure search that looked much stronger on valid: recency features could see valid labels, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 on test — worse than the official FM. The table above is **submitted Pure**, with decay / last-k updating from train only.
 
-| | Pure (submitted) | 1K (bonus) |
+| | Submitted Pure | Bonus 1K |
 |---|---|---|
 | Billed iterations | 50 / 50 | 31 / 50 (6 h wall) |
 | Wall-clock | 2.91 h | 6.50 h |
@@ -35,7 +35,7 @@ Each trial is a copy of `templates/` plus `trial_config.json`. The parent proces
 2. Improve proposes one legal untried patch (loss, architecture, sequence, regularisation, …).
 3. A 1-seed that looks real gets a 3-seed ablate. Promotion uses a paired interval, both date-halves of valid, and “nDCG not down,” against the current bag.
 4. Same-config seeds are rank-averaged. That fusion is not billed as a new train.
-5. Stop: ε = 0.002 for N = 3 billed steps, or 50 iterations, or 6 hours (official cap). This Pure run hit the cap.
+5. Stop: ε = 0.002 for N = 3 billed steps, or 50 iterations, or 6 hours (official cap). Submitted Pure hit the iteration cap.
 
 If decay / last-k are on, only **train** 0/1 updates them. Valid and test rows are stored as missing (`-1`), not as zeros.
 
@@ -116,7 +116,7 @@ tests/
 
 ## Limitations
 
-- Debug never fired on the submitted Pure job (0 crashes, 0 timeouts). Recovery is unit-tested, not battle-tested on that run.
+- Debug never fired on submitted Pure (0 crashes, 0 timeouts). Recovery is unit-tested, not battle-tested on that search.
 - A weak 3/3 can still confirm a tiny delta (`098`, DeepFM + DIN-50, mean 0.60395). Finalize’s bag rule is the main backstop.
 - LightGBM is wired; the one Pure trial (0.577) used the ID-only encoding. That is a feature problem, not a family verdict.
 - Sequence length and DCNv2 did not clear the Pure bag.

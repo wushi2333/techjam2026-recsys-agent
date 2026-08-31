@@ -1,4 +1,4 @@
-# Bonus KuaiRand-1K (`run_1k_aug31`)
+# Bonus 1K (`run_1k_aug31`)
 
 Optional scale. **Not** the contest primary CSV. User and item ids are re-indexed, so these numbers are not comparable with Pure.
 
