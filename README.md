@@ -131,7 +131,7 @@ Optional 1K: `python -m agent run --llm --data-scale 1k --run-dir run_1k`.
 | [`docs/report.md`](docs/report.md) | Longer write-up, including the leaky 0.64 run |
 | [`docs/DEVPOST.md`](docs/DEVPOST.md) | Short project description |
 | [`deliverables/1k/`](deliverables/1k/) | Bonus 1K snapshot (metrics and logs) |
-| ~3 min walkthrough | Last item on Devpost; link here when it is up |
+| ~3 min walkthrough | Slides: [`docs/talk/index.html`](docs/talk/index.html) · script: [`docs/talk/SCRIPT.md`](docs/talk/SCRIPT.md). Record last; link here when the video is up |
 | Extra tables / 1K CSV / logs | [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) |
 
 ```
@@ -156,7 +156,7 @@ Given more time: retry GBM on a continuous encoding, and let `diagnose` check a 
 
 ## Still to publish
 
-The ~3 minute Devpost walkthrough comes **last**, then the link goes here. Until then the Pure trace is `progress.log`.
+The ~3 minute Devpost walkthrough comes **last**. Slides and script: [`docs/talk/`](docs/talk/). Link the video here when it is up. Until then the Pure trace is `progress.log`.
 
 Extra tables, the 1K CSV, and run dumps live in [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). This repo keeps the code, the write-up, and the Pure contest CSV.
 

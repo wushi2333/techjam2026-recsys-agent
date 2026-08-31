@@ -41,7 +41,7 @@ Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one
 
 ## Walkthrough (last)
 
-A ~3 minute video will be uploaded to this Devpost **last** and linked from the GitHub README. Until then the Pure trace is `progress.log`.
+A ~3 minute video will be uploaded to this Devpost **last** and linked from the GitHub README. Slides and script: `docs/talk/`. Until then the Pure trace is `progress.log`.
 
 ## Extra tables and data
 
