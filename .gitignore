@@ -65,3 +65,6 @@ docs/*提示词*.txt
 !deliverables/**
 !deliverables/**/*.log
 !deliverables/**/submission.csv
+
+# Optional 1K dump (~117MB CSV). Local only; not the Pure submission.
+deliverables/1k-aug31/

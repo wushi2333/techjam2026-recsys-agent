@@ -6,4 +6,4 @@ Output of the Pure run we are submitting, plus pointers to the write-up.
 - [`../docs/report.md`](../docs/report.md) — longer notes
 - [`../docs/DEVPOST.md`](../docs/DEVPOST.md) — short project description
 
-KuaiRand-1K, if we run it, is a separate job and is not mixed into this CSV.
+KuaiRand-1K is a separate job and is not mixed into the Pure CSV. A local `1k-aug31/` dump may exist on disk; it is gitignored.
