@@ -1,172 +1,134 @@
-# KuaiRand-Pure autonomous ranking agent
+# Notes on the KuaiRand-Pure run
 
-**Designated run:** `run_pure_v5` (full LLM search on Pure; not score-picked among earlier Pure dirs).  
-**Search:** train + validation only. Hidden test inferred as scores at finalize; not used to choose the model.  
-**Runtime interventions:** 0. Five build-time ledger lines exist from before this run (`deliverables/pure-v5/interventions.jsonl`).
+This is the write-up for the Pure experiment in `deliverables/pure-v5/`. Numbers below are **validation** unless said otherwise. The test CSV is scored by the official evaluator on the hidden split; we did not use test labels to pick the model.
 
-This is the long writeup if no video is attached (§2.5). Numbers below are **validation** unless labeled otherwise. Organizers compute the ranking primary on hidden from `submission.csv`.
+## Task
 
----
+KuaiRand-Pure is a feed log. Each row is one impression. The kit asks for **within-user ranking**: for each user, rank that user’s own impressions against each other. It is not full-catalog retrieval.
 
-## 1. Results (validation-best)
+- Label: `long_view` (0/1 in the native column).
+- Metrics: GAUC and nDCG@5, primary = mean of the two. Implementation is the kit `evaluate.py`; we do not edit it.
+- Split by date: train 20220408–20220421 (1,141,112 rows), valid 20220422–20220428 (124,909), test 20220429–20220508 (170,588).
+- Official FM (k=16, lr=0.001, batch=8192, patience=4): valid primary 0.6016, published test primary 0.5946.
+- Users with no positive get nDCG 0 and still count in the average. GAUC only uses users who have both positives and negatives, weighted by positive count.
 
-Official FM (starter kit): valid GAUC 0.6674 / nDCG@5 0.5357 / primary **0.6016**. Hidden FM primary **0.5946**.
+nDCG@5 cannot reach 1.0 on this split. The kit notes that about 27% of test users are all-negative, so even ranking by the true labels only gets nDCG@5 ≈ 0.73 and primary ≈ 0.86. Random is about 0.48. The FM baseline has already taken a large slice of that range. We treated 0.75-style primaries as a misreading of the metric, not as a target.
 
-Designated submit is a **same-config 3-seed rank-average** of numpy FM + `loss=bpr_global` (seeds 0/1/2: trials `012`–`014`):
+The brief also mentions NDCG@10 / Recall@50 in one place. The kit, and the rest of the problem statement, pin GAUC / nDCG@5 and `long_view`. We followed the kit.
 
-| | GAUC | nDCG@5 | primary | Δ vs FM valid |
+## What the agent actually does
+
+`python -m agent run` starts from a copy of `templates/`. Draft 0 is the official FM hyperparameters. After that the loop proposes a small change (loss, architecture, sequence length, regularization, …), trains, and scores valid.
+
+A few mechanics that matter for the numbers:
+
+1. **Trusted scoring.** Each trial writes `scores.npz`. The parent process runs kit `evaluate.py` on it. A trial that patches the evaluator is rejected.
+2. **One change at a time**, then a 3-seed ablate if the 1-seed looks interesting. We compare against the current bag (or confirmed mean), not against a single lucky seed.
+3. **Bagging.** Same config, three seeds, rank-average. That step does not train a new model; it is not billed against the 50-iteration cap.
+4. **Sequences.** If decay / last-k / last-1 are on, only **train** 0/1 updates the running state. Valid and test rows are missing labels (`-1`), not zeros. More on that below.
+5. **Stop.** ε = 0.002 over N = 3 billed steps with no real incumbent move, or 50 billed iterations, or 6 hours. This Pure run hit the cap.
+
+The LLM (DeepSeek, OpenAI-compatible) fills in hypotheses and patches. If it proposes a duplicate or an empty arm, the journal records a skip and the loop continues. There is a dummy planner if no API key is set; the submitted run used the LLM.
+
+## Submitted numbers
+
+| | GAUC | nDCG@5 | primary | vs FM valid |
 |---|---|---|---|---|
-| Official FM valid | 0.6674 | 0.5357 | 0.6016 | — |
-| **Finalize bag valid** | **0.67105** | **0.53774** | **0.60440** | **+0.00280** |
-| Kit random (test, reference) | — | — | 0.4753 | — |
-| Kit popularity (test, reference) | — | — | 0.5715 | — |
-| Oracle (true labels as scores, test, kit text) | 1.0000 | 0.7289 | 0.8645 | — |
+| Official FM | 0.6674 | 0.5357 | 0.6016 | — |
+| 3-seed rank average, `loss=bpr_global` | 0.67105 | 0.53774 | 0.60440 | +0.00280 |
 
-Search incumbent at cap was `098` (DeepFM + `seq_len=50` DIN, confirmed mean 0.60395, weak). Finalize picks among ≥2-seed bags on nested valid (min of temporal halves, then fewer extra flags). The BPR bag is the designated CSV. Finalize retrained those three seeds on train; valid drift vs search bag = 0. Format check: 170,588 rows, test alignment OK.
+Members: trials `012`, `013`, `014` (seeds 0/1/2), numpy FM, pairwise BPR. Finalize retrained those three on train and averaged ranks on test row order. Valid of the retrained bag matched the search bag to 1e-6. `submit.py --check` equivalent: 170,588 rows, aligned.
 
-`log_random_*` off-policy primary 0.367 is **not** the kit random baseline and was not used for selection.
+`log_random_*` was scored once at finalize (primary ≈ 0.367). That is an off-policy log, not the kit’s random-score baseline of 0.4753, and it was not used to choose the model.
 
----
+Search’s last incumbent was `098`: DeepFM plus `seq_len=50` DIN, confirmed mean 0.60395. Finalize looks at ≥2-seed bags and prefers a stable valid number (min of the two date halves of valid, then fewer extra flags). The BPR bag sat a little above `098` on that criterion, so that is the CSV. Both beat the official FM on valid.
 
-## 2. A withdrawn run: valid 0.64 was not progress
+Resources for this run: 50 / 50 billed iterations, 2.91 h wall-clock, 544,687 + 318,086 tokens, 0 GPU-hours (a GPU was present; the submitted path is numpy). No runtime intervention. Five older build-time notes sit in `interventions.jsonl` (scripts and one template bug); they were not mid-run direction changes.
 
-We keep an earlier full Pure search (`run_pure_v4`) in the lab tree so the mistake is auditable. **It is not the designated submission.** We report it because a high validation number without a protocol check is exactly how this metric lies.
+## Features and labels
 
-| Checkpoint | Valid GAUC | Valid nDCG@5 | Valid primary | Notes |
-|---|---|---|---|---|
-| Official FM | 0.6674 | 0.5357 | 0.6016 | kit |
-| v4 search bag (`143_ensemble`) | — | — | **0.63931** | time-decay stack + same-leak siblings |
-| **v4 finalize blend** (6 members) | **0.71748** | **0.56202** | **0.63975** | complementary blend on valid |
-| v5 designated bag (this submission) | 0.67105 | 0.53774 | **0.60440** | freeze-eval, train-only sequential state |
+GAUC and nDCG@5 are computed on **the whole split at once**. For one user, every valid impression (seven days) is a single list. Same for test (ten days).
 
-v4 looked like +0.038 vs FM on valid. After that run we scored **that CSV once** as a diagnostic (not during search, not to pick among v4 trials): primary **0.56790** (GAUC 0.62231, nDCG@5 0.51350) — **below** official FM hidden 0.5946. Valid and “test” moved in **opposite** directions. That is overfitting / leakage, not a better ranker.
+That makes recency features easy to get wrong. If Wednesday’s decay or last-1 includes Tuesday’s `long_view`, and Tuesday and Wednesday are both in valid, the metric is ranking a list that already contains part of its own labels. In an online server that might be fair (yesterday’s feedback exists). For this offline split it is not.
 
-### What was wrong
+We also used to store unseen test labels as 0. Zero is a real negative in this log. Putting it into decay `tot` makes test look like a streak of non-views, while valid keeps using real labels. Valid goes up; the test file does not.
 
-Kit GAUC / nDCG@5 rank **all** of a user’s impressions in the split as **one list** (valid = 7 days, test = 10 days). v4 sequential features violated that in three ways:
+The current code therefore:
 
-1. **Rolling valid labels.** Time-decay / last-k / last-1 updated from valid `long_view`. Wednesday’s feature contained Tuesday’s label, and both rows sat in the same GAUC/nDCG list.
-2. **Test treated as 0.** Missing test labels were stored as negatives, so decay `tot` filled with fake zeros. Valid stayed “hot”; test features were poisoned. That is why valid rose and the diagnostic CSV collapsed.
-3. **Selection on the same leak.** Screen compared to a member mean while CI was vs the bag; finalize blended **same-leak** siblings on raw valid. The 0.63975 number maximized the leak, not generalization.
+- keeps test `long_view` behind a finalize token, and even then stores **missing** (`-1`), not 0
+- refuses `eval_split=test` during search
+- updates decay and last-k only when `observed_label` is 0 or 1, which on this pipeline is train
 
-`log_random` on v4 (0.389) was already a warning and was not used as a stop rule then either.
+## An earlier run that looked better on valid
 
-### How we fixed it (before the designated run)
+Before that change we ran a full Pure search (`run_pure_v4`) with rolling valid labels and test-as-zero. Search bag primary was 0.63931. Finalize blended six members and got valid **0.63975** (GAUC 0.71748, nDCG@5 0.56202).
 
-Harness change, then a **new** Pure search (`run_pure_v5`). Humans did not name the next trial.
+We then scored that CSV once, after the run, not as part of search. Primary came back **0.56790** (GAUC 0.62231, nDCG@5 0.51350), under the official FM test number 0.5946. Valid and test moved in opposite directions.
 
-| Fix | Code | Effect |
-|---|---|---|
-| Eval labels are missing, not 0 | `LABEL_MISSING = -1`; `observed_label()` | test/valid do not enter decay as fake negatives |
-| Only **train** 0/1 updates decay and momentum | `templates/timedecay.py` | valid/test features are calendar decay of the train-end state |
-| Search cannot score test | `_guard_search`; test `long_view` requires a finalize token and still returns missing | no hidden in EDA/train/metrics |
-| Screen vs the **bag/submit** bar; require CI_lo > 0, both temporal halves, nDCG not down | `agent/eval/promote.py` | stops promoting a 1-seed that only beats member mean |
-| Core 3-seed skipped if CI_hi < 0 | `pending_core_confirm` | do not spend seeds on a corpse |
-| Next trial from the confirmed identity | `apply_confirmed_identity` | flags do not stick from failed parents |
-| Finalize: robust = min(front, back); skip blend if leak flags overlap | `agent/finalize.py` | no max-valid blend of the same leak family |
+Three things stacked:
 
-After the freeze, the same post-hoc CSV check on **v5** is 0.59766 vs FM 0.5946 (no longer a collapse). That check is **not** how we chose the model; organizers still score hidden once from `submission.csv`. The public claim is the valid table in §1.
+1. Decay / last-k read valid `long_view`, so later days in the valid list saw earlier valid outcomes.
+2. Test zeros poisoned decay on test.
+3. Selection mixed a 1-seed mean with a bag CI, then blended siblings that all used the same leaky flags, so valid was maximized twice.
 
----
+`log_random` on that run was already weak (≈ 0.39). We had not used it as a stop rule.
 
-## 3. The metric is not on [0, 1]
+After the label handling above, plus screening against the bag (CI lower bound, both valid halves, nDCG not down), skipping a 3-seed if the 1-seed CI is entirely negative, resetting the next trial from the confirmed identity, and refusing blends that share those leaky flags, we ran again. That is the submitted run. Valid is 0.60440, not 0.64. We are more comfortable with that.
 
-On hidden test the kit states: 27.1% of users are all-negative (nDCG ≡ 0); 9.2% all-positive. Oracle primary is **0.8645**, not 1.0. FM already captured about 31% of (oracle − random). Remaining headroom is about 0.27, not 0.41. A claim of 0.75+ on this primary would ignore the nDCG ceiling (0.7289).
+(The same after-the-fact CSV check on the new file is 0.59766 vs FM 0.5946. It is not how the model was chosen.)
 
----
+## Walk-through of the submitted run
 
-## 4. What the designated run actually tried (including misses)
+Logs: `deliverables/pure-v5/progress.log` and `journal.jsonl`. Times below are from the progress file.
 
-Draft 0 reproduced official FM hyperparameters (`k=16`, `lr=0.001`, `batch=8192`, `patience=4`, logloss) at seed 0: valid primary **0.60147** (3-seed mean **0.60144**). That is the kit baseline, not a team-built stand-in.
+**Reproduce FM.** Draft `000` used the kit hyperparameters. Seed 0 valid primary 0.60147; three seeds averaged 0.60144. Close enough to 0.6016 given seed noise (kit FM std on test is 0.0008).
 
-The next two drafts were atomic (patches from `journal.jsonl`, not from the hypothesis prose — `008` talked about BPR in text but applied GBM):
+**DeepFM.** Draft `007` set `arch=deepfm` (0.60383). A 3-seed ablate confirmed it (mean 0.60386). That became the incumbent.
 
-| Node | Patch | Valid primary | What happened |
-|---|---|---|---|
-| `007_draft` | `arch=deepfm` | 0.60383 | Screened; 3-seed confirmed mean **0.60386** |
-| `008_draft` | `model_family=gbm` | 0.57712 | Failed the bag screen. **Not** the designated CSV. |
-| `012`–`014` (ablate child of DeepFM) | `loss=bpr_global`, seeds 0/1/2 | 0.60362 / 0.60356 / 0.60300 | 1-seeds did not overturn DeepFM; **rank-average `017_ensemble` = 0.60440** is the designated submit |
+**GBM draft.** Draft `008` applied `model_family=gbm` and scored 0.577. The written hypothesis talked about BPR; the actual patch was GBM. We treat the patch in the journal as ground truth. GBM on this encoding did not beat the FM bag, and it is not in the CSV. LightGBM remains available as a family; this one trial does not close the family forever.
 
-Confirmed on this run:
+**Pairwise BPR under DeepFM.** The same ablate that confirmed DeepFM also trained `loss=bpr_global` at three seeds (`012`–`014`: 0.60362 / 0.60356 / 0.60300). None of those 1-seeds replaced DeepFM as incumbent. Rank-averaging them (`017`) gave **0.60440**. That bag is what we submitted. A later 1-seed BPR on the DeepFM parent (`032`) was 0.60362, again inside noise.
 
-1. FM baseline  
-2. `arch=deepfm` (mean 0.60386)  
-3. `seq_len=50`, `seq_mode=din` on that parent (mean 0.60395, `|Δ|` inside ε — **weak** confirm)
+**DCNv2.** `020` / `021`–`023` sat around 0.603, a little under DeepFM. Not promoted.
 
-Stack coverage (billed / skip / scored): draft 3/0/3, sequence 16/4/11, architecture 6/3/2, ablate 14/0/0, regularization 3/0/3, capacity 3/0/3, loss 2/0/2, features 3/3/0. Ensemble fusion is not billed (20 scored ensemble nodes).
+**Sequence.** Quite a lot of the budget went here (16 billed improves, several 3-seeds). Lengths 10 / 20 / 50 / 100, pool and DIN. Most 1-seeds were within ±0.001 of the incumbent. `seq_len=50`, DIN (`097` then `098`) confirmed at mean 0.60395, a very small move, and became the search incumbent until the end. Shorter DIN on that parent later lost (`138`, 0.60257). Seq 100 pool was not better. We left sequence on in search; finalize still preferred the BPR bag, which does not need the extra sequence flags.
 
-**Misses that stayed misses (not hidden):** DCNv2, most sequence lengths/modes, `k=8`, stronger L2, extra feature flags. Journal skip reasons on this run: 8× duplicate fingerprint, 1× cross-run `CI_hi<0` graveyard (time-decay stack from v4), 1× no legal `config_patch` left on `sequence`. Graveyard is intentional: we do not treat a leaky stack as “untried juice.”
+**Capacity and L2.** `k=8` and larger L2 (`1e-5`, `5e-6`, `1e-4`) were slightly worse. Kit advice that extra embedding size is not the lever held up here.
 
-Finalize then picked the 3-seed `bpr_global` bag (`012`–`014`) on nested valid, not search incumbent `098`. Both beat FM valid; the bag is the CSV.
+**Skips.** Ten billed skips: duplicates of sequence fingerprints, one cross-run graveyard hit (time-decay flags from the earlier leaky run), and one “no legal patch left” on sequence near the cap. The loop did not wedge on those.
 
----
+Stop: `cap`, 50/50, incumbent `098` mean 0.60395, wall 2.91 h.
 
-## 5. Robustness — official bar, what we have, what v5 actually did
+## Failures other than the leaky run
 
-Official (§2.6): *not* judged by whether the agent ever fails, but by whether a failed step is recovered, retried, or routed around so the run does not crash, stall, or diverge before the budget.
+On this run, nothing crashed (0 buggy, 0 Debug, 0 timeouts). That is not the same as “recovery was tested in production.” What we did see:
 
-We **do not claim a guarantee**. A live 50-iter Pure run can still hit an unhandled exception in a new template. What we *do* have is a closed loop around the failure modes this harness actually sees, plus injected-fault tests. v5 itself was a **clean** search: 0 buggy nodes, 0 Debug, 0 timeouts. That is luck plus gates, not proof that Debug was exercised on this run. The live evidence of “route around” on v5 is **10 skip nodes** (duplicates / graveyard / empty arm) so the planner did not restuck.
+- Duplicate proposals skipped instead of retrained.
+- A leaky fingerprint from the previous run skipped instead of restacked.
+- A 1-seed that looked bad (GBM 0.577, BPR 0.577 is not this — BPR 1-seeds were ~0.603) did not take over the incumbent; the BPR **bag** still could.
 
-### How a step is supposed to fail without killing the run
+The harness also has, and unit-tests, a few other exits: timeout can recover the best epoch from `curves.csv`; a trial `SystemExit` is a crash node and the policy’s next step is Debug (capped at 3), not a blank restart; `evaluate.py` cannot be patched; test `long_view` without a token raises; journal and wall-clock survive a process kill. `python scripts/fault_matrix.py` runs those injects. They are small tests. They do not stand in for a six-hour job.
 
-| Failure | What the harness does |
-|---|---|
-| Trial `SystemExit` / nonzero | `TrialRuntime` → `status=crash`; node `is_buggy`; policy **Debug** (cap 3), not a new draft from zero |
-| Wall timeout | kill process tree; if `curves.csv` / log has a best epoch, mark **partial** (not buggy) and keep the number |
-| Duplicate patch | `find_duplicate` → journal **skip**, billed, no train |
-| Leak / `CI_hi<0` fingerprint | graveyard skip (v5: one) |
-| Illegal `evaluate.py` edit | `PermissionError` before the trial starts |
-| Hidden `long_view` in search | `TestLabelError`; no token, no labels |
-| LLM cheap-act / bad JSON | `fallback_improve` to a legal untried patch, or skip |
-| Process killed mid-run | `journal.jsonl` + `wall.json`; restart does not reset ε/N or billed count |
-| Repeat exception signature | `error_memory` feeds Debug a prior recovery hint |
+The earlier 0.64 valid run did not crash. It drifted on the metric. Handling missing labels is part of keeping the loop from that kind of drift.
 
-Debug depth is capped (`MAX_DEBUGS=3`). Timeout Debug nodes do not fill that quota, so a slow 1K train cannot burn the crash budget.
-
-### Injected faults (not a contest run)
-
-`python scripts/fault_matrix.py` (also `tests.test_fault_matrix`). Ten injects, all caught in CI:
-
-| Inject | Expected recovery | Result |
-|---|---|---|
-| Timeout / missing live `metrics.json` | `recover_metrics` from `curves.csv` | ok |
-| `nonzero_exit` crash leaf | policy chooses **debug**, not redraft | ok |
-| Live child `sleep` | `kill_proc_tree` reaps it | ok |
-| Already-tried `use_hour` patch | `find_duplicate` | ok |
-| Journal file survives “kill” | reload `billed_count` unchanged | ok |
-| Patch kit `evaluate.py` | `PermissionError` | ok |
-| Read test `long_view` without token | `TestLabelError` | ok |
-| Repeat shape `ValueError` | error_memory returns prior hint | ok |
-| Restart writes `wall=0.00h` STOP | `load_prior_wall` keeps 0.90 h | ok |
-| Trial `pipeline.py` `SystemExit(1)` | `ExecResult.status=crash`; loop would continue | ok |
-
-These are smoke-scale. They do **not** replace a 6 h GPU run. They do show the loop has an answer other than “die or wait for a human.”
-
-v4 overfitting is a different class: the process **did not crash**; it **diverged on the metric**. That is why freeze-eval is also robustness — divergence is in the official sentence next to crash and stall.
-
----
-
-## 6. Autonomy and resources
+## Compute and autonomy
 
 | | |
 |---|---|
+| Billed iterations | 50 / 50 |
+| Wall-clock | 2.91 h |
+| Tokens in / out | 544,687 / 318,086 |
+| GPU-hours | 0 |
 | Runtime interventions | 0 |
-| Build-time ledger (before this run) | 5 lines in `interventions.jsonl` |
-| Stop | 50-iteration cap |
-| Wall-clock | 2.91 h process time |
-| Tokens | 862,773 |
-| GPU-hours | 0.0 |
-| Integrity | source hash unchanged start → end |
 
----
+Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent, not six times. That is our counting; it is visible in `journal.py`. We would rather state it than imply 50 isolated FM trains.
 
-## 7. Limitations
+## Limits
 
-- Debug was **not** fired on the designated v5 run (0 crashes). Recovery is shown in `fault_matrix` and by 10 live skips. That is weaker than a live Debug-and-continue story, and we say so.
-- Billed-iteration accounting excludes ensemble fusion and ablate seed children. We would rather under-claim “50 trains” than hide it.
-- Weak 3/3 concordance can confirm a `|Δ| < ε` core (098). Parsimony at finalize is the backstop.
-- 1K/27K bonus not in this designated package. 1K uses a different ID space.
-- We would still add GBM-native continuous features as a **discoverable** family **under freeze-eval**, not by copying a rolling-label pipeline that prints 0.66 valid.
-- v4’s 0.63975 valid is a real number from our own harness. Publishing it **without** the 0.56790 diagnostic would have been the worse error.
+- Debug never ran on this Pure job. Recovery in the log is skips, not a patched crash.
+- Weak 3/3 agreement can still confirm a tiny delta (`098`). Finalize’s bag rule is the main backstop.
+- KuaiRand-1K / 27K are optional and use different id spaces. They are not in this CSV.
+- A tree model on a properly continuous encoding is still untested under the current label rules. We would let the loop try it, not paste a finished config.
+- We did not make a short video. The run trace is `progress.log`.
 
-Artifacts: `deliverables/pure-v5/` (designated). v4 remains local lab history, not the GitHub CSV.
+Files: `deliverables/pure-v5/`.
