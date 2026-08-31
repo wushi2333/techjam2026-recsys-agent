@@ -10,7 +10,7 @@ KuaiRand-1K is bonus and optional; do not wait for it to file Pure.
 - [ ] Tools / APIs / libraries / datasets already listed
 - [ ] Link the public GitHub
 - [ ] Attach or link `deliverables/pure-v5/submission.csv` if Devpost allows files
-- [ ] ~3 min walkthrough for Devpost (**do this last**; slides in `docs/talk/`; then link the video from README)
+- [ ] ~3 min walkthrough for Devpost (**do this last**; then link it from README)
 - [x] Extra result tables / 1K CSV / run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log)
 
 ## 2. Public GitHub
@@ -21,7 +21,7 @@ Allowlist (do **not** upload the working tree):
 agent/ templates/ tests/ config/ benchmarks/ scripts/
 README.md requirements.txt pytest.ini conftest.py .env.example .gitignore
 docs/DEVPOST.md docs/report.md docs/autodl.md docs/checklist.md
-docs/talk/ docs/figures/
+docs/figures/
 deliverables/
 ```
 
