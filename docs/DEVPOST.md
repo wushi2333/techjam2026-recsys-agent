@@ -37,7 +37,15 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 ## Limits
 
-Debug never fired on the submitted Pure job — recovery is covered by `scripts/fault_matrix.py`. Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. 1K is a finished bonus; 27K was not attempted. No short video; the Pure trace is `progress.log`.
+Debug never fired on the submitted Pure job — recovery is covered by `scripts/fault_matrix.py`. Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. 1K is a finished bonus; 27K was not attempted.
+
+## Walkthrough (last)
+
+A ~3 minute video will be uploaded to this Devpost **last** and linked from the GitHub README. Until then the Pure trace is `progress.log`.
+
+## Extra tables and data
+
+Extra result tables, the 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). This GitHub repo keeps the code, the write-up, and the Pure contest CSV.
 
 ## Team
 

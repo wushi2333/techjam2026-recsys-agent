@@ -20,6 +20,6 @@ Search bag valid was 0.65045; retrain drifted **-0.00044**. Alignment check: **4
 
 `report.json` still prints `delta_vs_baseline` against Pure’s FM (0.6016). Use **+0.00798** vs the 1K FM above.
 
-The full dump including `submission.csv` (~117 MB) lives locally in `deliverables/1k-aug31/` and is gitignored. This folder is the public snapshot: journal, progress, metrics, no CSV.
+This folder is the public snapshot: journal, progress, metrics. Extra tables and the 4.1M-row CSV: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) (`1k/`).
 
 Pure contest files: [`../pure-v5/`](../pure-v5/).

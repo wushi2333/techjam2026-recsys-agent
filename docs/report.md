@@ -69,7 +69,7 @@ Resources for this run: 50 / 50 billed iterations, 2.91 h wall-clock, 544,687 + 
 
 ## Bonus: KuaiRand-1K
 
-Optional, and **not** in the submitted CSV. 1K re-indexes user and item ids, so its primary is not comparable with Pure. Snapshot (no CSV): `deliverables/1k/`. The 4.1M-row file sits locally in `deliverables/1k-aug31/` and is gitignored. 27K was not attempted.
+Optional, and **not** in the Pure contest CSV. 1K re-indexes user and item ids, so its primary is not comparable with Pure. Metrics and logs: `deliverables/1k/`. Extra tables, the 4.1M-row 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). 27K was not attempted.
 
 | | GAUC | nDCG@5 | primary | vs 1K FM |
 |---|---|---|---|---|
@@ -168,7 +168,8 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 - Weak 3/3 agreement can still confirm a tiny delta (`098`). Finalize’s bag rule is the main backstop.
 - KuaiRand-1K / 27K are optional and use different id spaces. 1K finished as a bonus (`deliverables/1k/`); 27K was not attempted. Neither is in the Pure CSV.
 - A tree model on a properly continuous encoding is still untested under the current label rules. We would let the loop try it, not paste a finished config.
-- We did not make a short video. The run trace is `progress.log`.
+
+The ~3 minute Devpost walkthrough comes **last** and will be linked from the README when it is up. Until then the Pure trace is `progress.log`. Extra tables, the 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log).
 
 | File | What it is |
 |---|---|
@@ -176,4 +177,5 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 | `deliverables/pure-v5/progress.log` | Readable Pure trace |
 | `deliverables/pure-v5/journal.jsonl` | Per-trial hypothesis and metrics |
 | `deliverables/pure-v5/results.json` | Valid table |
-| `deliverables/1k/` | Bonus 1K snapshot (no CSV) |
+| `deliverables/1k/` | Bonus 1K snapshot (metrics and logs) |
+| [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) | Extra tables, 1K CSV, v4 leak evidence |

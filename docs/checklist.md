@@ -10,7 +10,8 @@ KuaiRand-1K is bonus and optional; do not wait for it to file Pure.
 - [ ] Tools / APIs / libraries / datasets already listed
 - [ ] Link the public GitHub
 - [ ] Attach or link `deliverables/pure-v5/submission.csv` if Devpost allows files
-- [ ] Optional ~3 min video (recommended, not required). If skipped, the long report is `docs/report.md`
+- [ ] ~3 min walkthrough for Devpost (**do this last**; then link it from README)
+- [x] Extra result tables / 1K CSV / run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log)
 
 ## 2. Public GitHub
 
@@ -65,7 +66,9 @@ Do **not** put a self-scored hidden primary in the public table. Organizers scor
 
 - [ ] Public repo URL on Devpost
 - [ ] CSV uploaded wherever the form asks for model output
-- [ ] 1K still running: mention “bonus in progress / optional” only; Pure is complete
+- [ ] 1K is a finished bonus (optional, different id space); do not treat it as the Pure CSV
+- [ ] ~3 min video last
+- [x] Extra tables / 1K CSV: https://github.com/wushi2333/techjam2026-recsys-agent_data-log
 - [ ] Rotate the AutoDL password (it was used in chat)
 
 ## Robustness smoke (optional, for the report table)
@@ -77,8 +80,11 @@ python scripts/fault_matrix.py
 
 Ten injected faults; all must print `"ok": true`. Not a contest iteration.
 
-## Watch 1K (does not block Pure)
+## 1K bonus (does not replace Pure)
+
+Search + finalize already finished (`run_1k_aug31`). Public snapshot: `deliverables/1k/`. The 1K CSV and extra tables: https://github.com/wushi2333/techjam2026-recsys-agent_data-log
 
 ```bash
+# logs only, if the instance is still up
 tail -f /root/autodl-tmp/recsys-agent/run_1k_aug31/progress.log
 ```
