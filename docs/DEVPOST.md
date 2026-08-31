@@ -15,7 +15,9 @@ Submitted Pure: 50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0
 
 Bonus KuaiRand-1K (different id space, not in that CSV): official FM 0.64203 → **0.65001** (+0.00798). Stopped on the 6 h wall at 31/50. Snapshot: `deliverables/1k/`.
 
-We first shipped a leaky Pure search that looked much stronger on valid: recency features could see valid `long_view`, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 when we scored it on test — worse than the official FM. The numbers in the table are **submitted Pure**, where decay / last-k only update from train 0/1 and test stays missing.
+**A distribution-shift case (why the guards exist).** The first full search stacked recency with valid labels flowing in, and stored missing test labels as 0. Finalize bag **valid 0.63975**; the same CSV scored **test 0.56790**, below the official FM. Valid and test moved in opposite directions by 0.07. Kit ranking uses a user’s whole split as one list, so rolling `long_view` into decay is group leakage; zero is a real negative, so test-as-0 poisons test decay. Submitted Pure stores unseen labels as missing (`-1`), updates recency from train only, and never scores test during search.
+
+EDA on that split (`pair_cover = 0.016`, 43.5 vs 5.6 impressions / user) is why the surviving lever is pairwise BPR plus a 3-seed rank-average bag, not a deeper ID tower. Sequence then used 16 billed steps inside 1-seed noise; stop was the **iteration cap**, not ε. `log_random_*` at finalize (primary 0.367) is an off-policy check, not a candidate gate. Source-tree `src_hash` in `summary.json` is unchanged for the run (`05111ef2e81327ca`). Runtime interventions: 0; five build-time notes stay in `interventions.jsonl`.
 
 ## Tools
 
@@ -31,7 +33,7 @@ NumPy for the submitted FM / BPR path. LightGBM and PyTorch are optional backend
 
 ## Data
 
-KuaiRand-Pure only for the primary score. No extra training data. `log_random_*` is checked once at finalize and is not used to pick the model.
+KuaiRand-Pure only for the primary score. No extra training data. `log_random_*` is checked once at finalize (off-policy diagnostic) and is not used to pick the model.
 
 ## Logs
 
@@ -39,7 +41,7 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 ## Limits
 
-Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. Bonus 1K is finished; 27K was not attempted. There is no CPU/GPU-efficiency signal in the search; under the 6 h cap, 1K trials easily hit the 1-hour timeout. A later loop could let the agent set workers, batch, and timeout from the live config.
+Stop was the iteration cap (50/50), not ε. After the BPR bag, sequence length and DCNv2 did not clear the bag; 16 billed sequence steps stayed in 1-seed noise. LightGBM is wired; the one Pure trial (0.577) used the ID-only encoding, not a family verdict. Bonus 1K is finished; 27K was not attempted. There is no CPU/GPU-efficiency signal in the search; under the 6 h cap, 1K trials easily hit the 1-hour timeout. A later loop could let the agent set workers, batch, and timeout from the live config.
 
 ## Walkthrough (last)
 

@@ -17,7 +17,7 @@ KuaiRand-Pure — label `long_view`, primary = mean(GAUC, nDCG@5). Kit `evaluate
 
 The after-the-fact test number was **not** used to pick the model. CSV: [`deliverables/pure-v5/submission.csv`](deliverables/pure-v5/submission.csv) (170,588 rows). Write-up: [`docs/report.md`](docs/report.md).
 
-We first shipped a leaky Pure search that looked much stronger on valid: recency features could see valid labels, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 on test — worse than the official FM. The table above is **submitted Pure**, with decay / last-k updating from train only.
+**A distribution-shift case (and why the guards exist).** The first full search (`run_pure_v4`) stacked recency features with valid labels flowing in, and stored missing test labels as 0. Finalize bag **valid 0.63975** — then the same CSV scored **test 0.56790**, below the official FM (0.5946). Valid and test moved in opposite directions by **0.07**, the largest single signal in this project. Two mechanics: (1) kit ranking uses a user’s whole split as one list, so rolling `long_view` into decay / last-k is group leakage; (2) zero is a real negative here, so test-as-0 poisons decay on test while valid still sees real labels. Reflection changed the pipeline before we searched again: unseen labels are **missing (`-1`)**, not 0; only **train** 0/1 updates recency; search cannot `eval_split=test`. The table above is that second search (**submitted Pure**).
 
 | | Submitted Pure | Bonus 1K |
 |---|---|---|
@@ -53,6 +53,38 @@ If decay / last-k are on, only **train** 0/1 updates them. Valid and test rows a
 
 `python scripts/fault_matrix.py` injects those exits. They are small tests, not a six-hour outage.
 
+## What the agent learned
+
+Numbers from `deliverables/pure-v5/eda.json` and `run_facts.md` (harness-written, not a human agenda).
+
+KuaiRand-Pure is **within-user ranking of a date split**, not pair retrieval.
+
+- **`pair_cover = 0.016`.** Only 1.6% of valid `(user, video)` pairs also appear in train. The pair is almost always new, so memorizing user×item in train does not score valid.
+- **43.5 vs 5.6 impressions / user** (train mean vs valid mean; valid p50 = 4; **17.5%** of valid users have a single impression). GAUC averages users (weighted by positives); nDCG averages users, including all-negative and single-impression lists. Pointwise logloss is row-equal, so long train histories dominate the gradient.
+- **`pos_drift = 0.0059`** at the train-tail / valid-head boundary — a small rate shift. The **0.07** reverse move on leaky Pure is not this; that was labels in the features.
+
+That is why the lever that survived selection was **pairwise BPR + a 3-seed rank-average bag**, not a deeper ID tower: BPR trains on within-user order; the bag is a list, which is the metric’s unit; seed noise on this FM is ~0.0008.
+
+What search then measured (the patch in the journal is ground truth, not the written hypothesis):
+
+| Measurement | What it showed |
+|---|---|
+| Leaky recency (v4) | valid 0.63975 → test 0.56790. Changed label handling; then submitted Pure. |
+| GBM draft `008` | 0.577, CI entirely negative, on the **ID-only** encoding. Encoding bottleneck for that trial, not a ban on trees. |
+| Sequence, 16 billed improves | After the BPR bag already existed. Lengths 10/20/50/100, pool and DIN. Most 1-seeds within ±0.001. `seq_len=50` DIN confirmed at 0.60395 and became the **search** incumbent; finalize still shipped the earlier BPR bag on the stability rule. Stop reason is **`cap`**, not ε. |
+| `aux_click` / CWM | Build-time 3-seed script `scripts/ablate_aux.py` (in `interventions.jsonl`). Not a search veto. `long_view` is the per-impression label, so a click-gated multi-task prior is weak here. Finalize scored `log_random_*` once (primary 0.367) as an off-policy **check**, not a candidate gate. |
+
+## Auditability
+
+This is a **source-tree fingerprint** that did not move while the run trained, plus parent-owned scoring — not a per-event hash chain of the journal.
+
+- **`src_hash` unchanged.** Submitted Pure `summary.json` → `integrity`: `05111ef2e81327ca` at start and end, `unchanged=true` (104 hashed files under `agent/`, `templates/`, `benchmarks/`). The 1K AutoDL archive has `CODE_PIN.json` for the same idea (no git on that instance).
+- **Parent owns the score.** Kit `evaluate.py` on `scores.npz`. A trial that patches the scorer is rejected.
+- **Search cannot see test labels.** Hidden `long_view` needs a finalize token.
+- **Journal.** Hypothesis, patch, metrics, skips, `stop_reason=cap` in `journal.jsonl` / `progress.log`.
+- **Tests.** 55 modules under `tests/`. `python scripts/fault_matrix.py` injects timeout / `SystemExit` / scorer-patch / missing-token paths.
+- **Interventions file stays.** Runtime **0**. Five **build-time** notes in `interventions.jsonl` (human ablate scripts and one template bug). They are not mid-search direction changes.
+
 ## Architecture
 
 ### Search loop
@@ -71,13 +103,13 @@ Full-page: [architecture.html](docs/figures/architecture.html) · [flowchart.htm
 
 ## Innovation
 
-What the architecture is for, against a loop that just “try more models”:
+Against a loop that just “try more models” — what was worth trying, and what the measurements closed:
 
-- **Parent owns the score.** Each trial is a copy of `templates/` plus `trial_config.json`. The parent always re-runs kit `evaluate.py` on `scores.npz`. A trial that patches the scorer is rejected.
-- **One legal change, then a bag.** A 1-seed that looks real gets a 3-seed ablate. Promotion is against the current bag, not a lucky seed: paired interval, both date-halves of valid, nDCG not down.
-- **Memory is the state.** Journal, fingerprints, and the confirmed identity persist. Duplicates are skipped; leaky fingerprints from Leaky Pure are not restacked.
-- **Finalize is a separate emit.** Search never reads test `long_view`. `finalize` retrains the chosen bag on train and writes the CSV. It prefers a stable valid number (min of the two date halves, fewer extra flags), not max(valid).
-- **The leak is a product of the split.** Kit ranking uses the whole valid/test list at once, so rolling `long_view` into decay is group leakage. Unseen labels are `-1`, not 0; only train 0/1 updates recency.
+- **The leak changed the search.** Valid 0.63975 vs test 0.56790 is why missing labels are `-1`, recency is train-only, and leaky fingerprints are not restacked. That is a reflection step, not a footnote.
+- **EDA named the lever.** `pair_cover = 0.016` and 43.5 vs 5.6 impressions / user: pair lookup is empty on valid, and row-equal logloss disagrees with user-averaged GAUC / nDCG. BPR + rank-average is the metric’s geometry, not a random loss swap.
+- **One legal change, then a bag.** A 1-seed that looks real gets a 3-seed ablate. Promotion uses a paired interval, both date-halves of valid, and “nDCG not down,” against the current bag — not a lucky seed.
+- **Finalize is a separate emit.** Search never reads test `long_view`. `finalize` retrains the chosen bag on train and prefers a stable valid number (min of the two date halves, fewer extra flags), not max(valid). The BPR bag beat the search incumbent (`098`, seq-50 DIN, 0.60395) on that rule.
+- **Negative results stay scoped.** GBM 0.577 is ID-only encoding, not a family ban. Sequence’s 16 billed steps stayed in 1-seed noise; they did not “unlock loss” — BPR was already in the bag. `aux_click` / CWM and `log_random_*` are measured diagnostics, not veto gates.
 
 ## Robustness
 
@@ -87,7 +119,7 @@ Mapped to Technical Execution / Feasibility, not a second results table:
 - Screen vs the bag; skip a 3-seed if the 1-seed CI is entirely negative; skip CI_hi < 0 cores in the graveyard.
 - Timeout can recover the best epoch from `curves.csv`. `SystemExit` becomes Debug (cap 3), not a blank restart.
 - `python scripts/fault_matrix.py` injects those exits. They are small tests, not a six-hour outage.
-- Submitted Pure and Bonus 1K: **0** runtime interventions. Leaky Pure (valid 0.640 / test 0.568) is why the gates exist: valid and test can move in opposite directions.
+- Submitted Pure and Bonus 1K: **0** runtime interventions. Five build-time notes remain in `interventions.jsonl`. Leaky Pure (valid 0.63975 / test 0.56790) is why the gates exist: valid and test can move in opposite directions.
 
 ## Setup
 
@@ -127,7 +159,9 @@ Optional 1K: `python -m agent run --llm --data-scale 1k --run-dir run_1k`.
 | [`deliverables/pure-v5/submission.csv`](deliverables/pure-v5/submission.csv) | Contest CSV |
 | [`deliverables/pure-v5/progress.log`](deliverables/pure-v5/progress.log) | Readable Pure trace |
 | [`deliverables/pure-v5/journal.jsonl`](deliverables/pure-v5/journal.jsonl) | Per-trial hypothesis and metrics |
-| [`deliverables/pure-v5/results.json`](deliverables/pure-v5/results.json) | Valid table |
+| [`deliverables/pure-v5/results.json`](deliverables/pure-v5/results.json) | Valid table plus hidden diagnostic and `log_random_offpolicy` |
+| [`deliverables/pure-v5/run_facts.md`](deliverables/pure-v5/run_facts.md) | Harness EDA, screens, stop=`cap` |
+| [`deliverables/pure-v5/summary.json`](deliverables/pure-v5/summary.json) | Tokens, coverage, `integrity.src_hash` |
 | [`docs/report.md`](docs/report.md) | Longer write-up, including the leaky 0.64 run |
 | [`docs/DEVPOST.md`](docs/DEVPOST.md) | Short project description |
 | [`deliverables/1k/`](deliverables/1k/) | Bonus 1K snapshot (metrics and logs) |
@@ -146,9 +180,10 @@ tests/
 
 ## Limitations
 
+- **Stop was the iteration cap, not ε.** Submitted Pure is `stop_reason=cap` (50/50). After the BPR bag, 16 billed sequence steps stayed inside 1-seed noise (±0.001). The loop did not treat that as “this direction is done.” A later run should stop spending the rest of the cap there — fire ε on no incumbent move, or mark a local sequence grid exhausted once 1-seeds sit in noise.
 - A weak 3/3 can still confirm a tiny delta (`098`, DeepFM + DIN-50, mean 0.60395). Finalize’s bag rule is the main backstop.
-- LightGBM is wired; the one Pure trial (0.577) used the ID-only encoding. That is a feature problem, not a family verdict.
-- Sequence length and DCNv2 did not clear the Pure bag.
+- LightGBM is wired; the one Pure trial (0.577) used the ID-only encoding. That is a feature-encoding problem for that trial, not a family verdict. The `gbm-native` skill still says retry on un-bucketed columns.
+- DCNv2 did not clear the Pure bag. `aux_click` / CWM were not search vetoes.
 - 27K was not attempted.
 - There is no mechanism that uses CPU/GPU efficiency as a search signal. Under the 6 h cap, Bonus 1K trials easily hit the 1-hour timeout floor, so wall time went into a few long trains instead of more billed steps. A later loop could let the agent set workers, batch, and timeout from the live config and cut train time.
 
