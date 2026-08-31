@@ -37,7 +37,7 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 ## Limits
 
-Debug never fired on submitted Pure — recovery is covered by `scripts/fault_matrix.py`. Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. Bonus 1K is finished; 27K was not attempted.
+Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. Bonus 1K is finished; 27K was not attempted. There is no CPU/GPU-efficiency signal in the search; under the 6 h cap, 1K trials easily hit the 1-hour timeout. A later loop could let the agent set workers, batch, and timeout from the live config.
 
 ## Walkthrough (last)
 

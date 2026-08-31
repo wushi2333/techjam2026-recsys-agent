@@ -166,10 +166,10 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 
 ## Limits
 
-- Debug never ran on submitted Pure. Recovery in the log is skips, not a patched crash.
 - Weak 3/3 agreement can still confirm a tiny delta (`098`). Finalize’s bag rule is the main backstop.
 - KuaiRand-1K / 27K are optional and use different id spaces. 1K finished as a bonus (`deliverables/1k/`); 27K was not attempted. Neither is in the Pure CSV.
 - A tree model on a properly continuous encoding is still untested under the current label rules. We would let the loop try it, not paste a finished config.
+- There is no mechanism that uses CPU/GPU efficiency as a search signal. Under the 6 h cap, Bonus 1K trials easily hit the 1-hour timeout floor, so wall time went into a few long trains instead of more billed steps. A later loop could let the agent set workers, batch, and timeout from the live config and cut train time.
 
 The ~3 minute Devpost walkthrough comes **last** and will be linked from the README when it is up. Until then the Pure trace is `progress.log`. Extra tables, the 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log).
 

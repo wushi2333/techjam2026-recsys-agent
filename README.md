@@ -1,5 +1,7 @@
 # recsys-agent
 
+> **Data & logs:** [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) — journals, extra tables, leaky Pure evidence, and the 4.1M-row 1K CSV. This repo is the harness, the write-up, and the contest Pure CSV.
+
 TikTok TechJam 2026, Track 2. An autonomous loop for **within-user ranking** on [KuaiRand-Pure](https://kuairand.com): reproduce the official Factorization Machine, try one change at a time on train/valid only, score with kit `evaluate.py`, then `finalize` writes the test CSV.
 
 ## Results
@@ -53,11 +55,39 @@ If decay / last-k are on, only **train** 0/1 updates them. Valid and test rows a
 
 ## Architecture
 
+### Search loop
+
+The LLM proposes one patch. The parent scores every trial with kit `evaluate.py`. Gates write a verdict into memory. On stop, `finalize` writes the contest CSV. Test labels are never read during search.
+
 ![Architecture of the search loop](docs/figures/architecture.svg)
+
+### Champion–challenger flowchart
+
+One atomic change → 1-seed screen → 3-seed ablate → promote or reject → stop at ε = 0.002 / N = 3, 50 iterations, or 6 h → train-only CSV.
 
 ![Champion-challenger flowchart](docs/figures/flowchart.svg)
 
 Full-page: [architecture.html](docs/figures/architecture.html) · [flowchart.html](docs/figures/flowchart.html).
+
+## Innovation
+
+What the architecture is for, against a loop that just “try more models”:
+
+- **Parent owns the score.** Each trial is a copy of `templates/` plus `trial_config.json`. The parent always re-runs kit `evaluate.py` on `scores.npz`. A trial that patches the scorer is rejected.
+- **One legal change, then a bag.** A 1-seed that looks real gets a 3-seed ablate. Promotion is against the current bag, not a lucky seed: paired interval, both date-halves of valid, nDCG not down.
+- **Memory is the state.** Journal, fingerprints, and the confirmed identity persist. Duplicates are skipped; leaky fingerprints from Leaky Pure are not restacked.
+- **Finalize is a separate emit.** Search never reads test `long_view`. `finalize` retrains the chosen bag on train and writes the CSV. It prefers a stable valid number (min of the two date halves, fewer extra flags), not max(valid).
+- **The leak is a product of the split.** Kit ranking uses the whole valid/test list at once, so rolling `long_view` into decay is group leakage. Unseen labels are `-1`, not 0; only train 0/1 updates recency.
+
+## Robustness
+
+Mapped to Technical Execution / Feasibility, not a second results table:
+
+- Search cannot `eval_split=test`. Hidden labels need a finalize token.
+- Screen vs the bag; skip a 3-seed if the 1-seed CI is entirely negative; skip CI_hi < 0 cores in the graveyard.
+- Timeout can recover the best epoch from `curves.csv`. `SystemExit` becomes Debug (cap 3), not a blank restart.
+- `python scripts/fault_matrix.py` injects those exits. They are small tests, not a six-hour outage.
+- Submitted Pure and Bonus 1K: **0** runtime interventions. Leaky Pure (valid 0.640 / test 0.568) is why the gates exist: valid and test can move in opposite directions.
 
 ## Setup
 
@@ -116,11 +146,11 @@ tests/
 
 ## Limitations
 
-- Debug never fired on submitted Pure (0 crashes, 0 timeouts). Recovery is unit-tested, not battle-tested on that search.
 - A weak 3/3 can still confirm a tiny delta (`098`, DeepFM + DIN-50, mean 0.60395). Finalize’s bag rule is the main backstop.
 - LightGBM is wired; the one Pure trial (0.577) used the ID-only encoding. That is a feature problem, not a family verdict.
 - Sequence length and DCNv2 did not clear the Pure bag.
 - 27K was not attempted.
+- There is no mechanism that uses CPU/GPU efficiency as a search signal. Under the 6 h cap, Bonus 1K trials easily hit the 1-hour timeout floor, so wall time went into a few long trains instead of more billed steps. A later loop could let the agent set workers, batch, and timeout from the live config and cut train time.
 
 Given more time: retry GBM on a continuous encoding, and let `diagnose` check a mechanism before spending three seeds.
 
