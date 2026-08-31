@@ -2,8 +2,6 @@
 
 TikTok TechJam 2026, Track 2. An autonomous loop for **within-user ranking** on [KuaiRand-Pure](https://kuairand.com): reproduce the official Factorization Machine, try one change at a time on train/valid only, score with kit `evaluate.py`, then `finalize` writes the test CSV.
 
-The useful result was a failure. An earlier run stacked recency features while valid labels still flowed into them, and stored missing test labels as 0. Validation reached **0.640**; scoring that file afterwards gave **0.568**, below the official FM on test. The submitted run keeps decay/last-k on **train 0/1 only**, treats test as missing, and lands at a smaller number we trust.
-
 ## Results
 
 KuaiRand-Pure — label `long_view`, primary = mean(GAUC, nDCG@5). Kit `evaluate.py` is unchanged.
@@ -16,6 +14,8 @@ KuaiRand-Pure — label `long_view`, primary = mean(GAUC, nDCG@5). Kit `evaluate
 | This CSV, scored once after search | — | — | **0.59766** | +0.00306 |
 
 The after-the-fact test number was **not** used to pick the model. CSV: [`deliverables/pure-v5/submission.csv`](deliverables/pure-v5/submission.csv) (170,588 rows). Write-up: [`docs/report.md`](docs/report.md).
+
+We first shipped a run that looked much stronger on valid: recency features could see valid labels, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 on test — worse than the official FM. The table above is the rerun, with decay / last-k updating from train only.
 
 | | Pure (submitted) | 1K (bonus) |
 |---|---|---|

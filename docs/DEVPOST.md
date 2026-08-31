@@ -2,8 +2,6 @@
 
 An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the official Factorization Machine, tries one change at a time on train and validation, scores with kit `evaluate.py`, and never reads test labels during search. After the loop stops, `finalize` retrains the chosen config on train and writes the test CSV.
 
-**The useful result was a failure.** An earlier run let valid `long_view` flow into recency features and stored missing test labels as 0. Validation reached 0.640; scoring that file afterwards gave 0.568, below the official FM on test. The submitted run updates decay / last-k from train 0/1 only and stores test as missing.
-
 ## Results
 
 | | GAUC | nDCG@5 | primary |
@@ -14,6 +12,8 @@ An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the o
 50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
 
 Bonus KuaiRand-1K (different id space, not in that CSV): official FM 0.64203 → **0.65001** (+0.00798). Stopped on the 6 h wall at 31/50. Snapshot: `deliverables/1k/`.
+
+We first shipped a run that looked much stronger on valid: recency features could see valid `long_view`, and missing test labels were stored as 0. That file reached 0.640 on validation and 0.568 when we scored it on test — worse than the official FM. The numbers in the table are from the rerun, where decay / last-k only update from train 0/1 and test stays missing.
 
 ## Tools
 
