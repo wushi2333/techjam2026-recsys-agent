@@ -23,6 +23,18 @@ Typical steps: reproduce the official FM, then Draft / Improve / Ablate / bag se
 
 Stop rule: validation primary has not moved by more than 0.002 for 3 billed steps, or 50 billed iterations, or 6 hours.
 
+## Architecture
+
+Search is a left-to-right loop around the orchestrator. The LLM proposes **one arm** at a time; an isolated trial trains; kit `evaluate.py` is the only scorer. Gates write a verdict into the journal. On stop, finalize retrains on train only and writes `submission.csv`. Test labels are never read during search.
+
+![Architecture of the search loop](docs/figures/architecture.svg)
+
+The policy is champion–challenger: screen on 1 seed, ablate on 3, promote or try another patch, then stop at ε = 0.002 / N = 3 or the official 50-iteration / 6 h cap.
+
+![Champion-challenger flowchart](docs/figures/flowchart.svg)
+
+Open as a page: [architecture.html](docs/figures/architecture.html) · [flowchart.html](docs/figures/flowchart.html).
+
 ## Setup
 
 Python 3.9+. You need the [starter kit](https://github.com) `evaluate.py` and the Pure logs.
@@ -57,9 +69,25 @@ KuaiRand-1K is optional (`--data-scale 1k`). User and item ids are re-indexed ac
 agent/                 loop, journal, promotion, finalize
 templates/             training code copied into each trial
 benchmarks/kuairand/   task spec and priors
+docs/figures/          architecture and search-loop diagrams
 deliverables/pure-v5/  logs and CSV from the submitted Pure run
 tests/
 ```
+
+## Limitations
+
+- **Debug never fired.** The submitted run had 0 crashes, 0 timeouts, 0 buggy trials. Recovery is covered by `scripts/fault_matrix.py` (timeout → best-epoch recovery from `curves.csv`, crash → Debug capped at 3, evaluator cannot be patched, test `long_view` without a token raises, journal and wall-clock survive a process kill). Those are small injects, not a six-hour job.
+- **Weak 3/3 can still confirm a tiny delta.** `098` (DeepFM + `seq_len=50` DIN) was confirmed at mean 0.60395. Finalize's bag rule is the main backstop, not the promotion gate.
+- **A tree model is still untested on a properly continuous encoding.** LightGBM is wired as a family; the one trial we ran (0.577) used the ID-only encoding, which gives a tree nothing to split on. That is a feature problem, not a family verdict — but it is unresolved.
+- **Sequence length and DCNv2 did not clear the bag.** Both sit inside noise of the incumbent rather than improving it.
+- **KuaiRand-1K / 27K** are optional and use different id spaces. A 1K run is in progress; 27K was not attempted. Neither is in this CSV.
+- **No short video.** The readable trace is `deliverables/pure-v5/progress.log`.
+
+Given more time: let the loop retry GBM with target-encoded numeric features, and widen the white-listed `diagnose` queries so the agent can check a mechanism, not just a score, before spending three seeds on it.
+
+## Team
+
+Solo participant. Design, implementation, runs, and write-up by one person.
 
 ## License
 
