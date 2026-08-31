@@ -1,0 +1,563 @@
+{
+  "incumbent": "039_ablate_c0_s0",
+  "incumbent_primary": 0.6483516849184427,
+  "incumbent_mean": 0.6464205647751942,
+  "incumbent_identity": {
+    "node_id": "039_ablate_c0_s0",
+    "is_bag": false,
+    "submit_primary": 0.6483516849184427,
+    "screen_bar": 0.6464205647751942,
+    "seed0_primary": 0.6483516849184427,
+    "member_mean": null,
+    "confirmed_mean": 0.6464205647751942,
+    "members": []
+  },
+  "iterations": 31,
+  "iteration_cap": 50,
+  "journal_nodes": 54,
+  "manual_interventions": 0,
+  "build_time_ledger": 5,
+  "stop_reason": "wall_clock",
+  "agent_wall_seconds": 23417.100198730826,
+  "cost": {
+    "tokens_in": 331230.0,
+    "tokens_out": 164950.0,
+    "wall_hours": 6.504750055203007,
+    "compute_hours": 5.608528876039717,
+    "gpu_hours": 0.0,
+    "gpu_note": "Feasibility uses process wall-clock (§2.5/§2.6); compute_hours sums trial elapsed (parallel 3-seed counted separately)",
+    "compute_sum_hours": 5.608528876039717,
+    "agent_wall_clock_hours": 6.504750055203007
+  },
+  "feasibility": {
+    "scored": "agent_wall_clock_hours",
+    "not_scored": "compute_sum_hours",
+    "agent_wall_clock_hours": 6.504750055203007,
+    "compute_sum_hours": 5.608528876039717,
+    "gpu_hours": 0.0,
+    "iterations": 31,
+    "iteration_cap": 50,
+    "tokens_in": 331230.0,
+    "tokens_out": 164950.0,
+    "tokens_total": 496180.0,
+    "non_skip_billed": 29,
+    "tokens_per_non_skip": 17109.655172413793
+  },
+  "stack_coverage": {
+    "draft": {
+      "billed": 5,
+      "skip": 1,
+      "scored": 3
+    },
+    "research": {
+      "billed": 0,
+      "skip": 0,
+      "scored": 0
+    },
+    "ensemble": {
+      "billed": 0,
+      "skip": 0,
+      "scored": 6
+    },
+    "multitask": {
+      "billed": 2,
+      "skip": 0,
+      "scored": 2
+    },
+    "capacity": {
+      "billed": 1,
+      "skip": 0,
+      "scored": 1
+    },
+    "watch_time": {
+      "billed": 1,
+      "skip": 0,
+      "scored": 1
+    },
+    "sequence": {
+      "billed": 5,
+      "skip": 0,
+      "scored": 2
+    },
+    "ablate": {
+      "billed": 2,
+      "skip": 0,
+      "scored": 0
+    },
+    "features": {
+      "billed": 2,
+      "skip": 0,
+      "scored": 1
+    },
+    "architecture": {
+      "billed": 6,
+      "skip": 0,
+      "scored": 4
+    },
+    "regularization": {
+      "billed": 4,
+      "skip": 1,
+      "scored": 1
+    },
+    "loss": {
+      "billed": 3,
+      "skip": 0,
+      "scored": 1
+    }
+  },
+  "integrity": {
+    "start": {
+      "src_hash": "b833969caa5671c1",
+      "git_head": "",
+      "git_dirty": null,
+      "n_files": 104
+    },
+    "end": {
+      "src_hash": "b833969caa5671c1",
+      "git_head": "",
+      "git_dirty": null,
+      "n_files": 104
+    },
+    "unchanged": true
+  },
+  "knowledge": {
+    "n_research": 0,
+    "n_read_paper": 1,
+    "n_confirmed": 3,
+    "run_facts": "run_facts.md"
+  },
+  "nodes": [
+    {
+      "id": "000_fm_baseline",
+      "stage": "draft",
+      "arm": "draft",
+      "primary": 0.6420266926977731,
+      "buggy": false,
+      "hypothesis": "Reproduce official FM hyperparameters on the pinned 1k split (backend=torch)."
+    },
+    {
+      "id": "000_fm_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6426295705686031,
+      "buggy": false,
+      "hypothesis": "Reproduce official FM hyperparameters on the pinned 1k split (backend=torch)."
+    },
+    {
+      "id": "001_fm_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6405963221259997,
+      "buggy": false,
+      "hypothesis": "Reproduce official FM hyperparameters on the pinned 1k split (backend=torch)."
+    },
+    {
+      "id": "003_eda",
+      "stage": "eda",
+      "arm": "eda",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "pair_cover=0.000 new_video=0.000 new_user=0.007 pos_train=0.263 pos_valid=0.264 valid_p50=1699 valid_p90=5803 train_p50=3489 train_p90=11662 train_mean=5143.4 valid_mean=2581.8 rows_per_user train/valid=2.0x single_imp=0.000 pos_drift=0.0000"
+    },
+    {
+      "id": "004_research",
+      "stage": "research",
+      "arm": "research",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Harness scan of arXiv and public GitHub for KuaiRand ranking (not a named trial)."
+    },
+    {
+      "id": "005_read_paper",
+      "stage": "read_paper",
+      "arm": "research",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Harness README ingest (catalog; not a named trial)."
+    },
+    {
+      "id": "006_draft",
+      "stage": "draft",
+      "arm": "draft",
+      "primary": 0.6353537540713582,
+      "buggy": false,
+      "hypothesis": "Official FM baseline scores 0.64175 on the 1K valid split. As the first draft after FM, I propose switching architecture to DeepFM, which adds an MLP over flattened FM field embeddings to capture higher-order feature interactions beyond the linear pair term. On the Pure split this same arch switch was a 3-seed improvement (~+0.0024), and the 1K task should get a similar within-user reranking boost because item-side cross features (category/author/tag) distinguish which of a user's impressions deserves long_view. If DeepFM does not beat the FM baseline on this parent, the draft is falsified and the headroom is more likely in sequence/loss than architecture."
+    },
+    {
+      "id": "007_draft",
+      "stage": "draft",
+      "arm": "draft",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "The official FM baseline uses pointwise logloss, which is not aligned with the within-user ranking metrics (GAUC and nDCG@5). Switching to BPR pairwise loss should better optimize the relative order of impressions within each user session, yielding a modest improvement on the 1K scale despite differences from Pure. IDs are re-indexed, so Pure cross-run negatives do not directly transfer; we test BPR as a new loss family for this draft."
+    },
+    {
+      "id": "008_debug",
+      "stage": "debug",
+      "arm": "draft",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The previous draft crashed when switching model_family to gbm. This may be an implementation issue in the GBM path rather than a modeling hypothesis, since the gbm-native skill card indicates LightGBM on un-bucketed numeric columns with small trees. Reading the skill should confirm the correct gbm_leaves/setup and whether a small-tree GBM is worth retrying on the 1K scale. If the skill reveals a safe configuration, the next step can be a legal atomic patch on model_family or gbm_leaves."
+    },
+    {
+      "id": "009_draft",
+      "stage": "draft",
+      "arm": "draft",
+      "primary": 0.6226426118209532,
+      "buggy": false,
+      "hypothesis": "Switching from pointwise logloss to within-user BPR pairwise ranking should improve GAUC/nDCG@5 because the evaluation is rank-based and almost every user has multiple logged impressions (single_imp=0.000). Pairwise updates emphasize the relative order of long_view versus non-long_view impressions rather than calibrated probability, which should transfer better to this within-user ranking task."
+    },
+    {
+      "id": "010_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6418115214869283,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['000_fm_baseline', '000_fm_s1', '001_fm_s2']."
+    },
+    {
+      "id": "011_multitask",
+      "stage": "improve",
+      "arm": "multitask",
+      "primary": 0.6420266926977731,
+      "buggy": false,
+      "hypothesis": "Adding the click auxiliary head gives the FM a secondary gradient signal from the more abundant click labels while sharing the user/item embeddings. On the 1K scale, where rows per user are only ~2x and positive rate is ~26%, the auxiliary task should regularize the main long_view logloss and reinforce user preference structure. Because the primary metric rewards correct relative order within each user, a small auxiliary weight of 0.3 can stabilize learning without overwhelming the main label. A prior 1-seed negative on a different parent at Pure scale is parent-scoped, not a family ban, so this untried patch on the incumbent parent remains a reasonable hypothesis. If the auxiliary head mainly adds noise, GAUC/nDCG should drop measurably below the incumbent."
+    },
+    {
+      "id": "012_capacity",
+      "stage": "improve",
+      "arm": "capacity",
+      "primary": 0.6405334871932828,
+      "buggy": false,
+      "hypothesis": "Increasing embedding dimension from k=16 to k=32 may allow the FM to capture more nuanced user-video interaction patterns, potentially improving within-user ranking. The 1k subset has a different interaction density than Pure, so cross-run Pure graves for larger k may not transfer directly. Although the organizer prior suggests larger k has no gain, this is a low-prior capacity change that remains untested on this parent. If the model overfits, we expect a small negative delta; otherwise a modest positive delta around 0.0003 is plausible."
+    },
+    {
+      "id": "013_watch_time",
+      "stage": "improve",
+      "arm": "watch_time",
+      "primary": 0.6356693142764253,
+      "buggy": false,
+      "hypothesis": "On KuaiRand 1K, long_view is a duration-thresholded label and play_time is strongly informative about which impression in a user's log was actually watched. The current FM trains all logged impressions with equal weight, so ranking signal is dominated by popularity and position rather than engagement depth. wlr_play reweights the main logloss by log1p(play_time), which up-weights high-duration interactions and should push the model to rank long-watched items ahead of short or unwatched ones within each user. This changes within-user logged order by amplifying gradients on the very items that define the positive class, without adding parameters or changing the architecture. I expect a modest positive improvement in GAUC/nDCG@5; if the weight mostly adds noise, the patch should be falsified on valid."
+    },
+    {
+      "id": "014_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6423568932563559,
+      "buggy": false,
+      "hypothesis": "The incumbent FM uses no user interaction history, so its within-user ranking relies only on static video attributes and cannot adapt to short-term user context. Adding a DIN-lite sequence layer over the user's recent logged impressions should let the model attend to videos similar to ones the user recently engaged with, improving GAUC and nDCG@5 on the 1K scale. A modest sequence length of 20 is a safe first step that balances context coverage with noise, and the expected improvement is small because rows-per-user is limited. If dGAUC or dNDCG moves negative beyond noise, the sequence context is not helping for this scale and should be ablated."
+    },
+    {
+      "id": "015_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6423568932563559,
+      "buggy": false,
+      "hypothesis": "The screened parent identity augments the pointwise FM baseline with a DIN sequence context (seq_len=100), which modestly improved ranking but did not pass the 1-seed screen. Replacing pointwise logloss with within-user BPR should directly optimize the relative order of positives over negatives inside each user's impression list, which is better aligned with GAUC/nDCG@5. The sequence representations may be exploited more effectively by a pairwise ranking loss than by binary classification. Given mixed prior ranking-loss results on Pure, the expected gain on 1K is small, around 0.001."
+    },
+    {
+      "id": "016_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6442261165618106,
+      "buggy": false,
+      "hypothesis": "The screened parent identity augments the pointwise FM baseline with a DIN sequence context (seq_len=100), which modestly improved ranking but did not pass the 1-seed screen. Replacing pointwise logloss with within-user BPR should directly optimize the relative order of positives over negatives inside each user's impression list, which is better aligned with GAUC/nDCG@5. The sequence representations may be exploited more effectively by a pairwise ranking loss than by binary classification. Given mixed prior ranking-loss results on Pure, the expected gain on 1K is small, around 0.001."
+    },
+    {
+      "id": "017_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6435605693319044,
+      "buggy": false,
+      "hypothesis": "The screened parent identity augments the pointwise FM baseline with a DIN sequence context (seq_len=100), which modestly improved ranking but did not pass the 1-seed screen. Replacing pointwise logloss with within-user BPR should directly optimize the relative order of positives over negatives inside each user's impression list, which is better aligned with GAUC/nDCG@5. The sequence representations may be exploited more effectively by a pairwise ranking loss than by binary classification. Given mixed prior ranking-loss results on Pure, the expected gain on 1K is small, around 0.001."
+    },
+    {
+      "id": "018_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6220408896183682,
+      "buggy": false,
+      "hypothesis": "The screened parent identity augments the pointwise FM baseline with a DIN sequence context (seq_len=100), which modestly improved ranking but did not pass the 1-seed screen. Replacing pointwise logloss with within-user BPR should directly optimize the relative order of positives over negatives inside each user's impression list, which is better aligned with GAUC/nDCG@5. The sequence representations may be exploited more effectively by a pairwise ranking loss than by binary classification. Given mixed prior ranking-loss results on Pure, the expected gain on 1K is small, around 0.001."
+    },
+    {
+      "id": "019_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6249827786716413,
+      "buggy": false,
+      "hypothesis": "The screened parent identity augments the pointwise FM baseline with a DIN sequence context (seq_len=100), which modestly improved ranking but did not pass the 1-seed screen. Replacing pointwise logloss with within-user BPR should directly optimize the relative order of positives over negatives inside each user's impression list, which is better aligned with GAUC/nDCG@5. The sequence representations may be exploited more effectively by a pairwise ranking loss than by binary classification. Given mixed prior ranking-loss results on Pure, the expected gain on 1K is small, around 0.001."
+    },
+    {
+      "id": "020_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6281271094419857,
+      "buggy": false,
+      "hypothesis": "The screened parent identity augments the pointwise FM baseline with a DIN sequence context (seq_len=100), which modestly improved ranking but did not pass the 1-seed screen. Replacing pointwise logloss with within-user BPR should directly optimize the relative order of positives over negatives inside each user's impression list, which is better aligned with GAUC/nDCG@5. The sequence representations may be exploited more effectively by a pairwise ranking loss than by binary classification. Given mixed prior ranking-loss results on Pure, the expected gain on 1K is small, around 0.001."
+    },
+    {
+      "id": "021_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=0 n_pos=3/3 mean_delta=0.0016 vs_mean=0.6417508617974587 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.02031600363798769, -0.0192433378901693, -0.015433459889918733], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.01833093380602524}]"
+    },
+    {
+      "id": "022_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6440094347168996,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['015_ablate_c0_s0', '016_ablate_c0_s1', '017_ablate_c0_s2']."
+    },
+    {
+      "id": "023_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6440094347168996,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['000_fm_baseline', '000_fm_s1', '001_fm_s2', '015_ablate_c0_s0', '016_ablate_c0_s1', '017_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "024_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.642804486218506,
+      "buggy": false,
+      "hypothesis": "Rank-average near-top distinct identities ['000_fm_baseline', '000_fm_s1', '001_fm_s2', '015_ablate_c0_s0', '016_ablate_c0_s1', '017_ablate_c0_s2'] (not a same-config seed bag)."
+    },
+    {
+      "id": "025_crossover",
+      "stage": "improve",
+      "arm": "features",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "Config crossover: keep incumbent identity, add {'aux_click_weight': 0.3, 'cwm_weight': 0.2} from a near-top partner (not an evolutionary search; at most 3 merges per run)."
+    },
+    {
+      "id": "026_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "The confirmed DIN gain came from target-aware attention over the user's recent logged impressions, but a context window of 100 may dilute the signal with stale items beyond the typical session length. Shortening the DIN context to 50 keeps the target-aware attention mechanism while focusing on more recent within-user behavior, which should improve GAUC and nDCG@5. If 50 is too short to capture enough preference signal, the gain will disappear and the CI will include zero or go negative."
+    },
+    {
+      "id": "027_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "Switching the ranking head from plain FM to DCNv2 adds a low-rank cross network on the flattened field embeddings, which can capture feature interactions beyond the per-field FM dot products. Under the current DIN sequence context, users with heterogeneous item features should receive more accurate within-user scores, shifting long-view rankings mainly for those users. This architecture is untried on the current incumbent identity and avoids the previously failed deepfm MLP, which may have overfit on the root baseline. If DCNv2 does not improve primary by roughly 0.001, interaction modeling is not the bottleneck and this arm should be abandoned."
+    },
+    {
+      "id": "028_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6334108721783376,
+      "buggy": false,
+      "hypothesis": "The incumbent DIN-lite sequence model attends over the last 100 logged impressions per user and is confirmed at 0.64338, but the learned attention weights add variance on this 1K subsample with long impression logs. Switching to mean-pooling over the same 100-item window keeps the same local context while replacing learned attention with a lower-variance summary of recent user behavior. Because long_view depends on within-user ordering, a stable pooled representation of recent history may generalize better on the validation split and re-rank impressions more consistently. This is an atomic sequence-mode change at the confirmed sequence length, so any difference isolates pooling versus DIN attention rather than context size."
+    },
+    {
+      "id": "029_regularization",
+      "stage": "improve",
+      "arm": "regularization",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "The incumbent DIN-sequence FM is trained with L2=1e-6 on 11.7M 1K-scale interactions; with roughly 2x more training rows per user than valid, near-zero regularization lets embedding and interaction weights overfit noisy user-item co-occurrences and hurt within-user long_view ranking. Raising L2 to 1e-5 shrinks those weights while preserving the confirmed DIN sequence signal, which should improve GAUC and nDCG@5 on valid. The expected gain is modest because the sequence head is already confirmed, and 1e-4 would risk underfitting."
+    },
+    {
+      "id": "030_loss",
+      "stage": "improve",
+      "arm": "loss",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "Switch the ranking loss from per-event logloss to global BPR pairwise ranking. On the Pure scale, bpr_global was the strongest single-loss variant (3-seed mean 0.60282 vs 0.60144) and anchored several winning ensembles, while local bpr collapsed. On this 1K reindexed task the same mechanism may give better item/user embedding geometry and improve within-user ordering, even though within-user bpr failed. If bpr_global reproduces the local bpr drop instead, the loss family is likely exhausted on this incumbent."
+    },
+    {
+      "id": "031_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "legal_untried fallback"
+    },
+    {
+      "id": "032_debug",
+      "stage": "debug",
+      "arm": "regularization",
+      "primary": 0.6506089821455228,
+      "buggy": false,
+      "hypothesis": "On this 1K scale, the incumbent FM with sequence features may overfit given the small number of users. Increasing L2 regularization from 1e-6 to 1e-5 should constrain the embedding norms and improve generalization. The previous attempt crashed because the trial ran with data_scale=pure, which is not on disk; fixing data_scale=1k will allow the experiment to execute. We expect a modest GAUC/NDCG gain within the 0.000x-0.003 range, consistent with the original estimate."
+    },
+    {
+      "id": "033_regularization",
+      "stage": "improve",
+      "arm": "regularization",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The confirmed DIN sequence model (seq_len=100) adds many sequence/interaction parameters on the small 1K-scale user population, so the current L2=1e-6 may overfit noisy position/order signals and not generalize to within-user validation rankings. Increasing L2 to 1e-5 shrinks the embedding and interaction weights toward zero, reducing variance while preserving the stable user/video main effects that drive GAUC and nDCG@5. Because L2 penalizes magnitude rather than changing the score's functional form, a gain should appear as a small positive delta on both metrics; a negative CI or a split between GAUC and nDCG@5 would falsify the overfitting mechanism."
+    },
+    {
+      "id": "034_debug",
+      "stage": "debug",
+      "arm": "loss",
+      "primary": 0.6126635744032339,
+      "buggy": false,
+      "hypothesis": "The incumbent FM with DIN sequence pooling is trained with logloss, which scores each impression independently and does not directly optimize the within-user ranked order. Switching to a listwise loss with uniform gains frames each user's impression list as a softmax over the long-view label, which should improve GAUC and nDCG@5. The previous bpr_global trial crashed because data_scale was set to pure while only the 1k dataset is on disk; this patch keeps the pinned 1k scale and uses a legal loss candidate."
+    },
+    {
+      "id": "035_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": 0.6318,
+      "buggy": false,
+      "hypothesis": "The confirmed DIN sequence context (seq_len=100) improves the FM baseline by injecting user interest signal, but the model still relies on linear pairwise interactions. Switching arch to deepfm adds an MLP over the flattened FM field embeddings, which can capture higher-order interactions between the sequence-derived user representation and item features. On the 1k scale with 11.7M rows, the added capacity is modest and should refine within-user ranking of long_view rather than overfit. The patch also pins data_scale=1k to avoid the inherited pure-scale crash and keep the run on the pinned legal scale."
+    },
+    {
+      "id": "036_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": 0.638,
+      "buggy": false,
+      "hypothesis": "The confirmed incumbent uses an FM interaction head with DIN sequence context. DCN-V2 replaces the FM pairwise aggregation with a cross network that can model higher-order feature interactions, and with the DIN sequence features already present these crossed interactions may better separate long-view from short-view impressions within a user's logged feed. DCN-V2 is the only architecture in this arm not yet measured on this parent: deepfm on 1k partially timed out, and dcnv2 previously crashed only because data_scale=pure is absent on disk. I therefore set arch=dcnv2 and pin data_scale=1k so the trial runs on the available 1K dataset. If the added cross-layer capacity overfits or does not improve within-user ranking, the screen should show a negative dP and we retain the FM head."
+    },
+    {
+      "id": "037_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "Current DIN-lite with seq_len=100 improves over no sequence (confirmed 3-seed mean 0.64338). Shorter contexts (20) may reduce noise from long sparse histories while retaining the DIN attention mechanism, which outperformed pooling. Since the incumbent is weak (se_val=0.00138) and the scale is 1K, a modest positive delta around 0.001 is plausible if 20 steps capture the relevant session signal without dilution. If the model relies on longer context, this patch may regress slightly; GaUC and nDCG@5 will reveal the trade-off."
+    },
+    {
+      "id": "038_features",
+      "stage": "improve",
+      "arm": "features",
+      "primary": 0.6483516849184427,
+      "buggy": false,
+      "hypothesis": "The incumbent FM with DIN sequence pooling summarizes user behavior without decay, so old interactions contribute equally to the user vector even when they conflict with recent session intent. Enabling use_time_decay applies a causal recency weight to the user's logged behavior sequence, making the within-user score order for long_view reflect session momentum rather than aggregate frequency. On this 1K task the user behavior stream is short and pos/valid rates are stable, so a mild recency bias should sharpen the DIN user embedding for the current impression context. I expect a small positive gain in mean(GAUC, nDCG@5), on the order of 0.001, with no change to the data split or evaluation set."
+    },
+    {
+      "id": "039_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6483516849184427,
+      "buggy": false,
+      "hypothesis": "The screened parent adds causal recency decay (use_time_decay), which reweights recent interactions and should help within-user ranking. The incumbent is trained with pointwise logloss, which scores each impression independently and does not directly optimize the GAUC/nDCG objective, so a within-user listwise loss with uniform gain may better align training with the ranking metric. Cross-run 1-seed evidence for listwise on other parents is negative, so this ablate tests whether listwise can beat the recency-decay parent on the 1K scale. I expect listwise to be slightly worse or neutral, confirming the parent."
+    },
+    {
+      "id": "040_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6456930343632672,
+      "buggy": false,
+      "hypothesis": "The screened parent adds causal recency decay (use_time_decay), which reweights recent interactions and should help within-user ranking. The incumbent is trained with pointwise logloss, which scores each impression independently and does not directly optimize the GAUC/nDCG objective, so a within-user listwise loss with uniform gain may better align training with the ranking metric. Cross-run 1-seed evidence for listwise on other parents is negative, so this ablate tests whether listwise can beat the recency-decay parent on the 1K scale. I expect listwise to be slightly worse or neutral, confirming the parent."
+    },
+    {
+      "id": "041_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6452169750438725,
+      "buggy": false,
+      "hypothesis": "The screened parent adds causal recency decay (use_time_decay), which reweights recent interactions and should help within-user ranking. The incumbent is trained with pointwise logloss, which scores each impression independently and does not directly optimize the GAUC/nDCG objective, so a within-user listwise loss with uniform gain may better align training with the ranking metric. Cross-run 1-seed evidence for listwise on other parents is negative, so this ablate tests whether listwise can beat the recency-decay parent on the 1K scale. I expect listwise to be slightly worse or neutral, confirming the parent."
+    },
+    {
+      "id": "042_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6230426994245277,
+      "buggy": false,
+      "hypothesis": "The screened parent adds causal recency decay (use_time_decay), which reweights recent interactions and should help within-user ranking. The incumbent is trained with pointwise logloss, which scores each impression independently and does not directly optimize the GAUC/nDCG objective, so a within-user listwise loss with uniform gain may better align training with the ranking metric. Cross-run 1-seed evidence for listwise on other parents is negative, so this ablate tests whether listwise can beat the recency-decay parent on the 1K scale. I expect listwise to be slightly worse or neutral, confirming the parent."
+    },
+    {
+      "id": "043_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6254879808941898,
+      "buggy": false,
+      "hypothesis": "The screened parent adds causal recency decay (use_time_decay), which reweights recent interactions and should help within-user ranking. The incumbent is trained with pointwise logloss, which scores each impression independently and does not directly optimize the GAUC/nDCG objective, so a within-user listwise loss with uniform gain may better align training with the ranking metric. Cross-run 1-seed evidence for listwise on other parents is negative, so this ablate tests whether listwise can beat the recency-decay parent on the 1K scale. I expect listwise to be slightly worse or neutral, confirming the parent."
+    },
+    {
+      "id": "044_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6289030381596117,
+      "buggy": false,
+      "hypothesis": "The screened parent adds causal recency decay (use_time_decay), which reweights recent interactions and should help within-user ranking. The incumbent is trained with pointwise logloss, which scores each impression independently and does not directly optimize the GAUC/nDCG objective, so a within-user listwise loss with uniform gain may better align training with the ranking metric. Cross-run 1-seed evidence for listwise on other parents is negative, so this ablate tests whether listwise can beat the recency-decay parent on the 1K scale. I expect listwise to be slightly worse or neutral, confirming the parent."
+    },
+    {
+      "id": "045_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=0 n_pos=3/3 mean_delta=0.0030 vs_mean=0.6433811930500236 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.025308985493915026, -0.020205053469077416, -0.01631393688426086], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.020609325282417768}]"
+    },
+    {
+      "id": "046_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6504466789120106,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['039_ablate_c0_s0', '040_ablate_c0_s1', '041_ablate_c0_s2']."
+    },
+    {
+      "id": "047_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6504466789120106,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['000_fm_baseline', '000_fm_s1', '001_fm_s2', '015_ablate_c0_s0', '016_ablate_c0_s1', '017_ablate_c0_s2', '018_ablate_c1_s0', '019_ablate_c1_s1', '020_ablate_c1_s2', '039_ablate_c0_s0', '040_ablate_c0_s1', '041_ablate_c0_s2', '042_ablate_c1_s0', '043_ablate_c1_s1', '044_ablate_c1_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "048_loss",
+      "stage": "improve",
+      "arm": "loss",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "Replacing pointwise logloss with the global BPR pairwise ranking loss should directly optimize the within-user ordering of impressions, which is the exact objective of GAUC/nDCG@5, rather than only calibrating each impression independently. The current incumbent uses time-decay features and logloss; ranking supervision from watched-versus-unwatched pairs should better separate long-view from short-view items within the same user. bpr_global pools pairs across the batch and was measured to improve the FM baseline on Pure in prior runs, so it is a plausible next step on this 1K parent. The main risk is added variance from pairwise sampling, so I expect a modest positive delta."
+    },
+    {
+      "id": "049_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": 0.6528,
+      "buggy": false,
+      "hypothesis": "The incumbent FM with time-decay already captures recency but still relies on first-order field interactions. Adding a DCNv2 cross layer to the flattened field embeddings should let the model learn higher-order interactions between user/video IDs and the recency signal, which can change within-user ranking. A partial DCNv2 run on this 1k scale reached 0.638 from a different parent, and with use_time_decay active the cross layer has more informative input. The main risk is overfitting on the small 1k user set; if the 1-seed CI high is negative we will treat it as parent-scoped, not a family ban."
+    },
+    {
+      "id": "050_regularization",
+      "stage": "improve",
+      "arm": "regularization",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "Raising L2 from 1e-6 to 5e-6 adds a mild penalty on the FM interaction and sequence-DIN parameters. The 1K training set has roughly 2x rows per user versus validation, so some overfitting is plausible; a slightly stronger regularizer should stabilize within-user ranking and improve GAUC and nDCG@5 without the larger jump to 1e-4. The 1e-5 L2 value previously crashed, so I test the next smaller legal value."
+    },
+    {
+      "id": "051_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": null,
+      "buggy": true,
+      "hypothesis": "The incumbent FM scores each impression additively, so higher-order feature interactions are not captured. dcnv2 adds a cross layer over flattened fields, which can model feature crosses that matter for within-user ranking of logged impressions. A previous dcnv2 screen on this 1K scale produced a partial primary of 0.6528 (dP=+0.00638), the strongest architecture signal seen, and the timeout means it was not a falsification. Keeping use_time_decay=True, switching the architecture to dcnv2 should improve GAUC/nDCG@5 modestly."
+    },
+    {
+      "id": "052_multitask",
+      "stage": "improve",
+      "arm": "multitask",
+      "primary": 0.6353537540713582,
+      "buggy": false,
+      "hypothesis": "The incumbent deepFM with use_time_decay is trained only on the long_view logloss. Adding a click BCE auxiliary task (aux_click) gives the shared embedding denser supervision, since clicks are more frequent than long views in this 1K log, and can act as a regularizer that stabilizes the long-view head and improves within-user ranking of borderline impressions. The auxiliary head is unused at inference, so any gain must come from better representation learning rather than a score change. Expected small positive delta around 0.001 on this scale; a larger gain is unlikely given prior parent-scoped aux_click results."
+    },
+    {
+      "id": "053_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": 0.6458,
+      "buggy": false,
+      "hypothesis": "The incumbent FM+time_decay is first-order; DeepFM adds an MLP tower over the same embeddings, letting it combine user/video interactions with the recency feature and re-rank borderline items inside each user's list, mainly improving nDCG@5. Previous deepfm screens were on older identities without time_decay, so this is the first test of the deep tower on the confirmed time-decay parent. On the small 1K scale the expected gain is modest; if the primary falls below ~0.644 (dP < -0.002) the added capacity is not justified and the hypothesis is falsified."
+    }
+  ]
+}

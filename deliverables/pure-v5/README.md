@@ -19,4 +19,4 @@ Validation, kit `evaluate.py`:
 
 `progress.log` is the readable trace. `journal.jsonl` has the hypothesis and metrics per node. `results.json` repeats the valid table. `log_random` in that file is an off-policy check, not the kit random baseline, and was not used for selection.
 
-Notes on an earlier, leaky run and how labels are handled now: `docs/report.md`.
+Notes on an earlier, leaky run and how labels are handled now: `docs/report.md`. Bonus 1K (different id space): [`../1k/`](../1k/).

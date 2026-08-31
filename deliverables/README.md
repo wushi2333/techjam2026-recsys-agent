@@ -1,9 +1,21 @@
 # deliverables/
 
-Output of the Pure run we are submitting, plus pointers to the write-up.
+Two scales, kept apart. **Pure is the contest primary.** 1K is an optional bonus with a different id space.
 
-- [`pure-v5/`](pure-v5/) — journal, progress log, `submission.csv`, token/wall summary
-- [`../docs/report.md`](../docs/report.md) — longer notes
-- [`../docs/DEVPOST.md`](../docs/DEVPOST.md) — short project description
+## Pure (tracked, this is the submission)
 
-KuaiRand-1K is a separate job and is not mixed into the Pure CSV. A local `1k-aug31/` dump may exist on disk; it is gitignored.
+[`pure-v5/`](pure-v5/) — designated KuaiRand-Pure run.
+
+- `submission.csv` — 170,588 test rows
+- `results.json` / `summary.json` — valid table, 50/50, 2.91 h
+- `progress.log` / `journal.jsonl` — readable trace
+
+Valid primary **0.60440** vs official FM **0.6016**. Write-up: [`../docs/report.md`](../docs/report.md). Devpost notes: [`../docs/DEVPOST.md`](../docs/DEVPOST.md).
+
+## 1K (bonus)
+
+[`1k/`](1k/) — public snapshot (no CSV): metrics, journal, progress. Finalize bag valid **0.65001** vs 1K FM **0.64203**.
+
+`1k-aug31/` may exist on disk with the ~117 MB `submission.csv`. It is **gitignored** and is not mixed into the Pure file.
+
+27K was not attempted.

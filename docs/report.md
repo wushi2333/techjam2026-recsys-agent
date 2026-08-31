@@ -2,6 +2,16 @@
 
 This is the write-up for the Pure experiment in `deliverables/pure-v5/`. Numbers below are **validation** unless said otherwise. The test CSV is scored by the official evaluator on the hidden split; we did not use test labels to pick the model.
 
+## Summary first
+
+**Submitted:** 3-seed rank average of `loss=bpr_global` on the numpy FM. Valid primary **0.60440** vs official FM **0.6016** (delta **+0.00280**). 50/50 billed iterations, 2.91 h, 862,773 tokens, 0 GPU-hours, **0 runtime interventions**.
+
+**The most useful thing we learned was a failure.** An earlier run (`run_pure_v4`) stacked recency features while valid labels still flowed into them and stored unseen test labels as 0. Its search bag read **valid 0.63975**. Scored once afterwards, that same CSV gave **test 0.56790** — below the official FM's published 0.5946. Valid and test moved in opposite directions by 0.07.
+
+We rebuilt the label handling (test labels behind a finalize token and stored as *missing*, not 0; decay and last-k updated only from train) and re-ran. The submitted run reads valid 0.60440 — a much smaller number, and one we trust. The same after-the-fact check on the new file is **0.59766** against the FM's 0.5946.
+
+That gap between "a number that went up" and "a model that got better" is the whole reason the harness screens against a bag, both halves of valid, and a paired interval rather than picking the best single seed. Details in [An earlier run that looked better on valid](#an-earlier-run-that-looked-better-on-valid).
+
 ## Task
 
 KuaiRand-Pure is a feed log. Each row is one impression. The kit asks for **within-user ranking**: for each user, rank that user’s own impressions against each other. It is not full-catalog retrieval.
@@ -44,6 +54,23 @@ Members: trials `012`, `013`, `014` (seeds 0/1/2), numpy FM, pairwise BPR. Final
 Search’s last incumbent was `098`: DeepFM plus `seq_len=50` DIN, confirmed mean 0.60395. Finalize looks at ≥2-seed bags and prefers a stable valid number (min of the two date halves of valid, then fewer extra flags). The BPR bag sat a little above `098` on that criterion, so that is the CSV. Both beat the official FM on valid.
 
 Resources for this run: 50 / 50 billed iterations, 2.91 h wall-clock, 544,687 + 318,086 tokens, 0 GPU-hours (a GPU was present; the submitted path is numpy). No runtime intervention. Five older build-time notes sit in `interventions.jsonl` (scripts and one template bug); they were not mid-run direction changes.
+
+## Bonus: KuaiRand-1K
+
+Optional, and **not** in the submitted CSV. 1K re-indexes user and item ids, so its primary is not comparable with Pure. Snapshot (no CSV): `deliverables/1k/`. The 4.1M-row file sits locally in `deliverables/1k-aug31/` and is gitignored. 27K was not attempted.
+
+| | GAUC | nDCG@5 | primary | vs 1K FM |
+|---|---|---|---|---|
+| Official FM (1K) | 0.67461 | 0.60944 | 0.64203 | — |
+| Finalize 3-seed rank average (`use_time_decay`) | 0.67654 | 0.62348 | **0.65001** | **+0.00798** |
+
+Members: `039`, `040`, `041`. Search bag valid 0.65045; retrain drifted −0.00044. Alignment: 4,132,081 test rows.
+
+Search ran on AutoDL, `--data-scale 1k`, and **stopped on the 6 h wall at 31 / 50** billed steps (6.50 h, 496,180 tokens, 0 runtime interventions). The confirmed identity was train-only `use_time_decay` (3-seed mean 0.64642). A later 1-seed DCNv2 scored 0.65280; the clock ran out before a 3-seed, so it is not in the CSV.
+
+`report.json` still subtracts Pure’s FM (0.6016) for `delta_vs_baseline`. Use **+0.00798** against the 1K FM above.
+
+The same recency flag that leaked on Pure v4 is here with **train-only** labels. On 1K it was a real, modest lift. Finalize on Pure still shipped BPR without that flag.
 
 ## Features and labels
 
@@ -127,7 +154,7 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 
 - Debug never ran on this Pure job. Recovery in the log is skips, not a patched crash.
 - Weak 3/3 agreement can still confirm a tiny delta (`098`). Finalize’s bag rule is the main backstop.
-- KuaiRand-1K / 27K are optional and use different id spaces. They are not in this CSV.
+- KuaiRand-1K / 27K are optional and use different id spaces. 1K finished as a bonus (`deliverables/1k/`); 27K was not attempted. Neither is in the Pure CSV.
 - A tree model on a properly continuous encoding is still untested under the current label rules. We would let the loop try it, not paste a finished config.
 - We did not make a short video. The run trace is `progress.log`.
 

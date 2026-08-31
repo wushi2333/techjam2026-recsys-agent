@@ -13,9 +13,11 @@ Submitted validation (3-seed rank average, pairwise BPR on the FM):
 
 We spent a full earlier run stacking recency features while valid labels still flowed into those features, and treating missing test labels as zeros. Validation reached 0.640. Scoring that file afterwards gave 0.568, below the official FM on test. The current code only updates decay / last-k from train 0/1, and stores test labels as missing. The new validation number is 0.604. Longer discussion is in `docs/report.md`.
 
+Bonus KuaiRand-1K (optional, different id space, not in the CSV): official FM 0.64203 → this agent **0.65001** (GAUC 0.67654, nDCG@5 0.62348), **+0.00798**. Stopped on the 6 h wall at 31/50. Finalize is a 3-seed `use_time_decay` bag. Snapshot: `deliverables/1k/`.
+
 ## Tools
 
-VS Code, Python 3.10, git. AutoDL only if we also run KuaiRand-1K (optional; different id space).
+VS Code, Python 3.10, git. AutoDL for the optional KuaiRand-1K run.
 
 ## APIs
 
@@ -35,4 +37,8 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 ## Limits
 
-We did not crash on this run, so Debug was never used in anger — only skip-on-duplicate and a few unit tests for timeouts and restarts. Sequence length and DCNv2 did not clear the bag. 1K/27K are optional and not in this file.
+We did not crash on this Pure run, so Debug was never used in anger — only skip-on-duplicate and `scripts/fault_matrix.py` for timeout / crash / kill-restart. Sequence length and DCNv2 did not clear the Pure bag. A tree model on a properly continuous encoding is still untested: LightGBM is wired, but the one Pure trial we ran used the ID-only encoding. 1K is a finished bonus (wall at 31/50); 27K was not attempted. No short video; the readable Pure trace is `progress.log`.
+
+## Team
+
+Solo participant.

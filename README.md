@@ -15,6 +15,10 @@ The score file is `deliverables/pure-v5/submission.csv` (170,588 rows). The same
 
 Runtime interventions on that run: none. 50 billed iterations, 2.91 hours, about 863k LLM tokens. GPU-hours: 0.
 
+## Bonus (KuaiRand-1K)
+
+Optional scale, different id space, **not** the contest CSV. Official 1K FM **0.64203** → this agent **0.65001** (+0.00798). Search hit the 6 h wall at 31/50; finalize is a 3-seed `use_time_decay` bag. Public snapshot: [`deliverables/1k/`](deliverables/1k/). The 4.1M-row file is local-only.
+
 ## How it searches
 
 Each trial is a copy of `templates/` plus a small `trial_config.json`. The parent process always re-runs kit `evaluate.py` on `scores.npz`; trials are not allowed to patch the evaluator.
@@ -70,7 +74,8 @@ agent/                 loop, journal, promotion, finalize
 templates/             training code copied into each trial
 benchmarks/kuairand/   task spec and priors
 docs/figures/          architecture and search-loop diagrams
-deliverables/pure-v5/  logs and CSV from the submitted Pure run
+deliverables/pure-v5/  contest Pure CSV and logs
+deliverables/1k/       bonus 1K snapshot (no CSV)
 tests/
 ```
 
@@ -80,7 +85,7 @@ tests/
 - **Weak 3/3 can still confirm a tiny delta.** `098` (DeepFM + `seq_len=50` DIN) was confirmed at mean 0.60395. Finalize's bag rule is the main backstop, not the promotion gate.
 - **A tree model is still untested on a properly continuous encoding.** LightGBM is wired as a family; the one trial we ran (0.577) used the ID-only encoding, which gives a tree nothing to split on. That is a feature problem, not a family verdict — but it is unresolved.
 - **Sequence length and DCNv2 did not clear the bag.** Both sit inside noise of the incumbent rather than improving it.
-- **KuaiRand-1K / 27K** are optional and use different id spaces. A 1K run is in progress; 27K was not attempted. Neither is in this CSV.
+- **KuaiRand-1K / 27K** are optional and use different id spaces. 1K finished as a bonus; 27K was not attempted. Neither is in the Pure CSV.
 - **No short video.** The readable trace is `deliverables/pure-v5/progress.log`.
 
 Given more time: let the loop retry GBM with target-encoded numeric features, and widen the white-listed `diagnose` queries so the agent can check a mechanism, not just a score, before spending three seeds on it.
