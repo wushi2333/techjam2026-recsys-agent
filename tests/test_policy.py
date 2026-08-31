@@ -829,7 +829,7 @@ class PolicyTest(unittest.TestCase):
 
     def test_files_window_holds_freeze(self):
         from agent.eval.dedup import _discrete_arms, discrete_patches_for
-        from agent.search.policy import CORE_PATCH_KEYS, FILES_WINDOW, files_phase_attempts
+        from agent.search.policy import CORE_PATCH_KEYS, FILES_WINDOW, HPO_WINDOW, files_phase_attempts
 
         settings = _s()
         with tempfile.TemporaryDirectory() as td:
@@ -882,12 +882,12 @@ class PolicyTest(unittest.TestCase):
                         extra={"summary": {}},
                     )
                 )
-            self.assertEqual(freeze_blocked(j, settings, 50), "files")
+            cap = j.billed_count() + FILES_WINDOW + HPO_WINDOW + 8
+            self.assertEqual(freeze_blocked(j, settings, cap), "files")
             self.assertEqual(files_phase_attempts(j, "0", {}), 0)
-            held = greedy_choice(j, settings, random.Random(0), cap=50)
+            held = greedy_choice(j, settings, random.Random(0), cap=cap)
             self.assertEqual(held.op, "improve")
             self.assertTrue(held.files_hint)
-            from agent.search.policy import HPO_WINDOW
 
             for i in range(FILES_WINDOW):
                 j.append(
@@ -903,8 +903,8 @@ class PolicyTest(unittest.TestCase):
                         extra={"config_patch": {"lr": 0.0005 * (i + 1)}, "files": ["fm.py"]},
                     )
                 )
-            self.assertEqual(freeze_blocked(j, settings, 50), "hpo")
-            hpo = greedy_choice(j, settings, random.Random(0), cap=50)
+            self.assertEqual(freeze_blocked(j, settings, cap), "hpo")
+            hpo = greedy_choice(j, settings, random.Random(0), cap=cap)
             self.assertEqual(hpo.op, "improve")
             self.assertEqual(hpo.arm_id, "optimizer")
             self.assertFalse(hpo.files_hint)
@@ -922,4 +922,4 @@ class PolicyTest(unittest.TestCase):
                         extra={"config_patch": {"lr": 0.0004 * (i + 1)}},
                     )
                 )
-            self.assertEqual(freeze_blocked(j, settings, 50), "")
+            self.assertEqual(freeze_blocked(j, settings, cap), "")

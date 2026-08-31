@@ -173,7 +173,8 @@ def exhausted_arms(journal: Journal, incumbent_cfg: dict | None = None, source_h
     left = {rec["arm"] for rec in untried_discrete(journal, incumbent_cfg or {}, source_hash)}
     out = []
     for arm in _discrete_arms(incumbent_cfg):
-        if discrete_patches_for(arm, incumbent_cfg) and arm not in left:
+        legal = discrete_patches_for(arm, incumbent_cfg)
+        if not legal or arm not in left:
             out.append(arm)
     return out
 

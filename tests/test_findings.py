@@ -142,3 +142,36 @@ class FindingsTest(unittest.TestCase):
         finally:
             F.load_jsonl = orig
             F.clear_graveyard_cache()
+
+    def test_default_identity_fingerprint_is_not_a_grave(self):
+        from agent.memory import findings as F
+
+        recs = [
+            {
+                "key": 'falsified:pure:143_ensemble:[]',
+                "tag": "measured-1seed",
+                "fingerprint": "[]",
+                "patch": {"k": 16},
+                "scale": "pure",
+                "text": "149_capacity {'k': 16} dP=-0.01113 CI_hi=-0.01353",
+            },
+            {
+                "key": 'falsified:pure:143_ensemble:[["k", 32]]',
+                "tag": "measured-1seed",
+                "fingerprint": '[["k", 32]]',
+                "patch": {"k": 32},
+                "scale": "pure",
+                "text": "145_capacity {'k': 32}",
+            },
+        ]
+        orig = F.load_jsonl
+        F.load_jsonl = lambda path: recs
+        F.clear_graveyard_cache()
+        try:
+            self.assertFalse(F.is_graveyard_patch({"k": 16}, scale="pure"))
+            self.assertFalse(F.is_graveyard_patch({"loss": "logloss"}, scale="pure"))
+            self.assertTrue(F.is_graveyard_patch({"k": 32}, scale="pure"))
+            self.assertNotIn("[]", F.graveyard_fingerprints(reload=True, scale="pure"))
+        finally:
+            F.load_jsonl = orig
+            F.clear_graveyard_cache()

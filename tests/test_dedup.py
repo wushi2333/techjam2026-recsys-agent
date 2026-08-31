@@ -171,3 +171,36 @@ class DedupTest(unittest.TestCase):
             j.append(Node("0", None, "draft", "draft", "h", "", Metrics(0.6, 0.5, 0.6), False))
             arms = {row["arm"] for row in untried_discrete(j, {"k": 16, "loss": "logloss"})}
             self.assertIn("capacity", arms)
+
+    def test_pack_graves_do_not_empty_unit_test_grid(self):
+        from agent.eval.dedup import discrete_patches_for, exhausted_arms
+        from agent.memory.findings import graveyard_fingerprints
+
+        self.assertEqual(graveyard_fingerprints(reload=True), set())
+        self.assertEqual(discrete_patches_for("time_shift", {}), [{"use_hour": True}])
+        self.assertEqual(discrete_patches_for("capacity", {}), [{"k": 8}, {"k": 32}, {"k": 64}])
+        self.assertIn({"wlr_play": True}, discrete_patches_for("watch_time", {}))
+        self.assertIn({"use_time_decay": True}, discrete_patches_for("features", {}))
+        with tempfile.TemporaryDirectory() as td:
+            j = Journal(Path(td) / "j.jsonl")
+            j.append(Node("0", None, "draft", "draft", "h", "", Metrics(0.6, 0.5, 0.6), False))
+            self.assertNotIn("time_shift", exhausted_arms(j))
+            self.assertNotIn("capacity", exhausted_arms(j))
+
+    def test_empty_legal_grid_counts_as_exhausted(self):
+        from agent.eval.dedup import discrete_patches_for, exhausted_arms
+        from agent.memory import findings as F
+
+        graves = F._fps_for_patch({"use_hour": True})
+        orig = F.graveyard_fingerprints
+        F.graveyard_fingerprints = lambda **kw: graves
+        try:
+            self.assertEqual(discrete_patches_for("time_shift", {}), [])
+            with tempfile.TemporaryDirectory() as td:
+                j = Journal(Path(td) / "j.jsonl")
+                j.append(Node("0", None, "draft", "draft", "h", "", Metrics(0.6, 0.5, 0.6), False))
+                self.assertIn("time_shift", exhausted_arms(j))
+                self.assertNotIn("loss", exhausted_arms(j))
+        finally:
+            F.graveyard_fingerprints = orig
+            F.clear_graveyard_cache()

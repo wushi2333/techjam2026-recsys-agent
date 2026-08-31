@@ -66,20 +66,6 @@ def remaining(journal: Journal, cap: int) -> int:
     return cap - journal.billed_count()
 
 
-def freeze_blocked(journal: Journal, settings: Settings, cap: int) -> str:
-    """Why ε/N must wait: unfinished screen, core 3-seed, or bag/blend."""
-    pending = journal.pending_screen()
-    if pending is not None:
-        return f"pending_screen:{pending.node_id}"
-    core = pending_core_confirm(journal)
-    if core is not None:
-        return f"pending_core:{core.node_id}"
-    need = consolidation_pending(journal)
-    if need:
-        return f"pending_{need}"
-    return ""
-
-
 def lock_horizon(cap: int) -> int:
     return min(BUDGET_LOCK, max(2, cap // 3))
 

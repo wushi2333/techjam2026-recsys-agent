@@ -185,13 +185,20 @@ def load_findings() -> str:
     return ""
 
 
+def _keep_fp(fp: str | None) -> bool:
+    return bool(fp) and str(fp) != "[]"
+
+
 def _fps_for_patch(patch: dict | None) -> set[str]:
     from agent.eval.dedup import canonical_patch
 
     body = {k: v for k, v in (patch or {}).items() if k != "seed"}
     if not body:
         return set()
-    out = {fingerprint(body)}
+    out = set()
+    raw = fingerprint(body)
+    if _keep_fp(raw):
+        out.add(raw)
     canon = canonical_patch(body)
     if canon:
         out.add(fingerprint(canon))
@@ -250,10 +257,10 @@ def _graves_table(*, reload: bool = False) -> dict[str, set[str]]:
         if rec_scale not in {"pure", "1k", "27k"}:
             rec_scale = "pure"
         bucket = table.setdefault(rec_scale, set())
-        if fp:
+        if _keep_fp(fp):
             bucket.add(fp)
         stored = rec.get("fingerprint")
-        if stored:
+        if _keep_fp(stored):
             bucket.add(str(stored))
         patch = rec.get("patch") if isinstance(rec.get("patch"), dict) else None
         if patch is None:
