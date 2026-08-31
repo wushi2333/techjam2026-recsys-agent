@@ -2,6 +2,18 @@
 
 This is the write-up for the Pure experiment in `deliverables/pure-v5/`. Numbers below are **validation** unless said otherwise. The test CSV is scored by the official evaluator on the hidden split; we did not use test labels to pick the model.
 
+- [Summary first](#summary-first)
+- [Task](#task)
+- [What the agent actually does](#what-the-agent-actually-does)
+- [Submitted numbers](#submitted-numbers)
+- [Bonus: KuaiRand-1K](#bonus-kuairand-1k)
+- [Features and labels](#features-and-labels)
+- [An earlier run that looked better on valid](#an-earlier-run-that-looked-better-on-valid)
+- [Walk-through of the submitted run](#walk-through-of-the-submitted-run)
+- [Failures other than the leaky run](#failures-other-than-the-leaky-run)
+- [Compute and autonomy](#compute-and-autonomy)
+- [Limits](#limits)
+
 ## Summary first
 
 **Submitted:** 3-seed rank average of `loss=bpr_global` on the numpy FM. Valid primary **0.60440** vs official FM **0.6016** (delta **+0.00280**). 50/50 billed iterations, 2.91 h, 862,773 tokens, 0 GPU-hours, **0 runtime interventions**.
@@ -158,4 +170,10 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 - A tree model on a properly continuous encoding is still untested under the current label rules. We would let the loop try it, not paste a finished config.
 - We did not make a short video. The run trace is `progress.log`.
 
-Files: `deliverables/pure-v5/`.
+| File | What it is |
+|---|---|
+| `deliverables/pure-v5/submission.csv` | Contest CSV |
+| `deliverables/pure-v5/progress.log` | Readable Pure trace |
+| `deliverables/pure-v5/journal.jsonl` | Per-trial hypothesis and metrics |
+| `deliverables/pure-v5/results.json` | Valid table |
+| `deliverables/1k/` | Bonus 1K snapshot (no CSV) |

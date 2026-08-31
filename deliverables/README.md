@@ -1,21 +1,27 @@
 # deliverables/
 
-Two scales, kept apart. **Pure is the contest primary.** 1K is an optional bonus with a different id space.
+**Pure is the contest primary.** 1K is an optional bonus with a different id space. Do not mix the two CSVs.
 
-## Pure (tracked, this is the submission)
+## Open first
 
-[`pure-v5/`](pure-v5/) — designated KuaiRand-Pure run.
+| Path | Role |
+|---|---|
+| [`pure-v5/submission.csv`](pure-v5/submission.csv) | Contest scores, 170,588 test rows |
+| [`pure-v5/progress.log`](pure-v5/progress.log) | Readable Pure trace |
+| [`pure-v5/results.json`](pure-v5/results.json) | Valid table (0.60440 vs FM 0.6016) |
+| [`pure-v5/journal.jsonl`](pure-v5/journal.jsonl) | Per-trial hypothesis and metrics |
+| [`../docs/report.md`](../docs/report.md) | Longer write-up |
+| [`../docs/DEVPOST.md`](../docs/DEVPOST.md) | Short project description |
+| [`1k/`](1k/) | Bonus 1K snapshot (metrics, journal; **no** CSV) |
 
-- `submission.csv` — 170,588 test rows
-- `results.json` / `summary.json` — valid table, 50/50, 2.91 h
-- `progress.log` / `journal.jsonl` — readable trace
+## Pure (`pure-v5/`)
 
-Valid primary **0.60440** vs official FM **0.6016**. Write-up: [`../docs/report.md`](../docs/report.md). Devpost notes: [`../docs/DEVPOST.md`](../docs/DEVPOST.md).
+Designated KuaiRand-Pure run. 3-seed pairwise BPR on the numpy FM. 50/50 billed iterations, 2.91 h, 0 runtime interventions.
 
 ## 1K (bonus)
 
-[`1k/`](1k/) — public snapshot (no CSV): metrics, journal, progress. Finalize bag valid **0.65001** vs 1K FM **0.64203**.
+Public snapshot: [`1k/`](1k/). Finalize bag valid **0.65001** vs 1K FM **0.64203**. Search stopped on the 6 h wall at 31/50.
 
-`1k-aug31/` may exist on disk with the ~117 MB `submission.csv`. It is **gitignored** and is not mixed into the Pure file.
+The ~117 MB `submission.csv` may exist locally as `1k-aug31/` and is **gitignored**.
 
 27K was not attempted.

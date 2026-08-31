@@ -1,23 +1,23 @@
-# Devpost draft — KuaiRand-Pure ranking agent
+# Devpost — KuaiRand-Pure ranking agent
 
-A loop that reproduces the official Factorization Machine on KuaiRand-Pure, then tries small changes (loss, architecture, sequence, regularisation) using only train and validation. Scoring is the starter-kit `evaluate.py`: within-user ranking, label `long_view`, primary = mean(GAUC, nDCG@5). Test labels are not read during search. After the loop, we retrain the chosen config on train and write scores for the test rows.
+An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the official Factorization Machine, tries one change at a time on train and validation, scores with kit `evaluate.py`, and never reads test labels during search. After the loop stops, `finalize` retrains the chosen config on train and writes the test CSV.
 
-Submitted validation (3-seed rank average, pairwise BPR on the FM):
+**The useful result was a failure.** An earlier run let valid `long_view` flow into recency features and stored missing test labels as 0. Validation reached 0.640; scoring that file afterwards gave 0.568, below the official FM on test. The submitted run updates decay / last-k from train 0/1 only and stores test as missing.
+
+## Results
 
 | | GAUC | nDCG@5 | primary |
 |---|---|---|---|
-| Official FM | 0.6674 | 0.5357 | 0.6016 |
-| This run | 0.67105 | 0.53774 | 0.60440 |
+| Official FM (valid) | 0.6674 | 0.5357 | 0.6016 |
+| This run (valid) | 0.67105 | 0.53774 | **0.60440** |
 
-50 billed iterations, 2.91 hours, ~863k tokens, no GPU-hours, no runtime intervention. CSV: `deliverables/pure-v5/submission.csv`.
+50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
 
-We spent a full earlier run stacking recency features while valid labels still flowed into those features, and treating missing test labels as zeros. Validation reached 0.640. Scoring that file afterwards gave 0.568, below the official FM on test. The current code only updates decay / last-k from train 0/1, and stores test labels as missing. The new validation number is 0.604. Longer discussion is in `docs/report.md`.
-
-Bonus KuaiRand-1K (optional, different id space, not in the CSV): official FM 0.64203 → this agent **0.65001** (GAUC 0.67654, nDCG@5 0.62348), **+0.00798**. Stopped on the 6 h wall at 31/50. Finalize is a 3-seed `use_time_decay` bag. Snapshot: `deliverables/1k/`.
+Bonus KuaiRand-1K (different id space, not in that CSV): official FM 0.64203 → **0.65001** (+0.00798). Stopped on the 6 h wall at 31/50. Snapshot: `deliverables/1k/`.
 
 ## Tools
 
-VS Code, Python 3.10, git. AutoDL for the optional KuaiRand-1K run.
+VS Code, Python 3.10, git. AutoDL for the optional 1K run.
 
 ## APIs
 
@@ -25,11 +25,11 @@ DeepSeek Chat Completions (`https://api.deepseek.com`, `deepseek-v4-flash`). No 
 
 ## Libraries
 
-numpy for the submitted FM / BPR path. LightGBM and PyTorch are optional backends, not in this CSV. Kit `evaluate.py` / `submit.py` unchanged.
+NumPy for the submitted FM / BPR path. LightGBM and PyTorch are optional backends, not in the Pure CSV. Kit `evaluate.py` / `submit.py` unchanged.
 
 ## Data
 
-KuaiRand-Pure only for the primary score. No extra training data. `log_random_*` is checked once at the end and is not used to pick the model.
+KuaiRand-Pure only for the primary score. No extra training data. `log_random_*` is checked once at finalize and is not used to pick the model.
 
 ## Logs
 
@@ -37,7 +37,7 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 ## Limits
 
-We did not crash on this Pure run, so Debug was never used in anger — only skip-on-duplicate and `scripts/fault_matrix.py` for timeout / crash / kill-restart. Sequence length and DCNv2 did not clear the Pure bag. A tree model on a properly continuous encoding is still untested: LightGBM is wired, but the one Pure trial we ran used the ID-only encoding. 1K is a finished bonus (wall at 31/50); 27K was not attempted. No short video; the readable Pure trace is `progress.log`.
+Debug never fired on the submitted Pure job — recovery is covered by `scripts/fault_matrix.py`. Sequence length and DCNv2 did not clear the Pure bag. LightGBM is wired; the one Pure trial used the ID-only encoding. 1K is a finished bonus; 27K was not attempted. No short video; the Pure trace is `progress.log`.
 
 ## Team
 
