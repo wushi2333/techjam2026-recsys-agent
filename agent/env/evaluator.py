@@ -34,3 +34,31 @@ def score_arrays(kit_dir: Path, user_ids, labels, scores) -> Metrics:
 
     raw = evaluate(user_ids, labels, scores)
     return Metrics(gauc=raw["GAUC"], ndcg5=raw["nDCG@5"], primary=raw["primary"])
+
+
+METRIC_MATCH_TOL = 1e-4
+
+
+def reconcile_trial_metrics(dest: Path, kit_dir: Path) -> tuple[bool, Metrics | None, str]:
+    from agent.eval.scores import load_scores
+
+    pack = load_scores(Path(dest))
+    if pack is None:
+        return False, None, "no scores.npz; trial cannot self-report metrics"
+    users, labels, scores = pack
+    try:
+        trusted = score_arrays(Path(kit_dir), users, labels, scores)
+    except Exception as exc:
+        return False, None, f"trusted evaluate failed: {exc}"
+    if trusted.primary is None:
+        return False, None, "trusted evaluate produced no primary"
+    metrics_path = Path(dest) / "metrics.json"
+    if metrics_path.exists():
+        try:
+            claimed = parse_metrics_file(metrics_path)
+        except (json.JSONDecodeError, KeyError, TypeError) as exc:
+            return False, None, str(exc)
+        if claimed.primary is not None and abs(float(claimed.primary) - float(trusted.primary)) > METRIC_MATCH_TOL:
+            return False, None, "metrics.json mismatch vs trusted scores.npz"
+        trusted.extra.update(claimed.extra)
+    return True, trusted, ""

@@ -1,0 +1,54 @@
+# AutoDL 1K job. Paths are Linux defaults; override with env or --data-dir.
+# Launch pin: this run IS KuaiRand-1K. Not a mid-run experiment choice.
+
+[paths]
+kit_dir = "/root/autodl-tmp/kuairand-starter-kit"
+data_dir = "/root/autodl-tmp/KuaiRand-1K/data"
+data_scale = "1k"
+paper_roots = []
+
+[search]
+num_drafts = 3
+max_debug_depth = 3
+debug_prob = 0.25
+epsilon = 0.002
+patience_n = 3
+max_iterations = 50
+trial_timeout_sec = 3600
+wall_clock_sec = 21600
+
+[parallel]
+enabled = true
+n_workers = 1
+max_workers = 1
+
+[jump]
+enabled = true
+auto_unlock = false
+stagnation_rounds = 3
+delta_threshold = 0.002
+architectures = ["deepfm", "dcnv2"]
+
+[multitask]
+enabled = false
+main_task = "long_view"
+auxiliary = ["is_click", "is_like", "is_follow", "is_comment", "is_forward"]
+
+[error_memory]
+enabled = true
+backend = "token_overlap"
+topk = 3
+
+[llm]
+provider = "auto"
+model = "deepseek-v4-flash"
+base_url = "https://api.deepseek.com"
+temperature = 0.3
+
+[observe]
+heartbeat_sec = 15
+
+[knowledge]
+paper_read = true
+research = false
+research_max = 5

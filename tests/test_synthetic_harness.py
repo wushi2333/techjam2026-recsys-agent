@@ -10,8 +10,15 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[1]
-KIT = Path("D:/tictokJam/kuairand-starter-kit")
+try:
+    from agent.config import load_settings
+
+    KIT = load_settings().kit_dir
+except Exception:
+    KIT = Path("D:/tictokJam/kuairand-starter-kit")
 LOG_FIELDS = [
     "user_id",
     "video_id",
@@ -83,44 +90,105 @@ def _write_logs(data_dir: Path) -> None:
             w.writerows(rows)
 
 
+def _run_tiny_pipeline(data_dir: Path, trial: Path, extra: dict) -> dict:
+    tmpl = ROOT / "templates"
+    trial.mkdir(parents=True, exist_ok=True)
+    for name in (
+        "pipeline.py",
+        "fm.py",
+        "train.py",
+        "seqdata.py",
+        "encodecache.py",
+        "sampling.py",
+        "itemcf.py",
+        "behcross.py",
+        "archhead.py",
+        "gbm.py",
+        "dataset.py",
+        "torchfm.py",
+        "trial_config.json",
+    ):
+        shutil.copy2(tmpl / name, trial / name)
+    cfg = json.loads((trial / "trial_config.json").read_text(encoding="utf-8"))
+    cfg.update({"smoke": True, "epochs": 1, "batch": 8, **extra})
+    (trial / "trial_config.json").write_text(json.dumps(cfg), encoding="utf-8")
+    env = os.environ.copy()
+    env["KUAI_KIT_DIR"] = str(KIT)
+    env["KUAI_DATA_DIR"] = str(data_dir)
+    env["KUAI_TRIAL_DIR"] = str(trial)
+    proc = subprocess.run(
+        [sys.executable, str(trial / "pipeline.py")],
+        cwd=str(trial),
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    return {"returncode": proc.returncode, "text": proc.stdout + proc.stderr, "trial": trial}
+
+
 class SyntheticHarnessTest(unittest.TestCase):
     def test_pipeline_on_tiny_logs(self):
         if not (KIT / "evaluate.py").exists():
             self.skipTest("kit missing")
-        tmpl = ROOT / "templates"
         with tempfile.TemporaryDirectory() as td:
             data_dir = Path(td) / "data"
             trial = Path(td) / "trial"
-            trial.mkdir()
             _write_logs(data_dir)
-            for name in (
-                "pipeline.py",
-                "fm.py",
-                "train.py",
-                "seqdata.py",
-                "sampling.py",
-                "trial_config.json",
-            ):
-                shutil.copy2(tmpl / name, trial / name)
-            cfg = json.loads((trial / "trial_config.json").read_text(encoding="utf-8"))
-            cfg["smoke"] = True
-            cfg["epochs"] = 1
-            cfg["batch"] = 8
-            (trial / "trial_config.json").write_text(json.dumps(cfg), encoding="utf-8")
-            env = os.environ.copy()
-            env["KUAI_KIT_DIR"] = str(KIT)
-            env["KUAI_DATA_DIR"] = str(data_dir)
-            env["KUAI_TRIAL_DIR"] = str(trial)
-            proc = subprocess.run(
-                [sys.executable, str(trial / "pipeline.py")],
-                cwd=str(trial),
-                env=env,
-                capture_output=True,
-                text=True,
-            )
-            self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+            out = _run_tiny_pipeline(data_dir, trial, {})
+            self.assertEqual(out["returncode"], 0, out["text"])
             metrics = json.loads((trial / "metrics.json").read_text(encoding="utf-8"))
             self.assertIn("primary", metrics)
+            self.assertTrue((trial / "scores.npz").exists())
+
+    def test_listwise_ndcg_smoke(self):
+        if not (KIT / "evaluate.py").exists():
+            self.skipTest("kit missing")
+        with tempfile.TemporaryDirectory() as td:
+            data_dir = Path(td) / "data"
+            trial = Path(td) / "trial"
+            _write_logs(data_dir)
+            out = _run_tiny_pipeline(
+                data_dir, trial, {"loss": "listwise", "listwise_gain": "ndcg"}
+            )
+            self.assertEqual(out["returncode"], 0, out["text"])
+            metrics = json.loads((trial / "metrics.json").read_text(encoding="utf-8"))
+            self.assertTrue(np.isfinite(metrics["primary"]))
+
+    def test_gbm_smoke(self):
+        if not (KIT / "evaluate.py").exists():
+            self.skipTest("kit missing")
+        try:
+            import lightgbm  # noqa: F401
+        except ImportError:
+            self.skipTest("lightgbm missing")
+        with tempfile.TemporaryDirectory() as td:
+            data_dir = Path(td) / "data"
+            trial = Path(td) / "trial"
+            _write_logs(data_dir)
+            out = _run_tiny_pipeline(data_dir, trial, {"model_family": "gbm"})
+            self.assertEqual(out["returncode"], 0, out["text"])
+            metrics = json.loads((trial / "metrics.json").read_text(encoding="utf-8"))
+            self.assertTrue(np.isfinite(metrics["primary"]))
+
+    def test_torch_smoke(self):
+        if not (KIT / "evaluate.py").exists():
+            self.skipTest("kit missing")
+        try:
+            import torch  # noqa: F401
+        except ImportError:
+            self.skipTest("torch missing")
+        with tempfile.TemporaryDirectory() as td:
+            data_dir = Path(td) / "data"
+            trial = Path(td) / "trial"
+            _write_logs(data_dir)
+            out = _run_tiny_pipeline(
+                data_dir,
+                trial,
+                {"model_family": "torch", "torch_device": "cpu"},
+            )
+            self.assertEqual(out["returncode"], 0, out["text"])
+            metrics = json.loads((trial / "metrics.json").read_text(encoding="utf-8"))
+            self.assertTrue(np.isfinite(metrics["primary"]))
 
     def test_knowledge_pack_loads(self):
         from agent.benchmarks import load_knowledge, load_spec

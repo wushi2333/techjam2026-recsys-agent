@@ -19,6 +19,7 @@ FILES = (
     "train.py",
     "seqdata.py",
     "sampling.py",
+    "dataset.py",
     "trial_config.json",
 )
 

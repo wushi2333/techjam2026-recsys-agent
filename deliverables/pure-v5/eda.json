@@ -1,0 +1,23 @@
+{
+  "n_train": 1141112,
+  "n_valid": 124909,
+  "pair_cover": 0.016268739131509762,
+  "new_video_frac": 0.0011762728953117123,
+  "new_user_frac": 0.01885864950618939,
+  "pos_rate_train": 0.33661989357749283,
+  "pos_rate_valid": 0.313284070803545,
+  "valid_rows_p50": 4.0,
+  "valid_rows_p90": 12.0,
+  "train_rows_p50": 31.0,
+  "train_rows_p90": 97.0,
+  "train_rows_mean": 43.53727584891263,
+  "valid_rows_mean": 5.582026187603343,
+  "single_imp_user_frac": 0.1750458059614783,
+  "pos_trend": {
+    "train_tail_days": 3,
+    "valid_head_days": 3,
+    "train_tail_pos": 0.3162521405855011,
+    "valid_head_pos": 0.32217722725107195,
+    "pos_drift": 0.0059250866655708445
+  }
+}

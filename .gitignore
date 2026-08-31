@@ -1,24 +1,67 @@
+# Python
 .venv/
 venv/
 __pycache__/
 *.py[cod]
+*$py.class
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+
+# Secrets
 .env
 .env.*
 !.env.example
 
-run/
-workspace/incumbent/
-workspace/trials/
+# Local encode / model artifacts
+.encode_cache/
 *.npy
 *.npz
 *.pt
 *.pth
 *.ckpt
-*.log
+
+# Lab runs (never the public tree)
+run/
+run_*/
+run-*/
+**/finalize/
+workspace/incumbent/
+workspace/trials/
+_ab_budget/
+_verify_bag/
+
+# Archives / pins / Windows junk
+*.tgz
+*.tar.gz
+*.zip
+CODE_PIN.json
+CODE_PIN_*.json
+CODE_PIN_CURRENT
+NUL
+nul
 .DS_Store
 Thumbs.db
-NUL
+
+# Logs except the contest slice
+*.log
+
+# Kit submission filename anywhere except deliverables/
+submission.csv
+
+# Internal notes, not the public writeup
+docs/architecture.md
+docs/stage-01-summary.md
+docs/progress-*.md
+docs/research-synthesis-*.md
+docs/webinar-*.md
+docs/webinar-slides/
+docs/题目.txt
+docs/*提示词*.txt
+
+# Contest slice (designated Pure run). Never un-ignore hidden_test.json.
+!deliverables/
+!deliverables/**
+!deliverables/**/*.log
+!deliverables/**/submission.csv

@@ -1,1 +1,4 @@
 numpy>=1.24
+lightgbm>=4.0
+tomli>=2.0; python_version < "3.11"
+# torch is optional. model_family=torch needs it; CUDA wheels on GPU boxes.

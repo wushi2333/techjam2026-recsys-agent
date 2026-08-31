@@ -1,0 +1,30 @@
+{
+  "source": "012_ablate_c1_s0",
+  "valid_primary": 0.6043970584869385,
+  "valid_GAUC": 0.6710516810417175,
+  "valid_nDCG@5": 0.5377424955368042,
+  "delta_vs_baseline": 0.002797,
+  "delta_gauc": 0.003652,
+  "delta_ndcg5": 0.002042,
+  "baseline": {
+    "official_fm_valid_primary": 0.6016,
+    "official_fm_valid_GAUC": 0.6674,
+    "official_fm_valid_nDCG@5": 0.5357
+  },
+  "valid_source": "rank_average_valid",
+  "submission": "deliverables/pure-v5/submission.csv",
+  "check": "\u2713 \u683c\u5f0f\u4e0e\u5bf9\u9f50\u6821\u9a8c\u901a\u8fc7\uff1a170,588 \u884c\uff0csplit=test",
+  "members": [
+    "012_ablate_c1_s0",
+    "013_ablate_c1_s1",
+    "014_ablate_c1_s2"
+  ],
+  "log_random_offpolicy": {
+    "GAUC": 0.5860452055931091,
+    "nDCG@5": 0.14851102232933044,
+    "primary": 0.3672780990600586
+  },
+  "log_random_note": "Off-policy check on log_random_* impressions; not the official random-score baseline (primary 0.4753).",
+  "search_valid_primary": 0.6043970584869385,
+  "finalize_valid_drift": 0.0
+}

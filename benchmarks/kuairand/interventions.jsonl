@@ -1,0 +1,5 @@
+{"ts": "2026-08-25", "kind": "human_ablate", "script": "scripts/ablate_single_arms.py", "note": "single-seed BPR / listwise / lr"}
+{"ts": "2026-08-26", "kind": "human_ablate", "script": "scripts/ablate_bpr_din.py", "note": "BPR+DIN stack single-seed"}
+{"ts": "2026-08-26", "kind": "human_ablate", "script": "scripts/ablate_ranking_fix.py", "note": "within-user BPR vs grouped listwise vs hour"}
+{"ts": "2026-08-27", "kind": "human_ablate", "script": "scripts/ablate_aux.py", "note": "3-seed FM / bpr_global / aux_click / cwm_censor"}
+{"ts": "2026-08-29", "kind": "template_debug", "phase": "build-time", "what": "behcross.py train/valid branch on post-LOO ua count (singleton ua: train video-rate vs valid singleton label)", "by": "human", "note": "012_features -0.0113; agent judged the flag harmful but could not instrument the 88% fallback. Human located the branch bug. Agent did not participate in the diagnosis. Agent retests independently; default use_beh_cross remains false."}

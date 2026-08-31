@@ -12,9 +12,9 @@
     "regularization": {"alpha": 3, "beta": 2},
     "sequence": {"alpha": 4, "beta": 2},
     "time_shift": {"alpha": 3, "beta": 2},
-    "multitask": {"alpha": 3, "beta": 2},
+    "multitask": {"alpha": 1, "beta": 4},
     "watch_time": {"alpha": 3, "beta": 2},
-    "features": {"alpha": 1, "beta": 19},
+    "features": {"alpha": 4, "beta": 2},
     "capacity": {"alpha": 1, "beta": 19},
     "architecture": {"alpha": 2, "beta": 3}
   }

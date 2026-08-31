@@ -1,15 +1,42 @@
 from __future__ import annotations
 
-"""Reserved 2–4 isolated trial fan-out. Default n_workers=1."""
+"""2–4 isolated trial fan-out around subprocess trials."""
+
+from concurrent.futures import ThreadPoolExecutor
 
 from agent.config import Settings
 from agent.types import TrialSpec
 
 
-def planned_workers(settings: Settings) -> int:
-    if not settings.parallel_enabled:
+def planned_workers(settings: Settings, requested=None) -> int:
+    """Default 1 on 1K/27K; LLM `n_workers` may raise up to max_workers when parallel is on."""
+    cap = max(1, min(int(getattr(settings, "max_workers", None) or 4), 4))
+    enabled = bool(settings.parallel_enabled)
+    if requested is not None and str(requested) != "":
+        try:
+            n = int(requested)
+        except (TypeError, ValueError):
+            n = 0
+        if n >= 1:
+            if not enabled:
+                return 1
+            return max(1, min(n, cap))
+    if not enabled:
         return 1
-    return max(1, min(settings.n_workers, settings.max_workers, 4))
+    if str(getattr(settings, "data_scale", "") or "") in {"1k", "27k"}:
+        return 1
+    return max(1, min(int(settings.n_workers or 1), cap))
+
+
+def map_trials(fn, items: list, n_workers: int) -> list:
+    if not items:
+        return []
+    n = max(1, min(int(n_workers), len(items)))
+    if n <= 1:
+        return [fn(item) for item in items]
+    with ThreadPoolExecutor(max_workers=n) as pool:
+        futs = [pool.submit(fn, item) for item in items]
+        return [fut.result() for fut in futs]
 
 
 def fanout(specs: list[TrialSpec], settings: Settings) -> list[list[TrialSpec]]:

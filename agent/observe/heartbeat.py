@@ -29,9 +29,16 @@ class Heartbeat:
             "alive": True,
             "note": self.note,
         }
-        tmp = self.path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(rec), encoding="utf-8")
-        tmp.replace(self.path)
+        text = json.dumps(rec)
+        tmp = self.path.with_name(self.path.name + ".tmp")
+        try:
+            tmp.write_text(text, encoding="utf-8")
+            tmp.replace(self.path)
+        except OSError:
+            try:
+                self.path.write_text(text, encoding="utf-8")
+            except OSError:
+                return
 
     def stop(self) -> None:
         self._stop.set()

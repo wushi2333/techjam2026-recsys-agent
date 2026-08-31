@@ -1,0 +1,1401 @@
+{
+  "incumbent": "098_ablate_c0_s0",
+  "incumbent_primary": 0.6038802266120911,
+  "incumbent_mean": 0.6039493680000305,
+  "incumbent_identity": {
+    "node_id": "098_ablate_c0_s0",
+    "is_bag": false,
+    "submit_primary": 0.6038802266120911,
+    "screen_bar": 0.6039493680000305,
+    "seed0_primary": 0.6038802266120911,
+    "member_mean": null,
+    "confirmed_mean": 0.6039493680000305,
+    "members": []
+  },
+  "iterations": 50,
+  "iteration_cap": 50,
+  "journal_nodes": 160,
+  "manual_interventions": 0,
+  "build_time_ledger": 5,
+  "stop_reason": "cap",
+  "agent_wall_seconds": 10482.90497240005,
+  "cost": {
+    "tokens_in": 544687.0,
+    "tokens_out": 318086.0,
+    "wall_hours": 2.911918047888903,
+    "compute_hours": 4.267245044906934,
+    "gpu_hours": 0.0,
+    "gpu_note": "Feasibility uses process wall-clock (§2.5/§2.6); compute_hours sums trial elapsed (parallel 3-seed counted separately)",
+    "compute_sum_hours": 4.267245044906934,
+    "agent_wall_clock_hours": 2.911918047888903
+  },
+  "feasibility": {
+    "scored": "agent_wall_clock_hours",
+    "not_scored": "compute_sum_hours",
+    "agent_wall_clock_hours": 2.911918047888903,
+    "compute_sum_hours": 4.267245044906934,
+    "gpu_hours": 0.0,
+    "iterations": 50,
+    "iteration_cap": 50,
+    "tokens_in": 544687.0,
+    "tokens_out": 318086.0,
+    "tokens_total": 862773.0,
+    "non_skip_billed": 40,
+    "tokens_per_non_skip": 21569.325
+  },
+  "stack_coverage": {
+    "draft": {
+      "billed": 3,
+      "skip": 0,
+      "scored": 3
+    },
+    "research": {
+      "billed": 0,
+      "skip": 0,
+      "scored": 0
+    },
+    "ablate": {
+      "billed": 14,
+      "skip": 0,
+      "scored": 0
+    },
+    "ensemble": {
+      "billed": 0,
+      "skip": 0,
+      "scored": 20
+    },
+    "architecture": {
+      "billed": 6,
+      "skip": 3,
+      "scored": 2
+    },
+    "loss": {
+      "billed": 2,
+      "skip": 0,
+      "scored": 2
+    },
+    "capacity": {
+      "billed": 3,
+      "skip": 0,
+      "scored": 3
+    },
+    "sequence": {
+      "billed": 16,
+      "skip": 4,
+      "scored": 11
+    },
+    "features": {
+      "billed": 3,
+      "skip": 3,
+      "scored": 0
+    },
+    "regularization": {
+      "billed": 3,
+      "skip": 0,
+      "scored": 3
+    }
+  },
+  "integrity": {
+    "start": {
+      "src_hash": "05111ef2e81327ca",
+      "git_head": "05b508e8162e679bf5b14990af81b4c8329f7358",
+      "git_dirty": 159,
+      "n_files": 104
+    },
+    "end": {
+      "src_hash": "05111ef2e81327ca",
+      "git_head": "05b508e8162e679bf5b14990af81b4c8329f7358",
+      "git_dirty": 159,
+      "n_files": 104
+    },
+    "unchanged": true
+  },
+  "knowledge": {
+    "n_research": 0,
+    "n_read_paper": 4,
+    "n_confirmed": 3,
+    "run_facts": "run_facts.md"
+  },
+  "nodes": [
+    {
+      "id": "000_fm_baseline",
+      "stage": "draft",
+      "arm": "draft",
+      "primary": 0.6014695167541504,
+      "buggy": false,
+      "hypothesis": "Reproduce official numpy FM on the kit split."
+    },
+    {
+      "id": "000_fm_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6017608642578125,
+      "buggy": false,
+      "hypothesis": "Reproduce official numpy FM on the kit split."
+    },
+    {
+      "id": "001_fm_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6010903120040894,
+      "buggy": false,
+      "hypothesis": "Reproduce official numpy FM on the kit split."
+    },
+    {
+      "id": "003_eda",
+      "stage": "eda",
+      "arm": "eda",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "pair_cover=0.016 new_video=0.001 new_user=0.019 pos_train=0.337 pos_valid=0.313 valid_p50=4 valid_p90=12 train_p50=31 train_p90=97 train_mean=43.5 valid_mean=5.6 rows_per_user train/valid=7.8x single_imp=0.175 pos_drift=0.0059"
+    },
+    {
+      "id": "004_research",
+      "stage": "research",
+      "arm": "research",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Harness scan of arXiv and public GitHub for KuaiRand ranking (not a named trial)."
+    },
+    {
+      "id": "005_read_paper",
+      "stage": "read_paper",
+      "arm": "research",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Harness README ingest (catalog; not a named trial)."
+    },
+    {
+      "id": "006_read_paper",
+      "stage": "read_paper",
+      "arm": "research",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Harness README ingest (catalog; not a named trial)."
+    },
+    {
+      "id": "007_draft",
+      "stage": "draft",
+      "arm": "draft",
+      "primary": 0.6038283705711365,
+      "buggy": false,
+      "hypothesis": "DeepFM adds a deep component over the flattened FM fields, letting the model capture higher-order feature interactions that the linear FM cannot. On the same Pure FM baseline this exact atomic patch measured 0.60386 mean GAUC/nDCG across three seeds, versus 0.60144 for the incumbent, so I expect a similar lift in within-user ranking. If the gain does not appear, it would suggest the cross-run measurement was scope-specific or dependent on hidden-test distribution. This is the first architecture change in the draft arm and is kept atomic."
+    },
+    {
+      "id": "008_draft",
+      "stage": "draft",
+      "arm": "draft",
+      "primary": 0.5771182775497437,
+      "buggy": false,
+      "hypothesis": "The official FM baseline uses pointwise logloss on long_view, which optimizes absolute probability rather than the within-user ordering that GAUC/nDCG@5 measure. Switching to bpr_global should align the training objective with the ranking metric by sampling positive-negative pairs globally, improving list ordering quality without changing the FM identity. Cross-run 3-seed evidence on this exact Pure FM baseline shows bpr_global reaches mean 0.60282 vs 0.60144, a +0.00138 gain. I therefore expect a comparable improvement on the current draft arm while keeping all other hyperparameters fixed."
+    },
+    {
+      "id": "009_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038283705711365,
+      "buggy": false,
+      "hypothesis": "The screened parent identity (DeepFM) re-ranks within-user impressions via learned feature crosses. The loss arm should test whether switching from logloss to bpr_global, which uses within-user and global pairwise preferences, further improves the ranking objective on top of DeepFM. Across runs, bpr_global alone was measured at ~0.6028 mean and DeepFM at ~0.6039, so combining them may push the identity above the current 0.60144 screen bar."
+    },
+    {
+      "id": "010_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6036851406097412,
+      "buggy": false,
+      "hypothesis": "The screened parent identity (DeepFM) re-ranks within-user impressions via learned feature crosses. The loss arm should test whether switching from logloss to bpr_global, which uses within-user and global pairwise preferences, further improves the ranking objective on top of DeepFM. Across runs, bpr_global alone was measured at ~0.6028 mean and DeepFM at ~0.6039, so combining them may push the identity above the current 0.60144 screen bar."
+    },
+    {
+      "id": "011_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6040726900100708,
+      "buggy": false,
+      "hypothesis": "The screened parent identity (DeepFM) re-ranks within-user impressions via learned feature crosses. The loss arm should test whether switching from logloss to bpr_global, which uses within-user and global pairwise preferences, further improves the ranking objective on top of DeepFM. Across runs, bpr_global alone was measured at ~0.6028 mean and DeepFM at ~0.6039, so combining them may push the identity above the current 0.60144 screen bar."
+    },
+    {
+      "id": "012_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6036239862442017,
+      "buggy": false,
+      "hypothesis": "The screened parent identity (DeepFM) re-ranks within-user impressions via learned feature crosses. The loss arm should test whether switching from logloss to bpr_global, which uses within-user and global pairwise preferences, further improves the ranking objective on top of DeepFM. Across runs, bpr_global alone was measured at ~0.6028 mean and DeepFM at ~0.6039, so combining them may push the identity above the current 0.60144 screen bar."
+    },
+    {
+      "id": "013_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6035645604133606,
+      "buggy": false,
+      "hypothesis": "The screened parent identity (DeepFM) re-ranks within-user impressions via learned feature crosses. The loss arm should test whether switching from logloss to bpr_global, which uses within-user and global pairwise preferences, further improves the ranking objective on top of DeepFM. Across runs, bpr_global alone was measured at ~0.6028 mean and DeepFM at ~0.6039, so combining them may push the identity above the current 0.60144 screen bar."
+    },
+    {
+      "id": "014_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6029953360557556,
+      "buggy": false,
+      "hypothesis": "The screened parent identity (DeepFM) re-ranks within-user impressions via learned feature crosses. The loss arm should test whether switching from logloss to bpr_global, which uses within-user and global pairwise preferences, further improves the ranking objective on top of DeepFM. Across runs, bpr_global alone was measured at ~0.6028 mean and DeepFM at ~0.6039, so combining them may push the identity above the current 0.60144 screen bar."
+    },
+    {
+      "id": "015_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=0 n_pos=3/3 mean_delta=0.0024 vs_mean=0.6014402310053507 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.00020438432693481445, -0.00012058019638061523, -0.0010773539543151855], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.0004674394925435384}]"
+    },
+    {
+      "id": "016_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2']."
+    },
+    {
+      "id": "017_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6043964630445428,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2']."
+    },
+    {
+      "id": "018_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "019_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6043840647655387,
+      "buggy": false,
+      "hypothesis": "Rank-average near-top distinct identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2'] (not a same-config seed bag)."
+    },
+    {
+      "id": "020_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": 0.6028932332992554,
+      "buggy": false,
+      "hypothesis": "DCNv2's cross layer explicitly models high-order feature interactions (e.g., user-video compatibility) that a plain deepfm may underfit, potentially re-ranking borderline impressions more accurately. On KuaiRand-Pure, where positive labels are sparse and pair coverage is low, a single cross layer may provide a complementary inductive bias without overfitting. Since deepfm already confirmed a gain over FM, dcnv2 is the next natural architecture variant to test within the same family. I expect a small positive improvement over the deepfm incumbent, though possibly smaller than the deepfm jump."
+    },
+    {
+      "id": "021_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6028932332992554,
+      "buggy": false,
+      "hypothesis": "On the confirmed DeepFM incumbent, replacing logloss with global BPR pairwise loss should directly optimize within-user pairs of logged impressions, sharpening long-view ranking and improving GAUC/nDCG@5. A prior 3-seed comparison on parent 007 gave bpr_global 0/3 positive vs DeepFM (mean_delta=-0.00047), so this ablation re-measures it on the current parent to test whether the effect is parent-scoped before discarding the loss. If it wins on 3 seeds, it becomes a viable ensemble member."
+    },
+    {
+      "id": "022_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.603735089302063,
+      "buggy": false,
+      "hypothesis": "On the confirmed DeepFM incumbent, replacing logloss with global BPR pairwise loss should directly optimize within-user pairs of logged impressions, sharpening long-view ranking and improving GAUC/nDCG@5. A prior 3-seed comparison on parent 007 gave bpr_global 0/3 positive vs DeepFM (mean_delta=-0.00047), so this ablation re-measures it on the current parent to test whether the effect is parent-scoped before discarding the loss. If it wins on 3 seeds, it becomes a viable ensemble member."
+    },
+    {
+      "id": "023_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6036938428878784,
+      "buggy": false,
+      "hypothesis": "On the confirmed DeepFM incumbent, replacing logloss with global BPR pairwise loss should directly optimize within-user pairs of logged impressions, sharpening long-view ranking and improving GAUC/nDCG@5. A prior 3-seed comparison on parent 007 gave bpr_global 0/3 positive vs DeepFM (mean_delta=-0.00047), so this ablation re-measures it on the current parent to test whether the effect is parent-scoped before discarding the loss. If it wins on 3 seeds, it becomes a viable ensemble member."
+    },
+    {
+      "id": "024_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038283705711365,
+      "buggy": false,
+      "hypothesis": "On the confirmed DeepFM incumbent, replacing logloss with global BPR pairwise loss should directly optimize within-user pairs of logged impressions, sharpening long-view ranking and improving GAUC/nDCG@5. A prior 3-seed comparison on parent 007 gave bpr_global 0/3 positive vs DeepFM (mean_delta=-0.00047), so this ablation re-measures it on the current parent to test whether the effect is parent-scoped before discarding the loss. If it wins on 3 seeds, it becomes a viable ensemble member."
+    },
+    {
+      "id": "025_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6036851406097412,
+      "buggy": false,
+      "hypothesis": "On the confirmed DeepFM incumbent, replacing logloss with global BPR pairwise loss should directly optimize within-user pairs of logged impressions, sharpening long-view ranking and improving GAUC/nDCG@5. A prior 3-seed comparison on parent 007 gave bpr_global 0/3 positive vs DeepFM (mean_delta=-0.00047), so this ablation re-measures it on the current parent to test whether the effect is parent-scoped before discarding the loss. If it wins on 3 seeds, it becomes a viable ensemble member."
+    },
+    {
+      "id": "026_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6040726900100708,
+      "buggy": false,
+      "hypothesis": "On the confirmed DeepFM incumbent, replacing logloss with global BPR pairwise loss should directly optimize within-user pairs of logged impressions, sharpening long-view ranking and improving GAUC/nDCG@5. A prior 3-seed comparison on parent 007 gave bpr_global 0/3 positive vs DeepFM (mean_delta=-0.00047), so this ablation re-measures it on the current parent to test whether the effect is parent-scoped before discarding the loss. If it wins on 3 seeds, it becomes a viable ensemble member."
+    },
+    {
+      "id": "027_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [0.0009351372718811035, -4.9948692321777344e-05, 0.0003788471221923828], 'n_pos_right': 2, 'n_neg_right': 1, 'n_seeds': 3, 'mean_delta': 0.00042134523391723633}]"
+    },
+    {
+      "id": "028_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.603609613571413,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2']."
+    },
+    {
+      "id": "029_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "030_loss",
+      "stage": "improve",
+      "arm": "loss",
+      "primary": 0.6039175987243652,
+      "buggy": false,
+      "hypothesis": "bpr_global is the only untried loss option on this parent and may improve within-user ranking by using global user-item pairs rather than local within-user pairs. Local ablate results on the deepfm parent showed a small negative delta, but that was relative to arch deepfm logloss on a different parent scope and with only 3 seeds. Since bpr_global is still in legal_untried for this parent, I will test it as an atomic loss patch to see whether global pairwise signal helps GAUC/nDCG@5. I expect a small positive delta if the global contrast regularizes the FM ranking, but the effect may be within noise."
+    },
+    {
+      "id": "031_capacity",
+      "stage": "improve",
+      "arm": "capacity",
+      "primary": 0.6041380167007446,
+      "buggy": false,
+      "hypothesis": "Reducing the FM embedding dimension from k=16 to k=8 shrinks the number of free ID-interaction parameters. Pure has very sparse user-item coverage (pair_cover=0.016), so the larger k may be memorizing sparse co-occurrences rather than learning generalizable within-user preference. With the deepfm arch already confirmed, a smaller embedding should regularize the interaction terms and improve GAUC/nDCG@5 on the valid set. The expected gain is modest because this is a capacity change rather than a new signal."
+    },
+    {
+      "id": "032_loss",
+      "stage": "improve",
+      "arm": "loss",
+      "primary": 0.6036239862442017,
+      "buggy": false,
+      "hypothesis": "Switching from logloss to global pairwise ranking (bpr_global) may better optimize the within-user ranking objective by directly maximizing AUC/NDCG over all pairs, though prior 3-seed evidence on the deepfm identity suggests a small negative effect; this run tests the patch on the incumbent parent."
+    },
+    {
+      "id": "033_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6036765575408936,
+      "buggy": false,
+      "hypothesis": "legal_untried fallback"
+    },
+    {
+      "id": "034_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6036765575408936,
+      "buggy": false,
+      "hypothesis": "The 033 sequence parent (seq_len=10, pool) did not improve the deepfm incumbent, so this ablation contrasts that sequence identity with a single global-BPR loss patch. Global BPR samples negatives from the full item population and may change the within-user ranking signal, but prior 1-seed screens of bpr_global on the incumbent were mixed. If the global-BPR patch does not beat the sequence parent or the incumbent mean, the loss arm is likely exhausted on this parent."
+    },
+    {
+      "id": "035_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6033588647842407,
+      "buggy": false,
+      "hypothesis": "The 033 sequence parent (seq_len=10, pool) did not improve the deepfm incumbent, so this ablation contrasts that sequence identity with a single global-BPR loss patch. Global BPR samples negatives from the full item population and may change the within-user ranking signal, but prior 1-seed screens of bpr_global on the incumbent were mixed. If the global-BPR patch does not beat the sequence parent or the incumbent mean, the loss arm is likely exhausted on this parent."
+    },
+    {
+      "id": "036_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6034306287765503,
+      "buggy": false,
+      "hypothesis": "The 033 sequence parent (seq_len=10, pool) did not improve the deepfm incumbent, so this ablation contrasts that sequence identity with a single global-BPR loss patch. Global BPR samples negatives from the full item population and may change the within-user ranking signal, but prior 1-seed screens of bpr_global on the incumbent were mixed. If the global-BPR patch does not beat the sequence parent or the incumbent mean, the loss arm is likely exhausted on this parent."
+    },
+    {
+      "id": "037_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6032758355140686,
+      "buggy": false,
+      "hypothesis": "The 033 sequence parent (seq_len=10, pool) did not improve the deepfm incumbent, so this ablation contrasts that sequence identity with a single global-BPR loss patch. Global BPR samples negatives from the full item population and may change the within-user ranking signal, but prior 1-seed screens of bpr_global on the incumbent were mixed. If the global-BPR patch does not beat the sequence parent or the incumbent mean, the loss arm is likely exhausted on this parent."
+    },
+    {
+      "id": "038_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6032420992851257,
+      "buggy": false,
+      "hypothesis": "The 033 sequence parent (seq_len=10, pool) did not improve the deepfm incumbent, so this ablation contrasts that sequence identity with a single global-BPR loss patch. Global BPR samples negatives from the full item population and may change the within-user ranking signal, but prior 1-seed screens of bpr_global on the incumbent were mixed. If the global-BPR patch does not beat the sequence parent or the incumbent mean, the loss arm is likely exhausted on this parent."
+    },
+    {
+      "id": "039_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.602410078048706,
+      "buggy": false,
+      "hypothesis": "The 033 sequence parent (seq_len=10, pool) did not improve the deepfm incumbent, so this ablation contrasts that sequence identity with a single global-BPR loss patch. Global BPR samples negatives from the full item population and may change the within-user ranking signal, but prior 1-seed screens of bpr_global on the incumbent were mixed. If the global-BPR patch does not beat the sequence parent or the incumbent mean, the loss arm is likely exhausted on this parent."
+    },
+    {
+      "id": "040_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.00040072202682495117, -0.00011676549911499023, -0.0010205507278442383], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.0005126794179280599}]"
+    },
+    {
+      "id": "041_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6040226035057594,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2']."
+    },
+    {
+      "id": "042_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '037_ablate_c1_s0', '038_ablate_c1_s1', '039_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2', '034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "043_crossover",
+      "stage": "improve",
+      "arm": "features",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Config crossover: keep incumbent identity, add {'seq_len': 10, 'seq_mode': 'pool'} from a near-top partner (not an evolutionary search; at most 3 merges per run)."
+    },
+    {
+      "id": "044_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6038174033164978,
+      "buggy": false,
+      "hypothesis": "legal_untried fallback"
+    },
+    {
+      "id": "045_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038174033164978,
+      "buggy": false,
+      "hypothesis": "On the seq_len=10/seq_mode=din parent, swapping logloss for bpr_global introduces global pairwise ranking signal. Prior screens of bpr_global on the deepfm incumbent were near zero (dP 0.00006 and -0.00024), and on a seq-pool parent it was clearly worse (mean 0.60298). With pair_cover only 0.016, global pairs likely add noise, so I expect at most a small positive or negligible effect."
+    },
+    {
+      "id": "046_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6032133102416992,
+      "buggy": false,
+      "hypothesis": "On the seq_len=10/seq_mode=din parent, swapping logloss for bpr_global introduces global pairwise ranking signal. Prior screens of bpr_global on the deepfm incumbent were near zero (dP 0.00006 and -0.00024), and on a seq-pool parent it was clearly worse (mean 0.60298). With pair_cover only 0.016, global pairs likely add noise, so I expect at most a small positive or negligible effect."
+    },
+    {
+      "id": "047_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6033728718757629,
+      "buggy": false,
+      "hypothesis": "On the seq_len=10/seq_mode=din parent, swapping logloss for bpr_global introduces global pairwise ranking signal. Prior screens of bpr_global on the deepfm incumbent were near zero (dP 0.00006 and -0.00024), and on a seq-pool parent it was clearly worse (mean 0.60298). With pair_cover only 0.016, global pairs likely add noise, so I expect at most a small positive or negligible effect."
+    },
+    {
+      "id": "048_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.603156328201294,
+      "buggy": false,
+      "hypothesis": "On the seq_len=10/seq_mode=din parent, swapping logloss for bpr_global introduces global pairwise ranking signal. Prior screens of bpr_global on the deepfm incumbent were near zero (dP 0.00006 and -0.00024), and on a seq-pool parent it was clearly worse (mean 0.60298). With pair_cover only 0.016, global pairs likely add noise, so I expect at most a small positive or negligible effect."
+    },
+    {
+      "id": "049_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6031782627105713,
+      "buggy": false,
+      "hypothesis": "On the seq_len=10/seq_mode=din parent, swapping logloss for bpr_global introduces global pairwise ranking signal. Prior screens of bpr_global on the deepfm incumbent were near zero (dP 0.00006 and -0.00024), and on a seq-pool parent it was clearly worse (mean 0.60298). With pair_cover only 0.016, global pairs likely add noise, so I expect at most a small positive or negligible effect."
+    },
+    {
+      "id": "050_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6027069091796875,
+      "buggy": false,
+      "hypothesis": "On the seq_len=10/seq_mode=din parent, swapping logloss for bpr_global introduces global pairwise ranking signal. Prior screens of bpr_global on the deepfm incumbent were near zero (dP 0.00006 and -0.00024), and on a seq-pool parent it was clearly worse (mean 0.60298). With pair_cover only 0.016, global pairs likely add noise, so I expect at most a small positive or negligible effect."
+    },
+    {
+      "id": "051_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.0006610751152038574, -3.504753112792969e-05, -0.0006659626960754395], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.0004540284474690755}]"
+    },
+    {
+      "id": "052_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6039399115032407,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2']."
+    },
+    {
+      "id": "053_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '037_ablate_c1_s0', '038_ablate_c1_s1', '039_ablate_c1_s2', '048_ablate_c1_s0', '049_ablate_c1_s1', '050_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2', '034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2', '045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "054_crossover",
+      "stage": "improve",
+      "arm": "features",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Config crossover: keep incumbent identity, add {'seq_len': 10, 'seq_mode': 'din'} from a near-top partner (not an evolutionary search; at most 3 merges per run)."
+    },
+    {
+      "id": "055_capacity",
+      "stage": "improve",
+      "arm": "capacity",
+      "primary": 0.6000257730484009,
+      "buggy": false,
+      "hypothesis": "Reducing the FM embedding dimension from 16 to 8 acts as a regularization mechanism. The Pure set has sparse co-occurrences (pair_cover=0.016), so a smaller embedding may prevent overfitting to rare ID pairs and improve within-user ranking on the validation set. Although a prior screen on the deepfm parent showed a small positive delta (+0.00028), it did not pass the bar; on the FM parent the effect could be similar. This trial will test whether the capacity reduction helps the FM baseline itself."
+    },
+    {
+      "id": "056_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6039429903030396,
+      "buggy": false,
+      "hypothesis": "legal_untried fallback"
+    },
+    {
+      "id": "057_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039429903030396,
+      "buggy": false,
+      "hypothesis": "The 20-step pooled sequence parent shows a small but consistent local-ranking gain over the deepfm incumbent; adding a global BPR pairwise loss on top may further improve within-user ranking by leveraging cross-user preference comparisons. Prior bpr_global screens were near-zero on other identities, so this ablate will 3-seed both the parent identity and parent+bpr_global to decide whether either is a real improvement."
+    },
+    {
+      "id": "058_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.603509783744812,
+      "buggy": false,
+      "hypothesis": "The 20-step pooled sequence parent shows a small but consistent local-ranking gain over the deepfm incumbent; adding a global BPR pairwise loss on top may further improve within-user ranking by leveraging cross-user preference comparisons. Prior bpr_global screens were near-zero on other identities, so this ablate will 3-seed both the parent identity and parent+bpr_global to decide whether either is a real improvement."
+    },
+    {
+      "id": "059_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6036971807479858,
+      "buggy": false,
+      "hypothesis": "The 20-step pooled sequence parent shows a small but consistent local-ranking gain over the deepfm incumbent; adding a global BPR pairwise loss on top may further improve within-user ranking by leveraging cross-user preference comparisons. Prior bpr_global screens were near-zero on other identities, so this ablate will 3-seed both the parent identity and parent+bpr_global to decide whether either is a real improvement."
+    },
+    {
+      "id": "060_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6037173271179199,
+      "buggy": false,
+      "hypothesis": "The 20-step pooled sequence parent shows a small but consistent local-ranking gain over the deepfm incumbent; adding a global BPR pairwise loss on top may further improve within-user ranking by leveraging cross-user preference comparisons. Prior bpr_global screens were near-zero on other identities, so this ablate will 3-seed both the parent identity and parent+bpr_global to decide whether either is a real improvement."
+    },
+    {
+      "id": "061_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6030042767524719,
+      "buggy": false,
+      "hypothesis": "The 20-step pooled sequence parent shows a small but consistent local-ranking gain over the deepfm incumbent; adding a global BPR pairwise loss on top may further improve within-user ranking by leveraging cross-user preference comparisons. Prior bpr_global screens were near-zero on other identities, so this ablate will 3-seed both the parent identity and parent+bpr_global to decide whether either is a real improvement."
+    },
+    {
+      "id": "062_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6029853224754333,
+      "buggy": false,
+      "hypothesis": "The 20-step pooled sequence parent shows a small but consistent local-ranking gain over the deepfm incumbent; adding a global BPR pairwise loss on top may further improve within-user ranking by leveraging cross-user preference comparisons. Prior bpr_global screens were near-zero on other identities, so this ablate will 3-seed both the parent identity and parent+bpr_global to decide whether either is a real improvement."
+    },
+    {
+      "id": "063_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.0002256631851196289, -0.0005055069923400879, -0.0007118582725524902], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.00048100948333740234}]"
+    },
+    {
+      "id": "064_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6040253718569244,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['057_ablate_c0_s0', '058_ablate_c0_s1', '059_ablate_c0_s2']."
+    },
+    {
+      "id": "065_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '037_ablate_c1_s0', '038_ablate_c1_s1', '039_ablate_c1_s2', '048_ablate_c1_s0', '049_ablate_c1_s1', '050_ablate_c1_s2', '060_ablate_c1_s0', '061_ablate_c1_s1', '062_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2', '034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2', '045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2', '057_ablate_c0_s0', '058_ablate_c0_s1', '059_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "066_crossover",
+      "stage": "improve",
+      "arm": "features",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Config crossover: keep incumbent identity, add {'seq_len': 20, 'seq_mode': 'pool'} from a near-top partner (not an evolutionary search; at most 3 merges per run)."
+    },
+    {
+      "id": "067_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6031107902526855,
+      "buggy": false,
+      "hypothesis": "Within-user ranking on KuaiRand-Pure is driven largely by recency/session context: users' later logged impressions are more predictive of long_view than their static long-term affinities. The seq_len=20 pooled sequence was statistically flat vs the incumbent but improved nDCG@5 (+0.00031), and it beat seq_len=10, indicating that longer pooled history adds top-ranking signal. Extending the mean-pooled context to seq_len=50 should cover the median user's 31 logged impressions and stabilize the recency representation without the variance of DIN attention over long windows. I expect a small positive improvement in the primary metric."
+    },
+    {
+      "id": "068_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6031107902526855,
+      "buggy": false,
+      "hypothesis": "The screened parent 067_sequence (seq_len=100, seq_mode=pool) failed its screen at -0.00075 with CI [-0.00218, 0.00084] and a temporal split disagreement of 0.00084, so it is ambiguous whether longer pooling is truly harmful or just noise. This 3-seed ablation measures that parent identity against the confirmed deepfm incumbent; because seq_len=100/pool was the weakest sequence variant so far, I expect it to confirm neutral-to-negative rather than recover. The extra loss challenger bpr_global has been neutral in prior screens, so it serves mainly as a second 3-seed measurement on this parent identity and should not be promoted unless it beats c0 by more than noise. If the 3-seed CI excludes 0 negatively, we record a parent-scoped grave and stop retrying seq_len=100/pool on this identity."
+    },
+    {
+      "id": "069_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6020937561988831,
+      "buggy": false,
+      "hypothesis": "The screened parent 067_sequence (seq_len=100, seq_mode=pool) failed its screen at -0.00075 with CI [-0.00218, 0.00084] and a temporal split disagreement of 0.00084, so it is ambiguous whether longer pooling is truly harmful or just noise. This 3-seed ablation measures that parent identity against the confirmed deepfm incumbent; because seq_len=100/pool was the weakest sequence variant so far, I expect it to confirm neutral-to-negative rather than recover. The extra loss challenger bpr_global has been neutral in prior screens, so it serves mainly as a second 3-seed measurement on this parent identity and should not be promoted unless it beats c0 by more than noise. If the 3-seed CI excludes 0 negatively, we record a parent-scoped grave and stop retrying seq_len=100/pool on this identity."
+    },
+    {
+      "id": "070_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6021323204040527,
+      "buggy": false,
+      "hypothesis": "The screened parent 067_sequence (seq_len=100, seq_mode=pool) failed its screen at -0.00075 with CI [-0.00218, 0.00084] and a temporal split disagreement of 0.00084, so it is ambiguous whether longer pooling is truly harmful or just noise. This 3-seed ablation measures that parent identity against the confirmed deepfm incumbent; because seq_len=100/pool was the weakest sequence variant so far, I expect it to confirm neutral-to-negative rather than recover. The extra loss challenger bpr_global has been neutral in prior screens, so it serves mainly as a second 3-seed measurement on this parent identity and should not be promoted unless it beats c0 by more than noise. If the 3-seed CI excludes 0 negatively, we record a parent-scoped grave and stop retrying seq_len=100/pool on this identity."
+    },
+    {
+      "id": "071_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6046287417411804,
+      "buggy": false,
+      "hypothesis": "The screened parent 067_sequence (seq_len=100, seq_mode=pool) failed its screen at -0.00075 with CI [-0.00218, 0.00084] and a temporal split disagreement of 0.00084, so it is ambiguous whether longer pooling is truly harmful or just noise. This 3-seed ablation measures that parent identity against the confirmed deepfm incumbent; because seq_len=100/pool was the weakest sequence variant so far, I expect it to confirm neutral-to-negative rather than recover. The extra loss challenger bpr_global has been neutral in prior screens, so it serves mainly as a second 3-seed measurement on this parent identity and should not be promoted unless it beats c0 by more than noise. If the 3-seed CI excludes 0 negatively, we record a parent-scoped grave and stop retrying seq_len=100/pool on this identity."
+    },
+    {
+      "id": "072_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6020463109016418,
+      "buggy": false,
+      "hypothesis": "The screened parent 067_sequence (seq_len=100, seq_mode=pool) failed its screen at -0.00075 with CI [-0.00218, 0.00084] and a temporal split disagreement of 0.00084, so it is ambiguous whether longer pooling is truly harmful or just noise. This 3-seed ablation measures that parent identity against the confirmed deepfm incumbent; because seq_len=100/pool was the weakest sequence variant so far, I expect it to confirm neutral-to-negative rather than recover. The extra loss challenger bpr_global has been neutral in prior screens, so it serves mainly as a second 3-seed measurement on this parent identity and should not be promoted unless it beats c0 by more than noise. If the 3-seed CI excludes 0 negatively, we record a parent-scoped grave and stop retrying seq_len=100/pool on this identity."
+    },
+    {
+      "id": "073_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6020019054412842,
+      "buggy": false,
+      "hypothesis": "The screened parent 067_sequence (seq_len=100, seq_mode=pool) failed its screen at -0.00075 with CI [-0.00218, 0.00084] and a temporal split disagreement of 0.00084, so it is ambiguous whether longer pooling is truly harmful or just noise. This 3-seed ablation measures that parent identity against the confirmed deepfm incumbent; because seq_len=100/pool was the weakest sequence variant so far, I expect it to confirm neutral-to-negative rather than recover. The extra loss challenger bpr_global has been neutral in prior screens, so it serves mainly as a second 3-seed measurement on this parent identity and should not be promoted unless it beats c0 by more than noise. If the 3-seed CI excludes 0 negatively, we record a parent-scoped grave and stop retrying seq_len=100/pool on this identity."
+    },
+    {
+      "id": "074_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [0.001517951488494873, -4.744529724121094e-05, -0.0001304149627685547], 'n_pos_right': 1, 'n_neg_right': 2, 'n_seeds': 3, 'mean_delta': 0.00044669707616170246}]"
+    },
+    {
+      "id": "075_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6026644249301274,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['068_ablate_c0_s0', '069_ablate_c0_s1', '070_ablate_c0_s2']."
+    },
+    {
+      "id": "076_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '037_ablate_c1_s0', '038_ablate_c1_s1', '039_ablate_c1_s2', '048_ablate_c1_s0', '049_ablate_c1_s1', '050_ablate_c1_s2', '060_ablate_c1_s0', '061_ablate_c1_s1', '062_ablate_c1_s2', '071_ablate_c1_s0', '072_ablate_c1_s1', '073_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2', '034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2', '045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2', '057_ablate_c0_s0', '058_ablate_c0_s1', '059_ablate_c0_s2', '068_ablate_c0_s0', '069_ablate_c0_s1', '070_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "077_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6039406061172485,
+      "buggy": false,
+      "hypothesis": "legal_untried fallback"
+    },
+    {
+      "id": "078_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039406061172485,
+      "buggy": false,
+      "hypothesis": "Parent 077 (seq_len=20, seq_mode=din) did not screen past the incumbent alone, but the sequence context changes the user representation and may interact with pairwise ranking. Adding bpr_global on top of this sequence parent could exploit within-user item ordering better than logloss, especially for long_view. This ablate tests whether parent+bpr_global outperforms the sequence parent alone across 3 seeds. If the pairwise delta is not consistently positive, the hypothesized loss-sequence interaction is falsified. I expect at most a small positive delta because bpr_global showed no clear gain on the plain deepfm parent."
+    },
+    {
+      "id": "079_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6035478711128235,
+      "buggy": false,
+      "hypothesis": "Parent 077 (seq_len=20, seq_mode=din) did not screen past the incumbent alone, but the sequence context changes the user representation and may interact with pairwise ranking. Adding bpr_global on top of this sequence parent could exploit within-user item ordering better than logloss, especially for long_view. This ablate tests whether parent+bpr_global outperforms the sequence parent alone across 3 seeds. If the pairwise delta is not consistently positive, the hypothesized loss-sequence interaction is falsified. I expect at most a small positive delta because bpr_global showed no clear gain on the plain deepfm parent."
+    },
+    {
+      "id": "080_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6034793853759766,
+      "buggy": false,
+      "hypothesis": "Parent 077 (seq_len=20, seq_mode=din) did not screen past the incumbent alone, but the sequence context changes the user representation and may interact with pairwise ranking. Adding bpr_global on top of this sequence parent could exploit within-user item ordering better than logloss, especially for long_view. This ablate tests whether parent+bpr_global outperforms the sequence parent alone across 3 seeds. If the pairwise delta is not consistently positive, the hypothesized loss-sequence interaction is falsified. I expect at most a small positive delta because bpr_global showed no clear gain on the plain deepfm parent."
+    },
+    {
+      "id": "081_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.603705883026123,
+      "buggy": false,
+      "hypothesis": "Parent 077 (seq_len=20, seq_mode=din) did not screen past the incumbent alone, but the sequence context changes the user representation and may interact with pairwise ranking. Adding bpr_global on top of this sequence parent could exploit within-user item ordering better than logloss, especially for long_view. This ablate tests whether parent+bpr_global outperforms the sequence parent alone across 3 seeds. If the pairwise delta is not consistently positive, the hypothesized loss-sequence interaction is falsified. I expect at most a small positive delta because bpr_global showed no clear gain on the plain deepfm parent."
+    },
+    {
+      "id": "082_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6031763553619385,
+      "buggy": false,
+      "hypothesis": "Parent 077 (seq_len=20, seq_mode=din) did not screen past the incumbent alone, but the sequence context changes the user representation and may interact with pairwise ranking. Adding bpr_global on top of this sequence parent could exploit within-user item ordering better than logloss, especially for long_view. This ablate tests whether parent+bpr_global outperforms the sequence parent alone across 3 seeds. If the pairwise delta is not consistently positive, the hypothesized loss-sequence interaction is falsified. I expect at most a small positive delta because bpr_global showed no clear gain on the plain deepfm parent."
+    },
+    {
+      "id": "083_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6030983328819275,
+      "buggy": false,
+      "hypothesis": "Parent 077 (seq_len=20, seq_mode=din) did not screen past the incumbent alone, but the sequence context changes the user representation and may interact with pairwise ranking. Adding bpr_global on top of this sequence parent could exploit within-user item ordering better than logloss, especially for long_view. This ablate tests whether parent+bpr_global outperforms the sequence parent alone across 3 seeds. If the pairwise delta is not consistently positive, the hypothesized loss-sequence interaction is falsified. I expect at most a small positive delta because bpr_global showed no clear gain on the plain deepfm parent."
+    },
+    {
+      "id": "084_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.00023472309112548828, -0.00037151575088500977, -0.00038105249404907227], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.00032909711201985675}]"
+    },
+    {
+      "id": "085_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6040962386260702,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['078_ablate_c0_s0', '079_ablate_c0_s1', '080_ablate_c0_s2']."
+    },
+    {
+      "id": "086_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '037_ablate_c1_s0', '038_ablate_c1_s1', '039_ablate_c1_s2', '048_ablate_c1_s0', '049_ablate_c1_s1', '050_ablate_c1_s2', '060_ablate_c1_s0', '061_ablate_c1_s1', '062_ablate_c1_s2', '071_ablate_c1_s0', '072_ablate_c1_s1', '073_ablate_c1_s2', '081_ablate_c1_s0', '082_ablate_c1_s1', '083_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2', '034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2', '045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2', '057_ablate_c0_s0', '058_ablate_c0_s1', '059_ablate_c0_s2', '068_ablate_c0_s0', '069_ablate_c0_s1', '070_ablate_c0_s2', '078_ablate_c0_s0', '079_ablate_c0_s1', '080_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "087_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6038885116577148,
+      "buggy": false,
+      "hypothesis": "legal_untried fallback"
+    },
+    {
+      "id": "088_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038885116577148,
+      "buggy": false,
+      "hypothesis": "The parent 087_sequence applied seq_len=50 with pooled sequence context to the deepfm baseline and showed only a tiny one-seed delta with a wide CI, so a 3-seed ablate is needed to determine whether the sequence-pool patch is real. The loss arm's remaining legal atomic patch is bpr_global, which replaces logloss with global pairwise ranking; prior screens on nearby parents were mixed and the last ablate found bpr_global 0/3 positive against a sequence variant. I expect config0 (seq50 pool) to land near the incumbent mean, while config1 (bpr_global) is likely no better or slightly worse."
+    },
+    {
+      "id": "089_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.603792130947113,
+      "buggy": false,
+      "hypothesis": "The parent 087_sequence applied seq_len=50 with pooled sequence context to the deepfm baseline and showed only a tiny one-seed delta with a wide CI, so a 3-seed ablate is needed to determine whether the sequence-pool patch is real. The loss arm's remaining legal atomic patch is bpr_global, which replaces logloss with global pairwise ranking; prior screens on nearby parents were mixed and the last ablate found bpr_global 0/3 positive against a sequence variant. I expect config0 (seq50 pool) to land near the incumbent mean, while config1 (bpr_global) is likely no better or slightly worse."
+    },
+    {
+      "id": "090_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038936376571655,
+      "buggy": false,
+      "hypothesis": "The parent 087_sequence applied seq_len=50 with pooled sequence context to the deepfm baseline and showed only a tiny one-seed delta with a wide CI, so a 3-seed ablate is needed to determine whether the sequence-pool patch is real. The loss arm's remaining legal atomic patch is bpr_global, which replaces logloss with global pairwise ranking; prior screens on nearby parents were mixed and the last ablate found bpr_global 0/3 positive against a sequence variant. I expect config0 (seq50 pool) to land near the incumbent mean, while config1 (bpr_global) is likely no better or slightly worse."
+    },
+    {
+      "id": "091_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038978695869446,
+      "buggy": false,
+      "hypothesis": "The parent 087_sequence applied seq_len=50 with pooled sequence context to the deepfm baseline and showed only a tiny one-seed delta with a wide CI, so a 3-seed ablate is needed to determine whether the sequence-pool patch is real. The loss arm's remaining legal atomic patch is bpr_global, which replaces logloss with global pairwise ranking; prior screens on nearby parents were mixed and the last ablate found bpr_global 0/3 positive against a sequence variant. I expect config0 (seq50 pool) to land near the incumbent mean, while config1 (bpr_global) is likely no better or slightly worse."
+    },
+    {
+      "id": "092_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6035028696060181,
+      "buggy": false,
+      "hypothesis": "The parent 087_sequence applied seq_len=50 with pooled sequence context to the deepfm baseline and showed only a tiny one-seed delta with a wide CI, so a 3-seed ablate is needed to determine whether the sequence-pool patch is real. The loss arm's remaining legal atomic patch is bpr_global, which replaces logloss with global pairwise ranking; prior screens on nearby parents were mixed and the last ablate found bpr_global 0/3 positive against a sequence variant. I expect config0 (seq50 pool) to land near the incumbent mean, while config1 (bpr_global) is likely no better or slightly worse."
+    },
+    {
+      "id": "093_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6028871536254883,
+      "buggy": false,
+      "hypothesis": "The parent 087_sequence applied seq_len=50 with pooled sequence context to the deepfm baseline and showed only a tiny one-seed delta with a wide CI, so a 3-seed ablate is needed to determine whether the sequence-pool patch is real. The loss arm's remaining legal atomic patch is bpr_global, which replaces logloss with global pairwise ranking; prior screens on nearby parents were mixed and the last ablate found bpr_global 0/3 positive against a sequence variant. I expect config0 (seq50 pool) to land near the incumbent mean, while config1 (bpr_global) is likely no better or slightly worse."
+    },
+    {
+      "id": "094_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [9.357929229736328e-06, -0.0002892613410949707, -0.001006484031677246], 'n_pos_right': 1, 'n_neg_right': 2, 'n_seeds': 3, 'mean_delta': -0.00042879581451416016}]"
+    },
+    {
+      "id": "095_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041678386550688,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['088_ablate_c0_s0', '089_ablate_c0_s1', '090_ablate_c0_s2']."
+    },
+    {
+      "id": "096_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041677560248122,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '037_ablate_c1_s0', '038_ablate_c1_s1', '039_ablate_c1_s2', '048_ablate_c1_s0', '049_ablate_c1_s1', '050_ablate_c1_s2', '060_ablate_c1_s0', '061_ablate_c1_s1', '062_ablate_c1_s2', '071_ablate_c1_s0', '072_ablate_c1_s1', '073_ablate_c1_s2', '081_ablate_c1_s0', '082_ablate_c1_s1', '083_ablate_c1_s2', '091_ablate_c1_s0', '092_ablate_c1_s1', '093_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2', '034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2', '045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2', '057_ablate_c0_s0', '058_ablate_c0_s1', '059_ablate_c0_s2', '068_ablate_c0_s0', '069_ablate_c0_s1', '070_ablate_c0_s2', '078_ablate_c0_s0', '079_ablate_c0_s1', '080_ablate_c0_s2', '088_ablate_c0_s0', '089_ablate_c0_s1', '090_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "097_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6038802266120911,
+      "buggy": false,
+      "hypothesis": "legal_untried fallback"
+    },
+    {
+      "id": "098_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038802266120911,
+      "buggy": false,
+      "hypothesis": "3-seed head-to-head ablation of the incumbent deepfm identity (parent 009, logloss) against the global pairwise ranking loss bpr_global on Pure. Two previous 1-seed screens of bpr_global on this exact parent were near zero (dP +0.00006 and -0.00024) and not CI-falsified, so the loss arm is still formally open, but the last 3-seed ablate on the sibling seq-50 identity lost 1/3 (mean_delta -0.00043), and the cross-run 3-seed bpr_global identity on the older draft parent scored 0.60282 vs the incumbent 0.60386. If bpr_global changes within-user pairwise ordering it should show as a positive GAUC/nDCG shift on the challenger; I expect it to stay flat or slightly negative and thereby retire the loss arm on this identity."
+    },
+    {
+      "id": "099_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039880514144897,
+      "buggy": false,
+      "hypothesis": "3-seed head-to-head ablation of the incumbent deepfm identity (parent 009, logloss) against the global pairwise ranking loss bpr_global on Pure. Two previous 1-seed screens of bpr_global on this exact parent were near zero (dP +0.00006 and -0.00024) and not CI-falsified, so the loss arm is still formally open, but the last 3-seed ablate on the sibling seq-50 identity lost 1/3 (mean_delta -0.00043), and the cross-run 3-seed bpr_global identity on the older draft parent scored 0.60282 vs the incumbent 0.60386. If bpr_global changes within-user pairwise ordering it should show as a positive GAUC/nDCG shift on the challenger; I expect it to stay flat or slightly negative and thereby retire the loss arm on this identity."
+    },
+    {
+      "id": "100_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039798259735107,
+      "buggy": false,
+      "hypothesis": "3-seed head-to-head ablation of the incumbent deepfm identity (parent 009, logloss) against the global pairwise ranking loss bpr_global on Pure. Two previous 1-seed screens of bpr_global on this exact parent were near zero (dP +0.00006 and -0.00024) and not CI-falsified, so the loss arm is still formally open, but the last 3-seed ablate on the sibling seq-50 identity lost 1/3 (mean_delta -0.00043), and the cross-run 3-seed bpr_global identity on the older draft parent scored 0.60282 vs the incumbent 0.60386. If bpr_global changes within-user pairwise ordering it should show as a positive GAUC/nDCG shift on the challenger; I expect it to stay flat or slightly negative and thereby retire the loss arm on this identity."
+    },
+    {
+      "id": "101_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038802266120911,
+      "buggy": false,
+      "hypothesis": "3-seed head-to-head ablation of the incumbent deepfm identity (parent 009, logloss) against the global pairwise ranking loss bpr_global on Pure. Two previous 1-seed screens of bpr_global on this exact parent were near zero (dP +0.00006 and -0.00024) and not CI-falsified, so the loss arm is still formally open, but the last 3-seed ablate on the sibling seq-50 identity lost 1/3 (mean_delta -0.00043), and the cross-run 3-seed bpr_global identity on the older draft parent scored 0.60282 vs the incumbent 0.60386. If bpr_global changes within-user pairwise ordering it should show as a positive GAUC/nDCG shift on the challenger; I expect it to stay flat or slightly negative and thereby retire the loss arm on this identity."
+    },
+    {
+      "id": "102_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039880514144897,
+      "buggy": false,
+      "hypothesis": "3-seed head-to-head ablation of the incumbent deepfm identity (parent 009, logloss) against the global pairwise ranking loss bpr_global on Pure. Two previous 1-seed screens of bpr_global on this exact parent were near zero (dP +0.00006 and -0.00024) and not CI-falsified, so the loss arm is still formally open, but the last 3-seed ablate on the sibling seq-50 identity lost 1/3 (mean_delta -0.00043), and the cross-run 3-seed bpr_global identity on the older draft parent scored 0.60282 vs the incumbent 0.60386. If bpr_global changes within-user pairwise ordering it should show as a positive GAUC/nDCG shift on the challenger; I expect it to stay flat or slightly negative and thereby retire the loss arm on this identity."
+    },
+    {
+      "id": "103_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039798259735107,
+      "buggy": false,
+      "hypothesis": "3-seed head-to-head ablation of the incumbent deepfm identity (parent 009, logloss) against the global pairwise ranking loss bpr_global on Pure. Two previous 1-seed screens of bpr_global on this exact parent were near zero (dP +0.00006 and -0.00024) and not CI-falsified, so the loss arm is still formally open, but the last 3-seed ablate on the sibling seq-50 identity lost 1/3 (mean_delta -0.00043), and the cross-run 3-seed bpr_global identity on the older draft parent scored 0.60282 vs the incumbent 0.60386. If bpr_global changes within-user pairwise ordering it should show as a positive GAUC/nDCG shift on the challenger; I expect it to stay flat or slightly negative and thereby retire the loss arm on this identity."
+    },
+    {
+      "id": "104_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=0 n_pos=3/3 mean_delta=0.0001 vs_mean=0.6038620670636495 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [0.0, 0.0, 0.0], 'n_pos_right': 0, 'n_neg_right': 0, 'n_seeds': 3, 'mean_delta': 0.0}]"
+    },
+    {
+      "id": "105_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041285012622465,
+      "buggy": false,
+      "hypothesis": "Rank-average same-config seeds ['098_ablate_c0_s0', '099_ablate_c0_s1', '100_ablate_c0_s2']."
+    },
+    {
+      "id": "106_ensemble",
+      "stage": "ensemble",
+      "arm": "ensemble",
+      "primary": 0.6041285012622465,
+      "buggy": false,
+      "hypothesis": "Valid-only weighted blend of complementary identities ['009_ablate_c0_s0', '010_ablate_c0_s1', '011_ablate_c0_s2', '024_ablate_c1_s0', '025_ablate_c1_s1', '026_ablate_c1_s2', '101_ablate_c1_s0', '102_ablate_c1_s1', '103_ablate_c1_s2', '012_ablate_c1_s0', '013_ablate_c1_s1', '014_ablate_c1_s2', '037_ablate_c1_s0', '038_ablate_c1_s1', '039_ablate_c1_s2', '048_ablate_c1_s0', '049_ablate_c1_s1', '050_ablate_c1_s2', '060_ablate_c1_s0', '061_ablate_c1_s1', '062_ablate_c1_s2', '071_ablate_c1_s0', '072_ablate_c1_s1', '073_ablate_c1_s2', '081_ablate_c1_s0', '082_ablate_c1_s1', '083_ablate_c1_s2', '091_ablate_c1_s0', '092_ablate_c1_s1', '093_ablate_c1_s2', '021_ablate_c0_s0', '022_ablate_c0_s1', '023_ablate_c0_s2', '034_ablate_c0_s0', '035_ablate_c0_s1', '036_ablate_c0_s2', '045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2', '057_ablate_c0_s0', '058_ablate_c0_s1', '059_ablate_c0_s2', '068_ablate_c0_s0', '069_ablate_c0_s1', '070_ablate_c0_s2', '078_ablate_c0_s0', '079_ablate_c0_s1', '080_ablate_c0_s2', '088_ablate_c0_s0', '089_ablate_c0_s1', '090_ablate_c0_s2', '098_ablate_c0_s0', '099_ablate_c0_s1', '100_ablate_c0_s2'] (low-corr pair; linear + product term; not ARIMA)."
+    },
+    {
+      "id": "107_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6039601564407349,
+      "buggy": false,
+      "hypothesis": "The current DIN-lite identity uses only the last 50 logged interactions per user, while training histories extend to a p90 of 97; a longer pooled context (seq_len=100) may capture more within-user preference and improve long_view ranking. This patch is the only remaining untried sequence option on the current parent, and the new deepfm+DIN-lite identity is allowed to retry it even though it was negative on the old FM baseline. The expected gain is small because all nearby sequence variants on this parent have landed within ±0.0001 of the incumbent. If the extra history adds stale or noisy signal, the screen will likely fail."
+    },
+    {
+      "id": "108_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039601564407349,
+      "buggy": false,
+      "hypothesis": "Parent 107 (seq_len=100, seq_mode=pool) showed only a marginal 1-seed primary gain over the incumbent, well within noise. This ablation runs 3 seeds of that identity to check whether the gain is reproducible, and compares it against the only untried loss patch, bpr_global, which directly optimizes pairwise within-user ranking. Since the incumbent already sits on a plateau near 0.60395, I do not expect a large delta; the goal is to confirm which identity is genuinely better before promotion."
+    },
+    {
+      "id": "109_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038879156112671,
+      "buggy": false,
+      "hypothesis": "Parent 107 (seq_len=100, seq_mode=pool) showed only a marginal 1-seed primary gain over the incumbent, well within noise. This ablation runs 3 seeds of that identity to check whether the gain is reproducible, and compares it against the only untried loss patch, bpr_global, which directly optimizes pairwise within-user ranking. Since the incumbent already sits on a plateau near 0.60395, I do not expect a large delta; the goal is to confirm which identity is genuinely better before promotion."
+    },
+    {
+      "id": "110_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6040175557136536,
+      "buggy": false,
+      "hypothesis": "Parent 107 (seq_len=100, seq_mode=pool) showed only a marginal 1-seed primary gain over the incumbent, well within noise. This ablation runs 3 seeds of that identity to check whether the gain is reproducible, and compares it against the only untried loss patch, bpr_global, which directly optimizes pairwise within-user ranking. Since the incumbent already sits on a plateau near 0.60395, I do not expect a large delta; the goal is to confirm which identity is genuinely better before promotion."
+    },
+    {
+      "id": "111_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6035162210464478,
+      "buggy": false,
+      "hypothesis": "Parent 107 (seq_len=100, seq_mode=pool) showed only a marginal 1-seed primary gain over the incumbent, well within noise. This ablation runs 3 seeds of that identity to check whether the gain is reproducible, and compares it against the only untried loss patch, bpr_global, which directly optimizes pairwise within-user ranking. Since the incumbent already sits on a plateau near 0.60395, I do not expect a large delta; the goal is to confirm which identity is genuinely better before promotion."
+    },
+    {
+      "id": "112_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6035981178283691,
+      "buggy": false,
+      "hypothesis": "Parent 107 (seq_len=100, seq_mode=pool) showed only a marginal 1-seed primary gain over the incumbent, well within noise. This ablation runs 3 seeds of that identity to check whether the gain is reproducible, and compares it against the only untried loss patch, bpr_global, which directly optimizes pairwise within-user ranking. Since the incumbent already sits on a plateau near 0.60395, I do not expect a large delta; the goal is to confirm which identity is genuinely better before promotion."
+    },
+    {
+      "id": "113_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6032148599624634,
+      "buggy": false,
+      "hypothesis": "Parent 107 (seq_len=100, seq_mode=pool) showed only a marginal 1-seed primary gain over the incumbent, well within noise. This ablation runs 3 seeds of that identity to check whether the gain is reproducible, and compares it against the only untried loss patch, bpr_global, which directly optimizes pairwise within-user ranking. Since the incumbent already sits on a plateau near 0.60395, I do not expect a large delta; the goal is to confirm which identity is genuinely better before promotion."
+    },
+    {
+      "id": "114_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6039493680000305 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.0004439353942871094, -0.0002897977828979492, -0.0008026957511901855], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.0005121429761250814}]"
+    },
+    {
+      "id": "115_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Increasing the sequence context to 100 interactions with mean pooling lets the model see a longer user history than the current DIN-50 setting. Although 100-pool measured only 2/3 positive on a sibling parent, on the current DIN-50 incumbent it may still provide a slight within-user ranking improvement by capturing more repeated-view patterns. The change is atomic within the sequence arm and legal on this parent, and the expected gain is small given the observed noise level."
+    },
+    {
+      "id": "116_regularization",
+      "stage": "improve",
+      "arm": "regularization",
+      "primary": 0.6029317378997803,
+      "buggy": false,
+      "hypothesis": "The incumbent uses sequence features (seq_len=50, DIN) with default L2=1e-06, which may overfit to the dense training session patterns while valid impressions per user are very sparse (p50=4). Raising L2 to 1e-05 should shrink the added sequence and interaction weights uniformly, reducing variance in within-user score differences without altering user-side first-order terms, so GAUC should stay roughly constant while nDCG@5 improves slightly due to smoother score margins. This is a small capacity-regularization change on the same identity, so the expected improvement is modest but positive."
+    },
+    {
+      "id": "117_regularization",
+      "stage": "improve",
+      "arm": "regularization",
+      "primary": 0.6029297709465027,
+      "buggy": false,
+      "hypothesis": "The incumbent DIN sequence encoder (seq_len=50) adds capacity on a sparse impression set (single_imp=0.175), so a mild L2 increase from 1e-6 to 5e-6 may regularize the sequence and interaction embeddings without the large GAUC/NDCG collapse observed at 1e-5 (dP=-0.0010). This is the gentler neighbor in the regularization grid and should preserve within-user ranking while slightly reducing overfitting. If 5e-6 also lowers primary by more than ~0.0005, the hypothesis that mild L2 helps this DIN-FM identity is falsified."
+    },
+    {
+      "id": "118_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The sequence arm is saturated: every 10-100 step pool/DIN variant screens within ±0.0001 of the incumbent, and the only unmeasured cell is 100-step DIN-lite. Extending the DIN attention window from 50 to 100 logged impressions gives the within-user ranking head a strictly longer behavioral context, letting the attention module down-weight stale interactions while preserving recent-item emphasis, which should slightly improve GAUC/nDCG@5 on users with long histories (train p50=31 rows/user). The 100-step pool challenger is already statistically tied (3-seed mean 0.60396, 2/3 seeds above the 0.60395 bar), so 100-step DIN is the last defensible move in this arm. Expected gain is small because the surface is flat; falsify if the 1-seed CI upper bound stays below vs_object or top1 agreement with the incumbent exceeds ~0.99."
+    },
+    {
+      "id": "119_capacity",
+      "stage": "improve",
+      "arm": "capacity",
+      "primary": 0.6028565168380737,
+      "buggy": false,
+      "hypothesis": "The current identity combines an FM backbone with a DIN sequence encoder (seq_len=50), which adds many parameters relative to the plain FM parent where k=8 was harmful. Reducing embedding dimensionality from k=16 to k=8 may regularize the larger sequence-aware model and improve within-user ranking if overfitting dominates; if capacity loss dominates, it will hurt. This is the only untried capacity patch on this parent, so it is worth a single-screen measurement."
+    },
+    {
+      "id": "120_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": 0.6034176349639893,
+      "buggy": false,
+      "hypothesis": "Current identity is an FM scorer with DIN sequence context; replacing the head with DCNv2 adds a cross network that explicitly learns higher-order feature interactions beyond FM's degree-2 factorization. Within-user ranking, the margin between long-view and short-view items often depends on joint signals such as user preferences for a specific video genre at a specific time; DCNv2 can capture these multiplicative patterns more flexibly. The earlier deepfm challenger was not an improvement, but dcnv2's cross layer is a distinct inductive bias and is still untried on this parent. Expected gain is small and may be within seed noise, hence a modest delta."
+    },
+    {
+      "id": "121_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6034176349639893,
+      "buggy": false,
+      "hypothesis": "On Pure, the incumbent logloss identity (deepfm + seq50din) is strong, and the dcnv2 cross layer failed a 1-seed screen; this ablate gives that parent identity a 3-seed measurement. The extra config switches only the loss to bpr_global, a within-user ranking loss that has repeatedly measured below logloss on pure-scale parents; I expect both dcnv2 and bpr_global to stay below the 0.60395 screen bar. If bpr_global is close rather than clearly worse, it would justify tuning bpr_pairs_cap or decayed sampling in the loss arm; otherwise logloss remains the loss of record."
+    },
+    {
+      "id": "122_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6035290956497192,
+      "buggy": false,
+      "hypothesis": "On Pure, the incumbent logloss identity (deepfm + seq50din) is strong, and the dcnv2 cross layer failed a 1-seed screen; this ablate gives that parent identity a 3-seed measurement. The extra config switches only the loss to bpr_global, a within-user ranking loss that has repeatedly measured below logloss on pure-scale parents; I expect both dcnv2 and bpr_global to stay below the 0.60395 screen bar. If bpr_global is close rather than clearly worse, it would justify tuning bpr_pairs_cap or decayed sampling in the loss arm; otherwise logloss remains the loss of record."
+    },
+    {
+      "id": "123_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6034970283508301,
+      "buggy": false,
+      "hypothesis": "On Pure, the incumbent logloss identity (deepfm + seq50din) is strong, and the dcnv2 cross layer failed a 1-seed screen; this ablate gives that parent identity a 3-seed measurement. The extra config switches only the loss to bpr_global, a within-user ranking loss that has repeatedly measured below logloss on pure-scale parents; I expect both dcnv2 and bpr_global to stay below the 0.60395 screen bar. If bpr_global is close rather than clearly worse, it would justify tuning bpr_pairs_cap or decayed sampling in the loss arm; otherwise logloss remains the loss of record."
+    },
+    {
+      "id": "124_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6029376983642578,
+      "buggy": false,
+      "hypothesis": "On Pure, the incumbent logloss identity (deepfm + seq50din) is strong, and the dcnv2 cross layer failed a 1-seed screen; this ablate gives that parent identity a 3-seed measurement. The extra config switches only the loss to bpr_global, a within-user ranking loss that has repeatedly measured below logloss on pure-scale parents; I expect both dcnv2 and bpr_global to stay below the 0.60395 screen bar. If bpr_global is close rather than clearly worse, it would justify tuning bpr_pairs_cap or decayed sampling in the loss arm; otherwise logloss remains the loss of record."
+    },
+    {
+      "id": "125_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6032350063323975,
+      "buggy": false,
+      "hypothesis": "On Pure, the incumbent logloss identity (deepfm + seq50din) is strong, and the dcnv2 cross layer failed a 1-seed screen; this ablate gives that parent identity a 3-seed measurement. The extra config switches only the loss to bpr_global, a within-user ranking loss that has repeatedly measured below logloss on pure-scale parents; I expect both dcnv2 and bpr_global to stay below the 0.60395 screen bar. If bpr_global is close rather than clearly worse, it would justify tuning bpr_pairs_cap or decayed sampling in the loss arm; otherwise logloss remains the loss of record."
+    },
+    {
+      "id": "126_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6014692187309265,
+      "buggy": false,
+      "hypothesis": "On Pure, the incumbent logloss identity (deepfm + seq50din) is strong, and the dcnv2 cross layer failed a 1-seed screen; this ablate gives that parent identity a 3-seed measurement. The extra config switches only the loss to bpr_global, a within-user ranking loss that has repeatedly measured below logloss on pure-scale parents; I expect both dcnv2 and bpr_global to stay below the 0.60395 screen bar. If bpr_global is close rather than clearly worse, it would justify tuning bpr_pairs_cap or decayed sampling in the loss arm; otherwise logloss remains the loss of record."
+    },
+    {
+      "id": "127_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6039493680000305 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.0004799365997314453, -0.00029408931732177734, -0.0020278096199035645], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.0009339451789855957}]"
+    },
+    {
+      "id": "128_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The incumbent is an FM with DIN sequence pooling over the last 50 logged impressions. DeepFM adds an MLP over the flattened FM field embeddings, which can capture higher-order feature interactions that a linear FM misses; it already improved the no-sequence FM baseline by about +0.0024 primary. The DIN sequence provides user-side context, and deepfm should be complementary because it operates on the item/user feature side rather than the sequence side. I expect a small positive gain in GAUC/nDCG@5 from better calibrated long-view scores. If both GAUC and nDCG drop, the extra capacity is not helping within-user ranking."
+    },
+    {
+      "id": "129_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The incumbent FM with DIN sequence context ranks well, but its pairwise interaction is limited to FM inner products. DeepFM adds a multi-layer perceptron over the same field embeddings, which can model higher-order and nonlinear interactions between the user's recent DIN context and the candidate video features. Within-user ranking should improve if these extra interactions help separate long-view from short-view impressions for users with diverse session histories. Given the pure-scale logs are sparse (pair_cover=0.016), the deep tower risks overfitting, so we expect only a small positive delta and will falsify if the 3-seed CI upper bound is below the incumbent mean."
+    },
+    {
+      "id": "130_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6038802266120911,
+      "buggy": false,
+      "hypothesis": "The incumbent uses logloss for within-user ranking, while bpr_global trains pairwise comparisons over the global user-item pool, which tends to emphasize item popularity rather than user-specific ordering. Prior screens on deepfm and dcnv2 identities measured bpr_global well below the logloss parent, so on the DIN-sequence identity it should again be worse or neutral. This ablate re-tests whether any global pairwise signal helps once user-specific sequence context is present."
+    },
+    {
+      "id": "131_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039880514144897,
+      "buggy": false,
+      "hypothesis": "The incumbent uses logloss for within-user ranking, while bpr_global trains pairwise comparisons over the global user-item pool, which tends to emphasize item popularity rather than user-specific ordering. Prior screens on deepfm and dcnv2 identities measured bpr_global well below the logloss parent, so on the DIN-sequence identity it should again be worse or neutral. This ablate re-tests whether any global pairwise signal helps once user-specific sequence context is present."
+    },
+    {
+      "id": "132_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039798259735107,
+      "buggy": false,
+      "hypothesis": "The incumbent uses logloss for within-user ranking, while bpr_global trains pairwise comparisons over the global user-item pool, which tends to emphasize item popularity rather than user-specific ordering. Prior screens on deepfm and dcnv2 identities measured bpr_global well below the logloss parent, so on the DIN-sequence identity it should again be worse or neutral. This ablate re-tests whether any global pairwise signal helps once user-specific sequence context is present."
+    },
+    {
+      "id": "133_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.603718638420105,
+      "buggy": false,
+      "hypothesis": "The incumbent uses logloss for within-user ranking, while bpr_global trains pairwise comparisons over the global user-item pool, which tends to emphasize item popularity rather than user-specific ordering. Prior screens on deepfm and dcnv2 identities measured bpr_global well below the logloss parent, so on the DIN-sequence identity it should again be worse or neutral. This ablate re-tests whether any global pairwise signal helps once user-specific sequence context is present."
+    },
+    {
+      "id": "134_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6034049391746521,
+      "buggy": false,
+      "hypothesis": "The incumbent uses logloss for within-user ranking, while bpr_global trains pairwise comparisons over the global user-item pool, which tends to emphasize item popularity rather than user-specific ordering. Prior screens on deepfm and dcnv2 identities measured bpr_global well below the logloss parent, so on the DIN-sequence identity it should again be worse or neutral. This ablate re-tests whether any global pairwise signal helps once user-specific sequence context is present."
+    },
+    {
+      "id": "135_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6029974222183228,
+      "buggy": false,
+      "hypothesis": "The incumbent uses logloss for within-user ranking, while bpr_global trains pairwise comparisons over the global user-item pool, which tends to emphasize item popularity rather than user-specific ordering. Prior screens on deepfm and dcnv2 identities measured bpr_global well below the logloss parent, so on the DIN-sequence identity it should again be worse or neutral. This ablate re-tests whether any global pairwise signal helps once user-specific sequence context is present."
+    },
+    {
+      "id": "136_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=None n_pos=0/0 mean_delta=0.0000 vs_mean=0.6039493680000305 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [-0.00016158819198608398, -0.0005831122398376465, -0.0009824037551879883], 'n_pos_right': 0, 'n_neg_right': 3, 'n_seeds': 3, 'mean_delta': -0.0005757013956705729}]"
+    },
+    {
+      "id": "137_architecture",
+      "stage": "improve",
+      "arm": "architecture",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "Current incumbent is a sequence-enhanced FM (seq_len=50, seq_mode=din) that captures user session context but only pairwise FM interactions. Switching the head to deepfm adds a shallow MLP over the flattened FM field embeddings, enabling higher-order non-linear interactions between user, video, and session features. Within a user's logged impression list, such interactions can better separate long-view videos from short-view ones, especially when a user's preference for a video depends on combinations of video attributes. The sequence module is kept, so we test the architecture improvement as one atomic change on the current identity. Expected gain is modest because deepfm was already confirmed on the FM baseline path, but it has not been measured on this seq-din incumbent."
+    },
+    {
+      "id": "138_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.602573812007904,
+      "buggy": false,
+      "hypothesis": "On KuaiRand-Pure, valid users have very short logged histories (median 4 impressions, p90 12), so the current DIN-lite window of 50 spans far beyond the typical valid context while still seeing long noisy training sessions. A shorter window of 20 should retain the recent impression context that drives within-user ordering and reduce dilution from older items; earlier 1-seed screens of seq_len=20/din were the most positive among sequence variants (+0.00008), encouraging a test on the confirmed 50/din identity."
+    },
+    {
+      "id": "139_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.602573812007904,
+      "buggy": false,
+      "hypothesis": "The 138_sequence identity (DIN window 20) lost 0.0014 primary versus the 50-window incumbent, indicating that the shorter context window drops ranking signal from longer valid histories. The loss arm has not been tested on this exact identity: bpr_global was previously negative on the 50-window identity (0/3 positive, mean -0.00058), but a tighter window changes which user-item pairs define the pairwise loss and may either mitigate or amplify that deficit. I expect bpr_global to remain worse than the logloss parent here, because the primary failure is context coverage rather than loss shape, and the pairwise objective adds noise on already short valid sessions. This ablate tests whether the sequence failure is robust across loss functions and whether any loss interaction can rescue the shorter window."
+    },
+    {
+      "id": "140_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6025328040122986,
+      "buggy": false,
+      "hypothesis": "The 138_sequence identity (DIN window 20) lost 0.0014 primary versus the 50-window incumbent, indicating that the shorter context window drops ranking signal from longer valid histories. The loss arm has not been tested on this exact identity: bpr_global was previously negative on the 50-window identity (0/3 positive, mean -0.00058), but a tighter window changes which user-item pairs define the pairwise loss and may either mitigate or amplify that deficit. I expect bpr_global to remain worse than the logloss parent here, because the primary failure is context coverage rather than loss shape, and the pairwise objective adds noise on already short valid sessions. This ablate tests whether the sequence failure is robust across loss functions and whether any loss interaction can rescue the shorter window."
+    },
+    {
+      "id": "141_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6019139289855957,
+      "buggy": false,
+      "hypothesis": "The 138_sequence identity (DIN window 20) lost 0.0014 primary versus the 50-window incumbent, indicating that the shorter context window drops ranking signal from longer valid histories. The loss arm has not been tested on this exact identity: bpr_global was previously negative on the 50-window identity (0/3 positive, mean -0.00058), but a tighter window changes which user-item pairs define the pairwise loss and may either mitigate or amplify that deficit. I expect bpr_global to remain worse than the logloss parent here, because the primary failure is context coverage rather than loss shape, and the pairwise objective adds noise on already short valid sessions. This ablate tests whether the sequence failure is robust across loss functions and whether any loss interaction can rescue the shorter window."
+    },
+    {
+      "id": "142_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039588451385498,
+      "buggy": false,
+      "hypothesis": "The 138_sequence identity (DIN window 20) lost 0.0014 primary versus the 50-window incumbent, indicating that the shorter context window drops ranking signal from longer valid histories. The loss arm has not been tested on this exact identity: bpr_global was previously negative on the 50-window identity (0/3 positive, mean -0.00058), but a tighter window changes which user-item pairs define the pairwise loss and may either mitigate or amplify that deficit. I expect bpr_global to remain worse than the logloss parent here, because the primary failure is context coverage rather than loss shape, and the pairwise objective adds noise on already short valid sessions. This ablate tests whether the sequence failure is robust across loss functions and whether any loss interaction can rescue the shorter window."
+    },
+    {
+      "id": "143_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.602627158164978,
+      "buggy": false,
+      "hypothesis": "The 138_sequence identity (DIN window 20) lost 0.0014 primary versus the 50-window incumbent, indicating that the shorter context window drops ranking signal from longer valid histories. The loss arm has not been tested on this exact identity: bpr_global was previously negative on the 50-window identity (0/3 positive, mean -0.00058), but a tighter window changes which user-item pairs define the pairwise loss and may either mitigate or amplify that deficit. I expect bpr_global to remain worse than the logloss parent here, because the primary failure is context coverage rather than loss shape, and the pairwise objective adds noise on already short valid sessions. This ablate tests whether the sequence failure is robust across loss functions and whether any loss interaction can rescue the shorter window."
+    },
+    {
+      "id": "144_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6023790240287781,
+      "buggy": false,
+      "hypothesis": "The 138_sequence identity (DIN window 20) lost 0.0014 primary versus the 50-window incumbent, indicating that the shorter context window drops ranking signal from longer valid histories. The loss arm has not been tested on this exact identity: bpr_global was previously negative on the 50-window identity (0/3 positive, mean -0.00058), but a tighter window changes which user-item pairs define the pairwise loss and may either mitigate or amplify that deficit. I expect bpr_global to remain worse than the logloss parent here, because the primary failure is context coverage rather than loss shape, and the pairwise objective adds noise on already short valid sessions. This ablate tests whether the sequence failure is robust across loss functions and whether any loss interaction can rescue the shorter window."
+    },
+    {
+      "id": "145_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=1 n_pos=1/3 mean_delta=-0.0010 vs_mean=0.6039493680000305 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [0.001385033130645752, 9.435415267944336e-05, 0.00046509504318237305], 'n_pos_right': 3, 'n_neg_right': 0, 'n_seeds': 3, 'mean_delta': 0.0006481607755025228}]"
+    },
+    {
+      "id": "146_regularization",
+      "stage": "improve",
+      "arm": "regularization",
+      "primary": 0.6024684906005859,
+      "buggy": false,
+      "hypothesis": "The incumbent uses DIN sequence context at seq_len=50 with default L2=1e-6. Both stronger-L2 screens on this same parent (1e-5 and 5e-6) already lowered primary by about 0.001, so the remaining regularization cell, 1e-4, should shrink FM/DIN embeddings even harder. Because valid users have only ~5.6 impressions and 17.5% are single-impression, excessive shrinkage makes item scores collapse toward the user bias and should hurt both GAUC and nDCG@5. Running this cell closes the regularization grid on the current incumbent."
+    },
+    {
+      "id": "147_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6027956008911133,
+      "buggy": false,
+      "hypothesis": "Valid KuaiRand-Pure sessions are much shorter than training sessions (valid p50=4 vs train p50=31), so the incumbent 50-step DIN context may include stale interactions that add noise to the within-user ranking. A shorter 20-step pooled context should still cover nearly all validation histories while averaging recent activity without the attention instability that made 20-step DIN worse. This variant is untried on the current parent and directly tests whether pooling is more robust than attention at short horizons. If recent averaged activity is a better proxy for long-view preference, GAUC and nDCG@5 should improve modestly."
+    },
+    {
+      "id": "148_ablate_c0_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6027956008911133,
+      "buggy": false,
+      "hypothesis": "The bpr_global pairwise loss directly optimizes within-user ranking order and has consistently outperformed sequence variants in prior ablates on this Pure task. Replacing the current logloss with bpr_global should increase GAUC and nDCG@5 by better separating long-view positives from negatives within each user's impression list. The sequence-pool parent at seq_len=20 is a weaker identity, so comparing it against the loss patch isolates whether the loss change is the more promising direction. If confirmed, bpr_global can be layered on the incumbent seq_len=50 din context without sacrificing the recent improvement."
+    },
+    {
+      "id": "149_ablate_c0_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6022876501083374,
+      "buggy": false,
+      "hypothesis": "The bpr_global pairwise loss directly optimizes within-user ranking order and has consistently outperformed sequence variants in prior ablates on this Pure task. Replacing the current logloss with bpr_global should increase GAUC and nDCG@5 by better separating long-view positives from negatives within each user's impression list. The sequence-pool parent at seq_len=20 is a weaker identity, so comparing it against the loss patch isolates whether the loss change is the more promising direction. If confirmed, bpr_global can be layered on the incumbent seq_len=50 din context without sacrificing the recent improvement."
+    },
+    {
+      "id": "150_ablate_c0_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6016735434532166,
+      "buggy": false,
+      "hypothesis": "The bpr_global pairwise loss directly optimizes within-user ranking order and has consistently outperformed sequence variants in prior ablates on this Pure task. Replacing the current logloss with bpr_global should increase GAUC and nDCG@5 by better separating long-view positives from negatives within each user's impression list. The sequence-pool parent at seq_len=20 is a weaker identity, so comparing it against the loss patch isolates whether the loss change is the more promising direction. If confirmed, bpr_global can be layered on the incumbent seq_len=50 din context without sacrificing the recent improvement."
+    },
+    {
+      "id": "151_ablate_c1_s0",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6039104461669922,
+      "buggy": false,
+      "hypothesis": "The bpr_global pairwise loss directly optimizes within-user ranking order and has consistently outperformed sequence variants in prior ablates on this Pure task. Replacing the current logloss with bpr_global should increase GAUC and nDCG@5 by better separating long-view positives from negatives within each user's impression list. The sequence-pool parent at seq_len=20 is a weaker identity, so comparing it against the loss patch isolates whether the loss change is the more promising direction. If confirmed, bpr_global can be layered on the incumbent seq_len=50 din context without sacrificing the recent improvement."
+    },
+    {
+      "id": "152_ablate_c1_s1",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6026420593261719,
+      "buggy": false,
+      "hypothesis": "The bpr_global pairwise loss directly optimizes within-user ranking order and has consistently outperformed sequence variants in prior ablates on this Pure task. Replacing the current logloss with bpr_global should increase GAUC and nDCG@5 by better separating long-view positives from negatives within each user's impression list. The sequence-pool parent at seq_len=20 is a weaker identity, so comparing it against the loss patch isolates whether the loss change is the more promising direction. If confirmed, bpr_global can be layered on the incumbent seq_len=50 din context without sacrificing the recent improvement."
+    },
+    {
+      "id": "153_ablate_c1_s2",
+      "stage": "improve",
+      "arm": "ablate",
+      "primary": 0.6024552583694458,
+      "buggy": false,
+      "hypothesis": "The bpr_global pairwise loss directly optimizes within-user ranking order and has consistently outperformed sequence variants in prior ablates on this Pure task. Replacing the current logloss with bpr_global should increase GAUC and nDCG@5 by better separating long-view positives from negatives within each user's impression list. The sequence-pool parent at seq_len=20 is a weaker identity, so comparing it against the loss patch isolates whether the loss change is the more promising direction. If confirmed, bpr_global can be layered on the incumbent seq_len=50 din context without sacrificing the recent improvement."
+    },
+    {
+      "id": "154_ablate",
+      "stage": "ablate",
+      "arm": "ablate",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "ablate winner=1 n_pos=0/3 mean_delta=-0.0009 vs_mean=0.6039493680000305 pairwise=[{'left': 0, 'right': 1, 'seeds': [0, 1, 2], 'deltas_right_minus_left': [0.0011148452758789062, 0.00035440921783447266, 0.000781714916229248], 'n_pos_right': 3, 'n_neg_right': 0, 'n_seeds': 3, 'mean_delta': 0.0007503231366475424}]"
+    },
+    {
+      "id": "155_read_paper",
+      "stage": "read_paper",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "We are on a plateau around 0.60395 with many sequence, architecture, and loss variants at the same level. The incumbent sequence config (seq_len=50, seq_mode=din) is confirmed, but no sequence length or mode has shown a clear gain. Reading the steering-rules skill may provide guidance on how to break the plateau, e.g., by considering a different model family, a feature like time-decay, or an alternative loss, rather than blindly trying another sequence length."
+    },
+    {
+      "id": "156_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": 0.6020712852478027,
+      "buggy": false,
+      "hypothesis": "The validation impressions are much shorter than training (median 4 vs 31, mean 5.6 vs 43.5), so a DIN context of 50 may attend over mostly padding in valid and add noise. Reducing seq_len to 10 keeps the DIN attention mechanism but focuses on the most recent impressions, better matching the short valid sessions. This atomic change in the sequence arm is untried on this parent (only 20-length variants were tried here) and should alter the within-user ranking only slightly, with a small positive effect on GAUC and nDCG@5. If the attention weights are robust, the ranking order changes only mildly, yielding a small but positive improvement."
+    },
+    {
+      "id": "157_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The sequence arm is locally exhausted: on this parent, seq_len in {10,20} with din or pool and seq_len=100/pool have all screened at or below vs_object, leaving only arch=deepfm as a legal untried structural change. DeepFM was already confirmed to lift the Pure FM baseline from 0.60144 to 0.60386 by adding an MLP on flattened FM fields, which should also improve within-user long_view ordering when combined with the seq50/din context. The MLP can capture non-linear feature interactions that the plain FM pairwise terms miss, potentially improving nDCG@5 more than GAUC. The expected gain is modest because we are on a plateau; if the CI upper bound remains below zero, the deepfm+seq combination is falsified."
+    },
+    {
+      "id": "158_sequence",
+      "stage": "improve",
+      "arm": "sequence",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The incumbent uses DIN attention over 50 logged impressions. Replacing it with mean pooling over 100 impressions tests whether longer pooled context—closer to the user's full session average—improves within-user ranking without attention noise. On the deepfm parent, seq_len=100/pool matched the incumbent within 1e-5 primary, with the highest top-1 agreement (0.988) among sequence screens, so it is a low-risk untried neighbor on this parent. If it wins, it suggests global pooling is more robust than local DIN for this sparse-pair dataset; if it loses, it confirms the DIN-lite sequence arm is saturated."
+    },
+    {
+      "id": "159_read_paper",
+      "stage": "read_paper",
+      "arm": "architecture",
+      "primary": null,
+      "buggy": false,
+      "hypothesis": "The architecture arm is exhausted: deepfm is already the incumbent, dcnv2 has been screened and failed on this parent, and model_family gbm/torch carry cross-run graves. Reading the gbm-native skill will clarify whether a small-tree LightGBM variant is a viable non-duplicate architecture patch before committing to an improve."
+    }
+  ]
+}

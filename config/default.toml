@@ -1,6 +1,11 @@
 [paths]
 kit_dir = "D:/tictokJam/kuairand-starter-kit"
 data_dir = "D:/tictokJam/Kuairand/KuaiRand-Pure/data"
+# Optional. Probe also discovers siblings of data_dir (KuaiRand-1K/data, KuaiRand-27K/data).
+# data_1k_dir = "D:/tictokJam/Kuairand/KuaiRand-1K/data"
+# data_27k_dir = "D:/tictokJam/Kuairand/KuaiRand-27K/data"
+# Pin the run's task instance at launch (also --data-scale / KUAI_DATA_SCALE).
+# data_scale = "pure"
 paper_roots = [
   "D:/tictokJam/NISE",
   "D:/tictokJam/torch-rechub",
@@ -8,24 +13,26 @@ paper_roots = [
 ]
 
 [search]
-num_drafts = 1
+num_drafts = 3
 max_debug_depth = 3
-debug_prob = 0.5
+debug_prob = 0.25
 epsilon = 0.002
 patience_n = 3
-max_iterations = 30
-trial_timeout_sec = 600
+max_iterations = 50
+trial_timeout_sec = 1200
+# Official §2.3/§2.6: 50-iter hard cap + 6 h wall-clock. Self-discipline may pass --max-iters.
+wall_clock_sec = 21600
 
 [parallel]
-# Reserved: 2–4 isolated trials. Default off; greedy remains the search policy.
-enabled = false
-n_workers = 1
+# Ablate 3-seed jobs run as isolated subprocesses. Greedy remains the search policy.
+enabled = true
+n_workers = 3
 max_workers = 4
 
 [jump]
-# Reserved: unlock DeepFM / DCNv2 after validation stagnation.
+# DeepFM/DCNv2 are local `arch` keys now. Jump hook kept for later modules.
 enabled = true
-auto_unlock = true
+auto_unlock = false
 stagnation_rounds = 3
 delta_threshold = 0.002
 architectures = ["deepfm", "dcnv2"]
@@ -50,3 +57,10 @@ temperature = 0.3
 
 [observe]
 heartbeat_sec = 15
+
+[knowledge]
+# Offline: LLM may read files under paper_roots / templates (cheap).
+paper_read = true
+# Online: arXiv API, capped. Off by default; enable with --research for A/B.
+research = false
+research_max = 5

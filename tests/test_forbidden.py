@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from agent.env.forbidden import assert_allowed
+from agent.env.forbidden import assert_allowed, assert_trial_py
 
 
 class ForbiddenTest(unittest.TestCase):
@@ -16,6 +16,15 @@ class ForbiddenTest(unittest.TestCase):
             target.write_text("x", encoding="utf-8")
             with self.assertRaises(PermissionError):
                 assert_allowed(target, kit)
+
+    def test_trial_py_must_be_template(self):
+        with tempfile.TemporaryDirectory() as td:
+            trial = Path(td)
+            (trial / "pipeline.py").write_text("x", encoding="utf-8")
+            assert_trial_py(trial)
+            (trial / "evil.py").write_text("x", encoding="utf-8")
+            with self.assertRaises(PermissionError):
+                assert_trial_py(trial)
 
     def test_allows_pipeline(self):
         with tempfile.TemporaryDirectory() as td:

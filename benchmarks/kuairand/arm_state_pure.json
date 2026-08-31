@@ -1,0 +1,42 @@
+{
+  "loss": {
+    "alpha": 4.0,
+    "beta": 3.0
+  },
+  "optimizer": {
+    "alpha": 3.0,
+    "beta": 2.0
+  },
+  "regularization": {
+    "alpha": 3.0,
+    "beta": 2.0
+  },
+  "sequence": {
+    "alpha": 4.0,
+    "beta": 7.0
+  },
+  "time_shift": {
+    "alpha": 4.0,
+    "beta": 3.0
+  },
+  "multitask": {
+    "alpha": 2.0,
+    "beta": 5.0
+  },
+  "watch_time": {
+    "alpha": 3.0,
+    "beta": 4.0
+  },
+  "features": {
+    "alpha": 6.0,
+    "beta": 8.0
+  },
+  "capacity": {
+    "alpha": 2.0,
+    "beta": 24.0
+  },
+  "architecture": {
+    "alpha": 3.0,
+    "beta": 8.0
+  }
+}

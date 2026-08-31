@@ -1,3 +1,1 @@
-from agent.observe.status import write_status
-
-__all__ = ["write_status"]
+# Observe package. Import submodules directly to avoid workspace circular imports.

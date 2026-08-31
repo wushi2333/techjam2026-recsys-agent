@@ -58,3 +58,16 @@ class ErrorMemory:
             scored.append((overlap, case))
         scored.sort(key=lambda x: x[0], reverse=True)
         return [c for s, c in scored[: self.topk] if s > 0]
+
+    def summarize(self, query: str = "", limit: int = 3) -> list[str]:
+        if not self.enabled or not self.cases:
+            return []
+        lines = []
+        if query:
+            for hit in self.retrieve(query):
+                rec = (hit.recovery or "").strip()[:160]
+                lines.append(f"- similar {hit.trial_id}: {rec or hit.signature[:80]}")
+        fails = [c for c in self.cases if not c.success][-limit:]
+        for case in fails:
+            lines.append(f"- fail {case.trial_id}: {case.signature[:100]}")
+        return lines[: max(limit * 2, 4)]

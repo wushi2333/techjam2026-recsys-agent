@@ -1,0 +1,66 @@
+# Auto findings (not a to-do list)
+
+Tagged measurements written by the harness from journals.
+[measured-3seed] is fact; [measured-1seed] needs ablate; [diagnosis] is a direction.
+Do not treat this file as a human trial agenda.
+
+- [measured-3seed] incumbent 020_ensemble is_bag=True submit=0.60441 seed0=0.60392 member_mean=0.60282 screen_bar=0.60282
+- [measured-3seed] 000_fm_baseline seed0=0.60147 mean=0.60144 patch=None
+- [measured-3seed] 016_ablate_c1_s0 seed0=0.60392 mean=0.60282 patch={'loss': 'bpr_global', 'seed': 0}
+- [measured-3seed] 020_ensemble seed0=0.60441 mean=na patch=['016_ablate_c1_s0', '017_ablate_c1_s1', '018_ablate_c1_s2']
+- [measured-1seed] 026_features {'use_beh_cross': True} dP=-0.00162 CI_hi=-0.00156  # 1-seed, not 3-seed
+- [measured-1seed] 027_watch_time {'cwm_censor': True} dP=-0.00529 CI_hi=-0.00492  # 1-seed, not 3-seed
+- [diagnosis] pred_calibration: 8/17 expected_delta within CI, mean_bias=+0.00290 (over-optimistic)
+- [measured-3seed] incumbent 020_ensemble is_bag=True submit=0.60417 seed0=0.60383 member_mean=0.60386 screen_bar=0.60386
+- [measured-3seed] 000_fm_baseline seed0=0.60147 mean=0.60144 patch={'aux_click_weight': 0.3, 'cwm_weight': 0.2}
+- [measured-3seed] 006_ablate_c0_s0 seed0=0.60383 mean=0.60386 patch={'arch': 'deepfm', 'seed': 0}
+- [measured-1seed] 022_loss {'loss': 'listwise', 'listwise_gain': 'ndcg'} dP=-0.01328 CI_hi=-0.01122  # 1-seed, not 3-seed
+- [measured-1seed] 023_loss {'loss': 'bpr'} dP=-0.00357 CI_hi=-0.00224  # 1-seed, not 3-seed
+- [diagnosis] pred_calibration: 6/15 expected_delta within CI, mean_bias=+0.00003 (over-optimistic)
+- [measured-3seed] incumbent 015_ensemble is_bag=True submit=0.60440 seed0=0.60362 member_mean=0.60339 screen_bar=0.60339
+- [measured-3seed] 014_ensemble seed0=0.60417 mean=na patch=['007_ablate_c0_s0', '008_ablate_c0_s1', '009_ablate_c0_s2']
+- [measured-3seed] 015_ensemble seed0=0.60440 mean=na patch=['010_ablate_c1_s0', '011_ablate_c1_s1', '012_ablate_c1_s2']
+- [measured-1seed] 020_loss parent=015_ensemble {'loss': 'listwise', 'listwise_gain': 'uniform'} dP=-0.00427 CI_hi=-0.00332  # 1-seed on this parent, not 3-seed
+- [diagnosis] pred_calibration: 8/11 expected_delta within CI, mean_bias=+0.00447 (over-optimistic)
+- [measured-3seed] incumbent 018_ensemble is_bag=True submit=0.60449 seed0=0.60383 member_mean=0.60334 screen_bar=0.60334
+- [measured-3seed] 018_ensemble seed0=0.60449 mean=na patch=['007_ablate_c0_s0', '008_ablate_c0_s1', '009_ablate_c0_s2', '010_ablate_c1_s0', '011_ablate_c1_s1', '012_ablate_c1_s2']
+- [measured-1seed] 020_loss parent=018_ensemble {'loss': 'listwise', 'listwise_gain': 'uniform'} dP=-0.00421 CI_hi=-0.00349  # 1-seed on this parent, not 3-seed
+- [diagnosis] pred_calibration: 12/17 expected_delta within CI, mean_bias=+0.00214 (over-optimistic)
+- [measured-3seed] incumbent 034_ensemble is_bag=True submit=0.60460 seed0=0.60449 member_mean=0.60399 screen_bar=0.60399
+- [measured-3seed] 021_ensemble seed0=0.60440 mean=na patch=['014_ablate_c0_s0', '015_ablate_c0_s1', '016_ablate_c0_s2']
+- [measured-3seed] 034_ensemble seed0=0.60460 mean=na patch=['027_ablate_c0_s0', '028_ablate_c0_s1', '029_ablate_c0_s2']
+- [diagnosis] pred_calibration: 12/22 expected_delta within CI, mean_bias=+0.00126 (over-optimistic)
+- [measured-3seed] incumbent 143_ensemble is_bag=True submit=0.63931 seed0=0.63558 member_mean=0.63505 screen_bar=0.63505
+- [measured-3seed] 025_ablate_c0_s0 seed0=0.61547 mean=0.61665 patch={'use_time_decay': True, 'seed': 0}
+- [measured-3seed] 029_ensemble seed0=0.61883 mean=na patch=['025_ablate_c0_s0', '026_ablate_c0_s1', '027_ablate_c0_s2']
+- [measured-3seed] 039_ensemble seed0=0.61919 mean=na patch=['032_ablate_c0_s0', '033_ablate_c0_s1', '034_ablate_c0_s2']
+- [measured-3seed] 052_ensemble seed0=0.62129 mean=na patch=['045_ablate_c0_s0', '046_ablate_c0_s1', '047_ablate_c0_s2']
+- [measured-3seed] 053_ensemble seed0=0.62129 mean=na patch=['048_ablate_c1_s0', '049_ablate_c1_s1', '050_ablate_c1_s2']
+- [measured-3seed] 065_ensemble seed0=0.63059 mean=na patch=['061_ablate_c0_s0', '062_ablate_c0_s1', '063_ablate_c0_s2']
+- [measured-3seed] 084_ensemble seed0=0.63059 mean=na patch=['080_ablate_c0_s0', '081_ablate_c0_s1', '082_ablate_c0_s2']
+- [measured-3seed] 088_ablate_c0_s0 seed0=0.63208 mean=0.63172 patch={'k': 8, 'seed': 0}
+- [measured-3seed] 092_ensemble seed0=0.63335 mean=na patch=['088_ablate_c0_s0', '089_ablate_c0_s1', '090_ablate_c0_s2']
+- [measured-3seed] 105_ablate_c0_s0 seed0=0.63303 mean=0.63385 patch={'arch': 'dcnv2', 'seed': 0}
+- [measured-3seed] 112_ensemble seed0=0.63692 mean=na patch=['105_ablate_c0_s0', '106_ablate_c0_s1', '107_ablate_c0_s2']
+- [measured-3seed] 143_ensemble seed0=0.63931 mean=na patch=['139_ablate_c0_s0', '140_ablate_c0_s1', '141_ablate_c0_s2']
+- [measured-1seed] 008_draft parent=(root) scale=pure {'model_family': 'gbm'} dP=-0.02432 CI_hi=-0.02093  # draft 1-seed
+- [measured-1seed] 031_watch_time parent=029_ensemble scale=pure {'wlr_play': True} dP=0.00021 CI_hi=-0.00026  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 042_crossover parent=039_ensemble scale=pure {'use_itemcf': True} dP=0.00013 CI_hi=-0.00103  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 044_features parent=039_ensemble scale=pure {'use_beh_rank': True} dP=-0.00001 CI_hi=-0.00017  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 055_crossover parent=052_ensemble scale=pure {'bpr_decay_sample': True} dP=-0.00226 CI_hi=-0.00317  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 067_sequence parent=065_ensemble scale=pure {'seq_len': 100, 'seq_mode': 'din'} dP=-0.00008 CI_hi=-0.00329  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 086_multitask parent=065_ensemble scale=pure {'aux_click': True} dP=-0.00196 CI_hi=-0.00536  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 095_time_shift parent=092_ensemble scale=pure {'use_hour': True} dP=-0.00291 CI_hi=-0.00323  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 114_features parent=000_fm_baseline scale=pure {'use_time_decay': True} dP=-0.03079 CI_hi=-0.03159  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 122_architecture parent=112_ensemble scale=pure {'model_family': 'torch'} dP=-0.09811 CI_hi=-0.09756  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 145_capacity parent=143_ensemble scale=pure {'k': 32} dP=-0.01560 CI_hi=-0.01759  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 146_loss parent=143_ensemble scale=pure {'bpr_pairs_cap': 64} dP=0.00053 CI_hi=-0.00262  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 147_capacity parent=143_ensemble scale=pure {'k': 64} dP=-0.02358 CI_hi=-0.02551  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 149_capacity parent=143_ensemble scale=pure {'k': 16} dP=-0.01113 CI_hi=-0.01353  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 150_loss parent=143_ensemble scale=pure {'bpr_pairs_cap': 16} dP=0.00053 CI_hi=-0.00262  # 1-seed on this parent, not 3-seed
+- [diagnosis] pred_calibration: 14/101 expected_delta within CI, mean_bias=+0.00832 (over-optimistic)
+- [measured-3seed] incumbent 098_ablate_c0_s0 is_bag=False submit=0.60388 seed0=0.60388 member_mean=na screen_bar=0.60395
+- [measured-3seed] 098_ablate_c0_s0 seed0=0.60388 mean=0.60395 patch={'seq_len': 50, 'seq_mode': 'din', 'seed': 0}
+- [measured-1seed] 055_capacity parent=000_fm_baseline scale=pure {'k': 8} dP=-0.00384 CI_hi=-0.00223  # 1-seed on this parent, not 3-seed
+- [measured-1seed] 156_sequence parent=098_ablate_c0_s0 scale=pure {'seq_len': 10, 'seq_mode': 'din'} dP=-0.00188 CI_hi=-0.00038  # 1-seed on this parent, not 3-seed
+- [diagnosis] pred_calibration: 87/101 expected_delta within CI, mean_bias=+0.00078 (over-optimistic)

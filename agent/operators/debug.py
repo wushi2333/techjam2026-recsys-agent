@@ -11,4 +11,4 @@ def run(llm, journal, parent: Node, cfg: dict, memory: ErrorMemory):
     extra = cfg.copy()
     extra["_error_hints"] = [h.recovery for h in hints]
     arm = Arm(parent.arm, "local", 1, 1)
-    return plan(llm, "debug", arm, parent, journal, extra)
+    return plan(llm, "debug", arm, parent, journal, extra, eda_text="")

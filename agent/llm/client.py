@@ -7,10 +7,27 @@ from dataclasses import dataclass
 from agent.config import Settings
 from agent.llm.openai_compat import LLMError, chat_completions
 from agent.llm.prompts import SYSTEM, user_prompt
-from agent.llm.schema import extract_json, plan_from_payload
+from agent.llm.schema import default_improve, extract_json, plan_from_payload
 from agent.memory.journal import Journal, Node
 from agent.recsys.arms import Arm
 from agent.types import Change, Hypothesis
+
+
+def force_action(op: str, payload: dict) -> dict:
+    out = dict(payload)
+    got = str(out.get("action") or "")
+    if op in {"ablate", "ensemble"}:
+        out["action"] = op
+    elif op == "draft":
+        if got in {"research", "read_paper"}:
+            out["action"] = "skip"
+            out["skip_reason"] = out.get("skip_reason") or "draft cannot cheap-act"
+        else:
+            out["action"] = "improve"
+    elif op == "improve" and got not in {"", "improve", "skip", "research", "read_paper", "diagnose"}:
+        out["action"] = "skip"
+        out["skip_reason"] = out.get("skip_reason") or f"policy asked improve, got {got}"
+    return out
 
 
 @dataclass
@@ -29,7 +46,7 @@ class LLMClient:
         self.tokens_out = 0
         self.last_error = ""
 
-    def plan(self, op, arm, parent, journal, cfg):
+    def plan(self, op, arm, parent, journal, cfg, eda_text="", skill_text="", notes_text="", tried_text="", files_window=False):
         raise NotImplementedError(f"LLM provider {self.provider} is not wired")
 
 
@@ -37,36 +54,83 @@ class LLMClient:
 class OpenAIClient(LLMClient):
     provider: str = "openai"
 
+    def _complete(self, messages: list) -> str:
+        text, tin, tout = chat_completions(
+            base_url=self.base_url,
+            api_key=self.api_key,
+            model=self.model,
+            messages=messages,
+            temperature=self.temperature,
+            timeout=180,
+            extra_body=deepseek_extra(self.base_url),
+        )
+        self.tokens_in += tin
+        self.tokens_out += tout
+        return text
+
+    def _fallback(self, arm: Arm, cfg: dict, err: str) -> tuple[Hypothesis, Change]:
+        patch = default_improve(arm.arm_id, cfg)
+        hyp = Hypothesis(f"LLM fallback after {err}", arm.arm_id)
+        if patch:
+            return hyp, Change("diff", config_patch=patch)
+        return hyp, Change("diff", action="skip", skip_reason=err)
+
     def plan(
-        self, op, arm: Arm, parent: Node | None, journal: Journal, cfg: dict
+        self,
+        op,
+        arm: Arm,
+        parent: Node | None,
+        journal: Journal,
+        cfg: dict,
+        eda_text: str = "",
+        skill_text: str = "",
+        notes_text: str = "",
+        tried_text: str = "",
+        files_window: bool = False,
     ) -> tuple[Hypothesis, Change]:
         self.reset_usage()
         messages = [
             {"role": "system", "content": SYSTEM},
-            {"role": "user", "content": user_prompt(op, arm, parent, journal, cfg)},
+            {
+                "role": "user",
+                "content": user_prompt(
+                    op,
+                    arm,
+                    parent,
+                    journal,
+                    cfg,
+                    eda_text,
+                    skill_text,
+                    notes_text,
+                    tried_text,
+                    files_window=files_window,
+                ),
+            },
         ]
-        try:
-            text, tin, tout = chat_completions(
-                base_url=self.base_url,
-                api_key=self.api_key,
-                model=self.model,
-                messages=messages,
-                temperature=self.temperature,
-                timeout=180,
-                extra_body=deepseek_extra(self.base_url),
-            )
-        except LLMError as exc:
-            self.last_error = str(exc)
-            hyp = Hypothesis(f"LLM call failed: {exc}", arm.arm_id)
-            return hyp, Change("diff", skip=True, skip_reason=str(exc))
-        self.tokens_in, self.tokens_out = tin, tout
-        try:
-            payload = extract_json(text)
-            return plan_from_payload(arm.arm_id, payload)
-        except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
-            self.last_error = str(exc)
-            hyp = Hypothesis(f"LLM JSON parse failed: {exc}", arm.arm_id)
-            return hyp, Change("diff", skip=True, skip_reason=str(exc))
+        last = ""
+        for attempt in range(2):
+            try:
+                last = self._complete(messages)
+                payload = extract_json(last)
+                return plan_from_payload(
+                    arm.arm_id,
+                    force_action(op, payload),
+                    expected_action=op,
+                    data_scale=str((cfg or {}).get("data_scale") or ""),
+                )
+            except LLMError as exc:
+                self.last_error = str(exc)
+                return self._fallback(arm, cfg, str(exc))
+            except (ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+                self.last_error = str(exc)
+                messages.append({"role": "assistant", "content": last[:2000]})
+                messages.append(
+                    {
+                        "role": "user",
+                        "content": f"Invalid JSON ({exc}). Reply with the JSON object only.",
+                    }
+                )
+        return self._fallback(arm, cfg, self.last_error or "invalid json")
 
 
 def _env_key() -> str:
