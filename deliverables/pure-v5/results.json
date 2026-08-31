@@ -26,5 +26,15 @@
   },
   "log_random_note": "Off-policy check on log_random_* impressions; not the official random-score baseline (primary 0.4753).",
   "search_valid_primary": 0.6043970584869385,
-  "finalize_valid_drift": 0.0
+  "finalize_valid_drift": 0.0,
+  "hidden_diagnostic": {
+    "GAUC": 0.6648582812059692,
+    "nDCG@5": 0.5304619682077641,
+    "primary": 0.5976601247068667,
+    "users": 23875,
+    "rows": 170588,
+    "official_fm_hidden_primary": 0.5946,
+    "delta_vs_fm_hidden": 0.00306,
+    "note": "Scored once after search. Not used to pick the model."
+  }
 }

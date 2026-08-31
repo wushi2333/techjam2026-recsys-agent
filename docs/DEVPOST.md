@@ -8,8 +8,10 @@ An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the o
 |---|---|---|---|
 | Official FM (valid) | 0.6674 | 0.5357 | 0.6016 |
 | Submitted Pure (valid) | 0.67105 | 0.53774 | **0.60440** |
+| Official FM (hidden test) | 0.6610 | 0.5282 | 0.5946 |
+| Submitted Pure (hidden test) | 0.66486 | 0.53046 | **0.59766** |
 
-Submitted Pure: 50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. Contest CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
+Submitted Pure: 50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. Hidden test **0.59766** was scored once after search and was not used to pick the model. Contest CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
 
 Bonus KuaiRand-1K (different id space, not in that CSV): official FM 0.64203 → **0.65001** (+0.00798). Stopped on the 6 h wall at 31/50. Snapshot: `deliverables/1k/`.
 

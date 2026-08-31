@@ -12,8 +12,8 @@ KuaiRand-Pure — label `long_view`, primary = mean(GAUC, nDCG@5). Kit `evaluate
 |---|---|---|---|---|
 | Official FM (valid) | 0.6674 | 0.5357 | 0.6016 | — |
 | **Submitted Pure (valid)** 3-seed BPR bag | 0.67105 | 0.53774 | **0.60440** | **+0.00280** |
-| Official FM (published test) | 0.6610 | 0.5282 | 0.5946 | — |
-| Contest CSV, scored once after search | — | — | **0.59766** | +0.00306 |
+| Official FM (hidden test) | 0.6610 | 0.5282 | 0.5946 | — |
+| **Submitted Pure (hidden test)** | 0.66486 | 0.53046 | **0.59766** | **+0.00306** |
 
 The after-the-fact test number was **not** used to pick the model. CSV: [`deliverables/pure-v5/submission.csv`](deliverables/pure-v5/submission.csv) (170,588 rows). Write-up: [`docs/report.md`](docs/report.md).
 

@@ -8,7 +8,7 @@
 |---|---|
 | [`pure-v5/submission.csv`](pure-v5/submission.csv) | Contest scores, 170,588 test rows |
 | [`pure-v5/progress.log`](pure-v5/progress.log) | Readable Pure trace |
-| [`pure-v5/results.json`](pure-v5/results.json) | Valid table (0.60440 vs FM 0.6016) |
+| [`pure-v5/results.json`](pure-v5/results.json) | Valid 0.60440; hidden test 0.59766 (once after search) |
 | [`pure-v5/journal.jsonl`](pure-v5/journal.jsonl) | Per-trial hypothesis and metrics |
 | [`../docs/report.md`](../docs/report.md) | Longer write-up |
 | [`../docs/DEVPOST.md`](../docs/DEVPOST.md) | Short project description |

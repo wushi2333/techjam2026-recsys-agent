@@ -56,12 +56,14 @@ Already in `deliverables/pure-v5/`:
 | CSV | `deliverables/pure-v5/submission.csv` |
 | Valid GAUC / nDCG@5 / primary | 0.67105 / 0.53774 / **0.60440** |
 | Δ vs FM valid primary | **+0.00280** |
+| Hidden test GAUC / nDCG@5 / primary | 0.66486 / 0.53046 / **0.59766** |
+| Δ vs FM hidden primary | **+0.00306** (scored once after search; not used to pick the model) |
 | Tokens in+out | 862,773 |
 | Agent wall-clock | 2.91 h |
 | Iterations | 50 / 50 |
 | GPU-hours | 0.0 |
 
-Do **not** put a self-scored hidden primary in the public table. Organizers score the CSV once.
+Hidden numbers above are a one-time diagnostic after search. Organizers still score the CSV once.
 
 ## Same-day (deadline)
 

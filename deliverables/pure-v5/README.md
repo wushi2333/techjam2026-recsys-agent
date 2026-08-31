@@ -1,11 +1,13 @@
 # Submitted Pure (`run_pure_v5`)
 
-Validation, kit `evaluate.py`:
+Kit `evaluate.py`:
 
-| | GAUC | nDCG@5 | primary |
-|---|---|---|---|
-| Official FM | 0.6674 | 0.5357 | 0.6016 |
-| 3-seed rank average (`bpr_global`, seeds 0/1/2) | 0.67105 | 0.53774 | 0.60440 |
+| | GAUC | nDCG@5 | primary | vs FM |
+|---|---|---|---|---|
+| Official FM (valid) | 0.6674 | 0.5357 | 0.6016 | — |
+| 3-seed BPR bag (valid) | 0.67105 | 0.53774 | **0.60440** | **+0.00280** |
+| Official FM (hidden test) | 0.6610 | 0.5282 | 0.5946 | — |
+| Same CSV (hidden test, once after search) | 0.66486 | 0.53046 | **0.59766** | **+0.00306** |
 
 `submission.csv` has 170,588 rows in kit test order. Search used train and valid only. Finalize retrained those three seeds on train.
 

@@ -1,6 +1,6 @@
 # Notes on submitted Pure
 
-Write-up for the contest search in `deliverables/pure-v5/`. Numbers below are **validation** unless said otherwise. The contest CSV is scored by the official evaluator on the hidden split; we did not use test labels to pick the model.
+Write-up for the contest search in `deliverables/pure-v5/`. Search numbers below are **validation** unless said otherwise. After search we scored the contest CSV once on hidden test; that number was not used to pick the model.
 
 - [Summary first](#summary-first)
 - [Task](#task)
@@ -16,7 +16,7 @@ Write-up for the contest search in `deliverables/pure-v5/`. Numbers below are **
 
 ## Summary first
 
-**Submitted:** 3-seed rank average of `loss=bpr_global` on the numpy FM. Valid primary **0.60440** vs official FM **0.6016** (delta **+0.00280**). 50/50 billed iterations, 2.91 h, 862,773 tokens, 0 GPU-hours, **0 runtime interventions**.
+**Submitted:** 3-seed rank average of `loss=bpr_global` on the numpy FM. Valid primary **0.60440** vs official FM **0.6016** (delta **+0.00280**). Hidden test, scored once after search: **0.59766** (GAUC 0.66486, nDCG@5 0.53046) vs official FM hidden **0.5946** (delta **+0.00306**). 50/50 billed iterations, 2.91 h, 862,773 tokens, 0 GPU-hours, **0 runtime interventions**.
 
 **The most useful thing we learned was a failure.** Leaky Pure (`run_pure_v4`) stacked recency features while valid labels still flowed into them and stored unseen test labels as 0. Its search bag read **valid 0.63975**. Scored once afterwards, that same CSV gave **test 0.56790** — below the official FM's published 0.5946. Valid and test moved in opposite directions by 0.07.
 
@@ -54,12 +54,14 @@ The LLM (DeepSeek, OpenAI-compatible) fills in hypotheses and patches. If it pro
 
 ## Submitted numbers
 
-| | GAUC | nDCG@5 | primary | vs FM valid |
+| | GAUC | nDCG@5 | primary | vs FM |
 |---|---|---|---|---|
-| Official FM | 0.6674 | 0.5357 | 0.6016 | — |
-| 3-seed rank average, `loss=bpr_global` | 0.67105 | 0.53774 | 0.60440 | +0.00280 |
+| Official FM (valid) | 0.6674 | 0.5357 | 0.6016 | — |
+| 3-seed rank average, `loss=bpr_global` (valid) | 0.67105 | 0.53774 | **0.60440** | **+0.00280** |
+| Official FM (hidden test) | 0.6610 | 0.5282 | 0.5946 | — |
+| Same CSV (hidden test, once after search) | 0.66486 | 0.53046 | **0.59766** | **+0.00306** |
 
-Members: trials `012`, `013`, `014` (seeds 0/1/2), numpy FM, pairwise BPR. Finalize retrained those three on train and averaged ranks on test row order. Valid of the retrained bag matched the search bag to 1e-6. `submit.py --check` equivalent: 170,588 rows, aligned.
+Members: trials `012`, `013`, `014` (seeds 0/1/2), numpy FM, pairwise BPR. Finalize retrained those three on train and averaged ranks on test row order. Valid of the retrained bag matched the search bag to 1e-6. `submit.py --check` equivalent: 170,588 rows, aligned. Hidden test was scored **once after search** (primary 0.59766); it was not used to pick the bag.
 
 `log_random_*` was scored once at finalize (primary ≈ 0.367). That is an off-policy log, not the kit’s random-score baseline of 0.4753, and it was not used to choose the model.
 
@@ -178,6 +180,6 @@ The ~3 minute Devpost walkthrough comes **last** and will be linked from the REA
 | `deliverables/pure-v5/submission.csv` | Contest CSV |
 | `deliverables/pure-v5/progress.log` | Readable Pure trace |
 | `deliverables/pure-v5/journal.jsonl` | Per-trial hypothesis and metrics |
-| `deliverables/pure-v5/results.json` | Valid table |
+| `deliverables/pure-v5/results.json` | Valid table plus hidden diagnostic |
 | `deliverables/1k/` | Bonus 1K snapshot (metrics and logs) |
 | [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) | Extra tables, 1K CSV, v4 leak evidence |
