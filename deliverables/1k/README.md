@@ -2,7 +2,7 @@
 
 Optional scale. **Not** the contest primary CSV. User and item ids are re-indexed, so these numbers are not comparable with Pure.
 
-Search stopped on the 6 h wall at **31 / 50** billed iterations. Finalize retrained the confirmed 3-seed `use_time_decay` bag (`039`, `040`, `041`) on train and wrote test scores. A later 1-seed DCNv2 (0.65280) never got a 3-seed because the clock ran out; it is not in the CSV.
+The loop is the same as submitted Pure. The **recipe is not**: Pure’s CSV is 3-seed BPR; this CSV is 3-seed train-only `use_time_decay`. Search stopped on the 6 h wall at **31 / 50** billed iterations. Finalize retrained the confirmed bag (`039`, `040`, `041`) on train and wrote test scores. A later 1-seed DCNv2 (0.65280) never got a 3-seed because the clock ran out; it is not in the CSV.
 
 | | GAUC | nDCG@5 | primary | vs 1K FM |
 |---|---|---|---|---|
