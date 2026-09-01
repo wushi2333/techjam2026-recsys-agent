@@ -21,4 +21,4 @@ Kit `evaluate.py`:
 
 `progress.log` is the readable trace. `journal.jsonl` has the hypothesis and metrics per node. `results.json` repeats the valid table. `log_random_offpolicy` in that file is an off-policy check, not the kit random baseline, and was not used for selection. `summary.json` `integrity.src_hash` is `05111ef2e81327ca` at start and end (`unchanged=true`). Stop reason is `cap`, not ε. `run_facts.md` has the EDA (`pair_cover=0.016`, train 43.5 vs valid 5.6 impressions / user). Runtime interventions: 0; five build-time notes in `interventions.jsonl`.
 
-Notes on an earlier, leaky run and how labels are handled now: `docs/report.md`. Bonus 1K (different id space): [`../1k/`](../1k/). Extra tables and run dumps: [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). ~3 min Devpost walkthrough last.
+Notes on an earlier, leaky run and how labels are handled now: `docs/report.md`. Bonus 1K (different id space): [`../1k/`](../1k/). Extra tables and run dumps: [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). Walkthrough (~3 min): [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO4).

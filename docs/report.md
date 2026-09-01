@@ -207,10 +207,11 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 - `aux_click` / CWM and `log_random_*` are diagnostics, not veto gates.
 - There is no mechanism that uses CPU/GPU efficiency as a search signal. Under the 6 h cap, Bonus 1K trials easily hit the 1-hour timeout floor, so wall time went into a few long trains instead of more billed steps. A later loop could let the agent set workers, batch, and timeout from the live config and cut train time.
 
-The ~3 minute Devpost walkthrough comes **last** and will be linked from the README when it is up. Until then the Pure trace is `progress.log`. Extra tables, the 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log).
+Walkthrough (~3 min): [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO4). Extra tables, the 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log).
 
 | File | What it is |
 |---|---|
+| [Walkthrough (~3 min)](https://youtu.be/Yeg-JrrjtO4) | YouTube |
 | `deliverables/pure-v5/submission.csv` | Contest CSV |
 | `deliverables/pure-v5/progress.log` | Readable Pure trace |
 | `deliverables/pure-v5/journal.jsonl` | Per-trial hypothesis and metrics |

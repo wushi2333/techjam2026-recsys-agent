@@ -43,9 +43,9 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 Stop was the iteration cap (50/50), not ε. After the BPR bag, sequence length and DCNv2 did not clear the bag; 16 billed sequence steps stayed in 1-seed noise. LightGBM is wired; the one Pure trial (0.577) used the ID-only encoding, not a family verdict. Bonus 1K is finished; 27K was not attempted. There is no CPU/GPU-efficiency signal in the search; under the 6 h cap, 1K trials easily hit the 1-hour timeout. A later loop could let the agent set workers, batch, and timeout from the live config.
 
-## Walkthrough (last)
+## Walkthrough
 
-A ~3 minute video will be uploaded to this Devpost **last** and linked from the GitHub README. Until then the Pure trace is `progress.log`.
+~3 min: [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO4)
 
 ## Extra tables and data
 
