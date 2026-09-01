@@ -1,6 +1,6 @@
 # Submitted Pure (`run_pure_v6`)
 
-Contest search. Kit `evaluate.py` unchanged. DeepSeek-v4-flash **thinking off**.
+Contest search. Kit `evaluate.py` unchanged.
 
 Finalize bag: 3-seed **DeepFM** + `seq_len=100` pool + `l2=1e-5` + logloss (`059`, `060`, `061`). Search never scored test; hidden below was once after search.
 
@@ -22,6 +22,6 @@ Finalize bag: 3-seed **DeepFM** + `seq_len=100` pool + `l2=1e-5` + logloss (`059
 | GPU-hours | 0 |
 | Runtime interventions | 0 |
 
-Thinking-on comparison (not the contest CSV): [`../pure-v5/`](../pure-v5/) BPR bag, valid 0.60440 / hidden 0.59766.
+A second freeze-eval search ([`../pure-v5/`](../pure-v5/)) independently shipped DeepFM + BPR and also beat the official FM.
 
-`progress.log` is the readable trace. `results.json` repeats the valid table plus hidden diagnostic. Do not publish `hidden_test.json`.
+`progress.log` is the readable trace. `results.json` repeats the valid table plus hidden diagnostic.

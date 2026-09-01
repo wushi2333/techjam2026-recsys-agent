@@ -1,6 +1,6 @@
 # Notes on submitted Pure
 
-Write-up for the contest search in `deliverables/pure-v6/` (thinking off). `deliverables/pure-v5/` is the thinking-on BPR comparison, not the contest CSV. Search numbers below are **validation** unless said otherwise. After search we scored the contest CSV once on hidden test; that number was not used to pick the model.
+Write-up for the contest search in `deliverables/pure-v6/`. A second freeze-eval Pure search (`deliverables/pure-v5/`) independently found a DeepFM + BPR bag that also beat the official FM. Search numbers below are **validation** unless said otherwise. After search we scored the contest CSV once on hidden test; that number was not used to pick the model.
 
 - [Summary first](#summary-first)
 - [Task](#task)
@@ -11,20 +11,20 @@ Write-up for the contest search in `deliverables/pure-v6/` (thinking off). `deli
 - [Leaky Pure looked better on valid](#leaky-pure-looked-better-on-valid)
 - [What the agent learned](#what-the-agent-learned)
 - [Auditability](#auditability)
-- [Walk-through of comparison Pure v5](#walk-through-of-comparison-pure-v5)
+- [Walk-through of a freeze-eval Pure search](#walk-through-of-a-freeze-eval-pure-search)
 - [Failures other than leaky Pure](#failures-other-than-leaky-pure)
 - [Compute and autonomy](#compute-and-autonomy)
 - [Limits](#limits)
 
 ## Summary first
 
-**Submitted (v6, thinking off):** 3-seed rank average of DeepFM + `seq_len=100` pool + `l2=1e-5` (logloss). Valid primary **0.60458** vs official FM **0.6016** (delta **+0.00298**). Hidden test, scored once after search: **0.59833** (GAUC 0.66528, nDCG@5 0.53137) vs official FM hidden **0.5946** (delta **+0.00373**). 50/50 billed iterations, 1.87 h, 525,257 tokens, 0 GPU-hours, **0 runtime interventions**.
+**Submitted:** 3-seed rank average of DeepFM + `seq_len=100` pool + `l2=1e-5` (logloss). Valid primary **0.60458** vs official FM **0.6016** (delta **+0.00298**). Hidden test, scored once after search: **0.59833** (GAUC 0.66528, nDCG@5 0.53137) vs official FM hidden **0.5946** (delta **+0.00373**). 50/50 billed iterations, 1.87 h, 525,257 tokens, 0 GPU-hours, **0 runtime interventions**.
 
-**Comparison (v5, thinking on):** 3-seed DeepFM + BPR bag. Valid **0.60440** / hidden **0.59766**. Same freeze-eval protocol. Hidden 0.59833 vs 0.59766 is inside kit seed noise (~0.0008); turning thinking off is not claimed as the cause of that gap.
+A second freeze-eval Pure search independently shipped DeepFM + BPR (valid **0.60440** / hidden **0.59766**) — another legal bag, same gates, also above the official FM.
 
 **The most useful thing we learned was a failure.** Leaky Pure (`run_pure_v4`) stacked recency features while valid labels still flowed into them and stored unseen test labels as 0. Its search bag read **valid 0.63975**. Scored once afterwards, that same CSV gave **test 0.56790** — below the official FM's published 0.5946. Valid and test moved in opposite directions by **0.07**. That is not the EDA `pos_drift` of 0.0059; it is labels in the features, plus zeros poisoning test decay.
 
-We rebuilt the label handling (test labels behind a finalize token and stored as *missing*, not 0; decay and last-k updated only from train) and searched again. **Submitted Pure v6** reads valid 0.60458 — a much smaller number than leaky 0.64, and one we trust. The same after-the-fact check on the contest CSV is **0.59833** against the FM's 0.5946.
+We rebuilt the label handling (test labels behind a finalize token and stored as *missing*, not 0; decay and last-k updated only from train) and searched again. **Submitted Pure** reads valid 0.60458 — a much smaller number than leaky 0.64, and one we trust. The same after-the-fact check on the contest CSV is **0.59833** against the FM's 0.5946.
 
 That gap between "a number that went up" and "a model that got better" is why the harness screens against a bag, both halves of valid, and a paired interval rather than picking the best single seed. Details in [Leaky Pure looked better on valid](#leaky-pure-looked-better-on-valid). EDA that named BPR + rank-average as the lever, and what search actually closed, is in [What the agent learned](#what-the-agent-learned).
 
@@ -61,18 +61,18 @@ The LLM (DeepSeek, OpenAI-compatible) fills in hypotheses and patches. If it pro
 | | GAUC | nDCG@5 | primary | vs FM |
 |---|---|---|---|---|
 | Official FM (valid) | 0.6674 | 0.5357 | 0.6016 | — |
-| **Submitted v6** 3-seed DeepFM + seq-100 pool + l2 (valid) | 0.67099 | 0.53816 | **0.60458** | **+0.00298** |
+| **Submitted** 3-seed DeepFM + seq-100 pool + l2 (valid) | 0.67099 | 0.53816 | **0.60458** | **+0.00298** |
 | Official FM (hidden test) | 0.6610 | 0.5282 | 0.5946 | — |
 | Same CSV (hidden test, once after search) | 0.66528 | 0.53137 | **0.59833** | **+0.00373** |
-| Comparison v5 BPR bag (valid / hidden) | 0.67105 / 0.66486 | 0.53774 / 0.53046 | 0.60440 / 0.59766 | +0.00280 / +0.00306 |
+| Repeat freeze-eval BPR bag (valid / hidden) | 0.67105 / 0.66486 | 0.53774 / 0.53046 | 0.60440 / 0.59766 | +0.00280 / +0.00306 |
 
 Members: trials `059`, `060`, `061` (seeds 0/1/2), DeepFM, `seq_len=100` pool, `l2=1e-5`, logloss. Finalize retrained those three on train and averaged ranks on test row order. Valid of the retrained bag matched the search bag (`finalize_valid_drift = 0`). `submit.py --check` equivalent: 170,588 rows, aligned. Hidden test was scored **once after search** (primary 0.59833); it was not used to pick the bag.
 
 `log_random_*` was scored once at finalize (primary 0.37305). That is an off-policy **check** on randomized-exposure impressions, not the kit’s random-score baseline of 0.4753, and it was **not** a candidate gate.
 
-Search’s last incumbent was `045`: DeepFM plus `seq_len=100` pool, confirmed mean 0.60396. Finalize looks at ≥2-seed bags and prefers a stable valid number (min of the two date halves of valid, then fewer extra flags). The l2 bag (`059`–`061`) sat above that incumbent and above the early BPR bag (`013`, 0.60441), so that is the CSV.
+Search’s last incumbent was `045`: DeepFM plus `seq_len=100` pool, confirmed mean 0.60396. Finalize looks at ≥2-seed bags and prefers a stable valid number (min of the two date halves of valid, then fewer extra flags). The l2 bag (`059`–`061`) is the contest CSV.
 
-Resources for submitted Pure v6: 50 / 50 billed iterations, `stop_reason=cap` (not ε), 1.87 h wall-clock, 513,033 + 12,224 tokens, thinking **off**, 0 GPU-hours (a GPU was present; the submitted path is numpy). No runtime intervention. Five older build-time notes sit in `interventions.jsonl` (scripts and one template bug); they were not mid-search direction changes. `summary.json` `integrity.src_hash` is `193172377e3a5ad4` at start and end (`unchanged=true`). Comparison v5 (thinking on): 2.91 h, 862,773 tokens, BPR bag.
+Resources for submitted Pure: 50 / 50 billed iterations, 1.87 h wall-clock, 513,033 + 12,224 tokens, 0 GPU-hours (a GPU was present; the submitted path is numpy). No runtime intervention. Five older build-time notes sit in `interventions.jsonl` (scripts and one template bug); they were not mid-search direction changes. `summary.json` `integrity.src_hash` is `193172377e3a5ad4` at start and end (`unchanged=true`).
 
 ## Bonus: KuaiRand-1K
 
@@ -125,7 +125,7 @@ After the label handling above, plus screening against the bag (CI lower bound, 
 
 ## What the agent learned
 
-From `deliverables/pure-v5/eda.json` / `run_facts.md` (harness-written).
+From `deliverables/pure-v6/eda.json` / `run_facts.md` (harness-written).
 
 KuaiRand-Pure ranks each user’s impressions **inside one date split**. It is not pair retrieval.
 
@@ -145,16 +145,16 @@ What the scored search then measured (journal patch = ground truth):
 
 Not a per-event hash chain of the journal. What a reviewer can check:
 
-- **Source-tree fingerprint.** `deliverables/pure-v5/summary.json` → `integrity`: `src_hash=05111ef2e81327ca` at start and end, `unchanged=true`, 104 hashed files under `agent/`, `templates/`, `benchmarks/` (`agent/observe/integrity.py`). The 1K AutoDL archive records the same idea in `CODE_PIN.json` (no git on that instance).
+- **Source-tree fingerprint.** `deliverables/pure-v6/summary.json` → `integrity`: `src_hash=193172377e3a5ad4` at start and end, `unchanged=true`, 104 hashed files under `agent/`, `templates/`, `benchmarks/` (`agent/observe/integrity.py`). The 1K AutoDL archive records the same idea in `CODE_PIN.json` (no git on that instance).
 - **Parent-owned score.** Kit `evaluate.py` on `scores.npz`. Patching the scorer is rejected (`tests/test_forbidden.py`, `scripts/fault_matrix.py`).
 - **Test labels.** Hidden `long_view` needs a finalize token; search cannot `eval_split=test`.
 - **Journal.** Hypothesis, patch, metrics, skips, `stop_reason=cap` in `journal.jsonl` / `progress.log`.
 - **Tests.** 55 modules under `tests/`. Fault injects cover timeout, `SystemExit` → Debug (cap 3), scorer patch, missing token.
 - **`interventions.jsonl` is left as-is.** Runtime 0; five build-time notes (human ablate scripts + one template bug). Deleting them would look like hiding the ledger.
 
-## Walk-through of comparison Pure v5
+## Walk-through of a freeze-eval Pure search
 
-Logs: `deliverables/pure-v5/progress.log` and `journal.jsonl` (thinking-on comparison, not the contest CSV). Times below are from that progress file.
+Logs: `deliverables/pure-v5/progress.log` and `journal.jsonl`. Times below are from that progress file. This search independently found DeepFM + BPR; the contest CSV is the later seq-100 + l2 bag in `deliverables/pure-v6/`.
 
 **Reproduce FM.** Draft `000` used the kit hyperparameters. Seed 0 valid primary 0.60147; three seeds averaged 0.60144. Close enough to 0.6016 given seed noise (kit FM std on test is 0.0008).
 
@@ -194,7 +194,7 @@ These numbers are **submitted Pure**.
 |---|---|
 | Billed iterations | 50 / 50 |
 | Wall-clock | 1.87 h |
-| Tokens in / out | 513,033 / 12,224 (thinking off) |
+| Tokens in / out | 513,033 / 12,224 |
 | GPU-hours | 0 |
 | Runtime interventions | 0 (five build-time notes in `interventions.jsonl`) |
 | `integrity.src_hash` | `193172377e3a5ad4` start = end |
@@ -214,11 +214,11 @@ Walkthrough (~3 min): [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO
 
 | File | What it is |
 |---|---|
-| [Walkthrough (~3 min)](https://youtu.be/Yeg-JrrjtO4) | YouTube (recorded on v5 BPR bag) |
+| [Walkthrough (~3 min)](https://youtu.be/Yeg-JrrjtO4) | YouTube |
 | `deliverables/pure-v6/submission.csv` | **Contest CSV** |
-| `deliverables/pure-v6/progress.log` | Readable v6 trace |
+| `deliverables/pure-v6/progress.log` | Readable Pure trace |
 | `deliverables/pure-v6/journal.jsonl` | Per-trial hypothesis and metrics |
 | `deliverables/pure-v6/results.json` | Valid 0.60458; hidden 0.59833 |
-| `deliverables/pure-v5/` | Thinking-on BPR comparison |
+| `deliverables/pure-v5/` | Repeat freeze-eval search (DeepFM + BPR) |
 | `deliverables/1k/` | Bonus 1K snapshot (metrics and logs) |
 | [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) | Extra tables, 1K CSV, v4 leak evidence |
