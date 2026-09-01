@@ -73,7 +73,7 @@ Resources for submitted Pure: 50 / 50 billed iterations, `stop_reason=cap` (not 
 
 ## Bonus: KuaiRand-1K
 
-Optional, and **not** in the Pure contest CSV. 1K re-indexes user and item ids, so its primary is not comparable with Pure. The search is the same champion–challenger; the **winning identity is not**. Pure shipped BPR. 1K shipped train-only `use_time_decay`. That is the generality claim: one harness, two scales, two legal recipes. Metrics and logs: `deliverables/1k/`. Extra tables, the 4.1M-row 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). 27K was not attempted.
+Optional, and **not** in the Pure contest CSV. 1K re-indexes user and item ids, so its primary is not comparable with Pure. The search is the same champion–challenger; the **winning identity is not**. Pure first confirmed `arch=deepfm` (3-seed 0.60386 vs FM 0.60144) and shipped BPR on that parent. 1K shipped train-only `use_time_decay` on FM. A 1-seed DCNv2 on 1K reached 0.65280 and did not get a 3-seed before the wall. Architecture, loss, and recency are the same isolated `config_patch` path — swapping the backbone did not mean a new pipeline. That is the engineering claim: one harness, two scales, more than one legal recipe. Metrics and logs: `deliverables/1k/`. Extra tables, the 4.1M-row 1K CSV, and run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). 27K was not attempted.
 
 | | GAUC | nDCG@5 | primary | vs 1K FM |
 |---|---|---|---|---|

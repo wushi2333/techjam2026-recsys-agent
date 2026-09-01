@@ -13,7 +13,7 @@ An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the o
 
 Submitted Pure: 50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. Hidden test **0.59766** was scored once after search and was not used to pick the model. Contest CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
 
-Bonus KuaiRand-1K (different id space, not in that CSV): the same loop **did not reuse Pure’s BPR bag**. It selected train-only `use_time_decay` and finished **0.65001** vs the 1K FM 0.64203 (**+0.00798**). Stopped on the 6 h wall at 31/50. Snapshot: `deliverables/1k/`.
+Bonus KuaiRand-1K (different id space, not in that CSV): the same loop **did not reuse Pure’s recipe**. Submitted Pure is DeepFM + BPR (`arch=deepfm` confirmed 0.60386, then the 3-seed BPR bag). 1K selected train-only `use_time_decay` on FM and finished **0.65001** vs the 1K FM 0.64203 (**+0.00798**). A 1-seed DCNv2 reached 0.65280; the 6 h wall at 31/50 stopped the 3-seed, so it is not in the CSV. Backbone, loss, and recency are all `config_patch` trials on the same scorer. Snapshot: `deliverables/1k/`.
 
 **A distribution-shift case (why the guards exist).** The first full search stacked recency with valid labels flowing in, and stored missing test labels as 0. Finalize bag **valid 0.63975**; the same CSV scored **test 0.56790**, below the official FM. Valid and test moved in opposite directions by 0.07. Kit ranking uses a user’s whole split as one list, so rolling `long_view` into decay is group leakage; zero is a real negative, so test-as-0 poisons test decay. Submitted Pure stores unseen labels as missing (`-1`), updates recency from train only, and never scores test during search.
 

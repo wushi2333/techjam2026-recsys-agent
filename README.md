@@ -29,12 +29,12 @@ The after-the-fact test number was **not** used to pick the model. CSV: [`delive
 | GPU-hours (harness field) | 0 | 0 |
 | Runtime interventions | **0** | **0** |
 
-**KuaiRand-1K** is optional, a different id space, and **not** the Pure CSV. The same loop ran on AutoDL (`--data-scale 1k`) and **did not copy the Pure recipe**. Pure’s CSV is a 3-seed **BPR** bag. 1K’s CSV is a 3-seed **train-only `use_time_decay`** bag — the recency flag that leaked on Pure v4, here with valid/test labels stored as missing. Official 1K FM **0.64203** → finalize **0.65001** (**+0.00798**). That is a larger absolute lift than submitted Pure, on deeper per-user histories, with the same parent scorer, gates, and 0 runtime interventions. A later 1-seed DCNv2 (0.65280) missed the 3-seed because the 6 h wall hit at 31/50. Metrics: [`deliverables/1k/`](deliverables/1k/). CSV and extra tables: [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). 27K was not attempted.
+**KuaiRand-1K** is optional, a different id space, and **not** the Pure CSV. The same loop ran on AutoDL (`--data-scale 1k`) and **did not copy the Pure recipe**. On Pure, search first confirmed **`arch=deepfm`** (3-seed mean 0.60386 vs reproduced FM 0.60144), then bagged **BPR on that DeepFM parent** — that is the contest CSV. On 1K it selected **train-only `use_time_decay`** on the FM backbone (the recency flag that leaked on Pure v4, here with valid/test as missing): official 1K FM **0.64203** → finalize **0.65001** (**+0.00798**). A later 1-seed **DCNv2** hit 0.65280; the 6 h wall at 31/50 stopped the 3-seed, so it is not in the CSV. Same templates, same kit scorer, 0 runtime interventions — swapping backbone or loss did not mean a new pipeline. Metrics: [`deliverables/1k/`](deliverables/1k/). CSV and extra tables: [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). 27K was not attempted.
 
 | Scale | What finalize shipped | vs that scale’s FM |
 |---|---|---|
-| Submitted Pure | 3-seed `loss=bpr_global` | +0.00280 valid / +0.00306 hidden |
-| Bonus 1K | 3-seed `use_time_decay` (train-only labels) | **+0.00798** |
+| Submitted Pure | 3-seed **DeepFM** + `loss=bpr_global` | +0.00280 valid / +0.00306 hidden |
+| Bonus 1K | 3-seed FM + `use_time_decay` (train-only labels) | **+0.00798** |
 
 ## How it searches
 
@@ -77,6 +77,7 @@ What search then measured (the patch in the journal is ground truth, not the wri
 | Measurement | What it showed |
 |---|---|
 | Leaky recency (v4) | valid 0.63975 → test 0.56790. Changed label handling; then submitted Pure. |
+| `arch=deepfm` `007`/`009` | 3-seed mean 0.60386 vs FM 0.60144. Became the parent of the submitted BPR bag. |
 | GBM draft `008` | 0.577, CI entirely negative, on the **ID-only** encoding. Encoding bottleneck for that trial, not a ban on trees. |
 | Sequence, 16 billed improves | After the BPR bag already existed. Lengths 10/20/50/100, pool and DIN. Most 1-seeds within ±0.001. `seq_len=50` DIN confirmed at 0.60395 and became the **search** incumbent; finalize still shipped the earlier BPR bag on the stability rule. Stop reason is **`cap`**, not ε. |
 | `aux_click` / CWM | Build-time 3-seed script `scripts/ablate_aux.py` (in `interventions.jsonl`). Not a search veto. `long_view` is the per-impression label, so a click-gated multi-task prior is weak here. Finalize scored `log_random_*` once (primary 0.367) as an off-policy **check**, not a candidate gate. |
@@ -116,7 +117,8 @@ Against a loop that just “try more models” — what was worth trying, and wh
 - **EDA named the lever.** `pair_cover = 0.016` and 43.5 vs 5.6 impressions / user: pair lookup is empty on valid, and row-equal logloss disagrees with user-averaged GAUC / nDCG. BPR + rank-average is the metric’s geometry, not a random loss swap.
 - **One legal change, then a bag.** A 1-seed that looks real gets a 3-seed ablate. Promotion uses a paired interval, both date-halves of valid, and “nDCG not down,” against the current bag — not a lucky seed.
 - **Finalize is a separate emit.** Search never reads test `long_view`. `finalize` retrains the chosen bag on train and prefers a stable valid number (min of the two date halves, fewer extra flags), not max(valid). The BPR bag beat the search incumbent (`098`, seq-50 DIN, 0.60395) on that rule.
-- **Same loop, different recipe on 1K.** Bonus 1K is not a Pure hyperparameter paste. Search selected train-only `use_time_decay` there (+0.00798 vs the 1K FM) while Pure stayed on BPR. That is the harness transferring: one champion–challenger, two legal identities, two scales.
+- **Architecture is a `config_patch`, not a fork.** Pure confirmed `arch=deepfm` (0.60386 vs FM 0.60144) and shipped BPR on that parent. DCNv2 on Pure sat a little under DeepFM and was not promoted. 1K then shipped train-only decay on FM (+0.00798 vs the 1K FM); a 1-seed DCNv2 reached 0.65280 but never got three seeds before the wall. Loss, backbone, and recency are the same isolated-trial / kit-scorer path — changing the model family did not require rewriting the loop.
+- **Same loop, different recipe on 1K.** Bonus 1K is not a Pure hyperparameter paste. Search selected train-only `use_time_decay` there while Pure stayed on DeepFM+BPR. One champion–challenger, two scales, two legal identities.
 - **Negative results stay scoped.** GBM 0.577 is ID-only encoding, not a family ban. Sequence’s 16 billed steps stayed in 1-seed noise; they did not “unlock loss” — BPR was already in the bag. `aux_click` / CWM and `log_random_*` are measured diagnostics, not veto gates.
 
 ## Robustness
