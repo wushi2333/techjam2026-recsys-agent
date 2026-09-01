@@ -6,9 +6,9 @@ KuaiRand-1K is bonus and optional; do not wait for it to file Pure.
 
 ## 1. Devpost written description
 
-- [ ] Paste `docs/DEVPOST.md`
-- [ ] Fill team names if not solo
-- [ ] Tools / APIs / libraries / datasets already listed
+- [ ] **About the project:** paste the `# About the project` block in `docs/DEVPOST.md` (Inspiration → What's next). Do not paste the whole file into that box.
+- [ ] Other boxes (Results / Tools / APIs / libraries / data / logs): paste from the `# Other Devpost fields` section of the same file
+- [ ] Team: solo
 - [ ] Link the public GitHub
 - [ ] Attach or link `deliverables/pure-v6/submission.csv` if Devpost allows files
 - [x] ~3 min walkthrough: https://youtu.be/Yeg-JrrjtO4
