@@ -59,7 +59,7 @@ Already in `deliverables/pure-v6/`:
 | Δ vs FM valid primary | **+0.00298** |
 | Hidden test GAUC / nDCG@5 / primary | 0.66528 / 0.53137 / **0.59833** |
 | Δ vs FM hidden primary | **+0.00373** (scored once after search; not used to pick the model) |
-| Tokens in+out | 525,257 (thinking off) |
+| Tokens in+out | 525,257 (513,033 in / 12,224 out) |
 | Agent wall-clock | 1.87 h |
 | Iterations | 50 / 50 |
 | GPU-hours | 0.0 |

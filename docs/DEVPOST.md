@@ -11,7 +11,7 @@ An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the o
 | Official FM (hidden test) | 0.6610 | 0.5282 | 0.5946 |
 | **Submitted Pure (hidden test)** | 0.66528 | 0.53137 | **0.59833** |
 
-Submitted Pure: 50 billed iterations, 1.87 hours, 525k tokens, 0 GPU-hours, **0 runtime interventions**. Hidden test **0.59833** was scored once after search and was not used to pick the model. Contest CSV: `deliverables/pure-v6/submission.csv` (170,588 rows). A second freeze-eval Pure search independently shipped DeepFM + BPR and also beat the official FM. Longer notes: `docs/report.md`.
+Submitted Pure: 50 billed iterations, 1.87 hours, **513,033 in / 12,224 out** tokens, 0 GPU-hours, **0 runtime interventions**. Hidden test **0.59833** was scored once after search and was not used to pick the model. Contest CSV: `deliverables/pure-v6/submission.csv` (170,588 rows). A second freeze-eval Pure search independently shipped DeepFM + BPR and also beat the official FM. Longer notes: `docs/report.md`.
 
 Bonus KuaiRand-1K (different id space, not in that CSV): the same loop selected its own recipe — train-only `use_time_decay` on FM — and finished **0.65001** vs the 1K FM 0.64203 (**+0.00798**). A 1-seed DCNv2 reached 0.65280 before the 6 h wall at 31/50. Backbone, loss, sequence, and recency are all `config_patch` trials on the same scorer. Snapshot: `deliverables/1k/`.
 

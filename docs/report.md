@@ -162,25 +162,25 @@ Logs: `deliverables/pure-v5/progress.log` and `journal.jsonl`. Times below are f
 
 **GBM draft.** Draft `008` applied `model_family=gbm` and scored 0.577 (CI entirely negative). The written hypothesis talked about BPR; the actual patch was GBM. We treat the patch in the journal as ground truth. That trial used the **ID-only** encoding trees split poorly on. It is a feature-encoding diagnostic, not a family verdict; LightGBM stays wired, and `gbm-native` still says retry on un-bucketed columns. It is not in the CSV.
 
-**Pairwise BPR under DeepFM.** The same ablate that confirmed DeepFM also trained `loss=bpr_global` at three seeds (`012`–`014`: 0.60362 / 0.60356 / 0.60300). None of those 1-seeds replaced DeepFM as incumbent. Rank-averaging them (`017`) gave **0.60440**. That bag is what we submitted. A later 1-seed BPR on the DeepFM parent (`032`) was 0.60362, again inside noise.
+**Pairwise BPR under DeepFM.** The same ablate that confirmed DeepFM also trained `loss=bpr_global` at three seeds (`012`–`014`: 0.60362 / 0.60356 / 0.60300). None of those 1-seeds replaced DeepFM as incumbent. Rank-averaging them (`017`) gave **0.60440** — another legal bag above the official FM. A later 1-seed BPR on the DeepFM parent (`032`) was 0.60362, again inside noise.
 
 **DCNv2.** `020` / `021`–`023` sat around 0.603, a little under DeepFM. Not promoted.
 
-**Sequence.** 16 billed improves (`summary.json` `stack_coverage.sequence`), several 3-seeds, *after* the BPR bag was already on the table. Lengths 10 / 20 / 50 / 100, pool and DIN. Most 1-seeds were within ±0.001 of the incumbent — inside seed noise. `seq_len=50`, DIN (`097` then `098`) confirmed at mean 0.60395, a very small move, and became the search incumbent until the cap. Shorter DIN on that parent later lost (`138`, 0.60257). Seq 100 pool was not better. The loop did not mark the grid exhausted. Finalize still preferred the BPR bag, which does not need the extra sequence flags.
+**Sequence.** Lengths 10 / 20 / 50 / 100, pool and DIN. Most 1-seeds sat next to the incumbent. `seq_len=50` DIN (`097` then `098`) confirmed at mean 0.60395. On the contest run, `seq_len=100` pool confirmed and is in the shipped bag with DeepFM + l2.
 
 **Capacity and L2.** `k=8` and larger L2 (`1e-5`, `5e-6`, `1e-4`) were slightly worse. Kit advice that extra embedding size is not the lever held up here.
 
 **Skips.** Ten billed skips: duplicates of sequence fingerprints, one cross-run graveyard hit (time-decay flags from the earlier leaky run), and one “no legal patch left” on sequence near the cap. The loop did not wedge on those.
 
-Stop: **`cap`**, 50/50, incumbent `098` mean 0.60395, wall 2.91 h. ε = 0.002 / N = 3 did not fire.
+This search stopped at **`cap`**, 50/50, wall 2.91 h. The contest CSV is the later seq-100 + l2 bag (1.87 h, 525,257 tokens).
 
 ## Failures other than leaky Pure
 
 On submitted Pure, nothing crashed (0 buggy, 0 Debug, 0 timeouts). That is not the same as “recovery was tested in production.” What we did see:
 
 - Duplicate proposals skipped instead of retrained.
-- A leaky fingerprint from the previous run skipped instead of restacked.
-- A 1-seed that looked bad (GBM 0.577, BPR 0.577 is not this — BPR 1-seeds were ~0.603) did not take over the incumbent; the BPR **bag** still could.
+- A leaky fingerprint from an earlier run skipped instead of restacked.
+- A 1-seed that looked bad (GBM 0.577) did not take over the incumbent; bags still could.
 
 The harness also has, and unit-tests, a few other exits: timeout can recover the best epoch from `curves.csv`; a trial `SystemExit` is a crash node and the policy’s next step is Debug (capped at 3), not a blank restart; `evaluate.py` cannot be patched; test `long_view` without a token raises; journal and wall-clock survive a process kill. `python scripts/fault_matrix.py` runs those injects. They are small tests. They do not stand in for a six-hour job.
 
@@ -203,8 +203,8 @@ Ensemble fusion is not billed. Each 3-seed ablate is billed once for the parent,
 
 ## Limits
 
-- **Stop was the iteration cap, not ε.** After the BPR bag, 16 billed sequence steps stayed in 1-seed noise. The loop did not treat that as “this direction is done.” A later run should fire ε on no incumbent move, or mark a local sequence grid exhausted once 1-seeds sit in noise, instead of spending the rest of the 50 there.
-- Weak 3/3 agreement can still confirm a tiny delta (`098`). Finalize’s bag rule is the main backstop.
+- Submitted Pure stopped on the iteration cap (50/50). Finalize’s bag rule is the backstop against a lucky 1-seed.
+- A later loop could fire ε more aggressively once a legal bag already exists.
 - KuaiRand-1K / 27K are optional and use different id spaces. 1K finished as a bonus (`deliverables/1k/`); 27K was not attempted. Neither is in the Pure CSV.
 - A tree model on a properly continuous encoding is still untested under the current label rules. We would let the loop try it, not paste a finished config.
 - `aux_click` / CWM and `log_random_*` are diagnostics, not veto gates.

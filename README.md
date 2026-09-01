@@ -25,7 +25,7 @@ Hidden test was scored **once after search** and was not used to pick the model.
 |---|---|---|
 | Billed iterations | 50 / 50 | 31 / 50 (6 h wall) |
 | Wall-clock | 1.87 h | 6.50 h |
-| Tokens in + out | 525,257 | 496,180 |
+| Tokens in / out | 513,033 / 12,224 | 496,180 |
 | GPU-hours (harness field) | 0 | 0 |
 | Runtime interventions | **0** | **0** |
 
