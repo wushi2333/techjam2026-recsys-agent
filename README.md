@@ -2,7 +2,7 @@
 
 > **Data & logs:** [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) — journals, extra tables, leaky Pure evidence, and the 4.1M-row 1K CSV. This repo is the harness, the write-up, and the contest Pure CSV.
 >
-> **Walkthrough (~3 min):** [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO4)
+> **Walkthrough (~3 min):** [https://youtu.be/UvwHHWfqQhs](https://youtu.be/UvwHHWfqQhs)
 
 TikTok TechJam 2026, Track 2. An autonomous loop for **within-user ranking** on [KuaiRand-Pure](https://kuairand.com): reproduce the official Factorization Machine, try one change at a time on train/valid only, score with kit `evaluate.py`, then `finalize` writes the test CSV.
 
@@ -176,7 +176,7 @@ Optional 1K: `python -m agent run --llm --data-scale 1k --run-dir run_1k`.
 | [`docs/report.md`](docs/report.md) | Longer write-up, including the leaky 0.64 run |
 | [`docs/DEVPOST.md`](docs/DEVPOST.md) | Short project description |
 | [`deliverables/1k/`](deliverables/1k/) | Bonus 1K snapshot (metrics and logs) |
-| ~3 min walkthrough | [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO4) |
+| ~3 min walkthrough | [https://youtu.be/UvwHHWfqQhs](https://youtu.be/UvwHHWfqQhs) |
 | Extra tables / 1K CSV / logs | [data-log repo](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) |
 
 ```

@@ -11,7 +11,7 @@ KuaiRand-1K is bonus and optional; do not wait for it to file Pure.
 - [ ] Team: solo
 - [ ] Link the public GitHub
 - [ ] Attach or link `deliverables/pure-v6/submission.csv` if Devpost allows files
-- [x] ~3 min walkthrough: https://youtu.be/Yeg-JrrjtO4
+- [x] ~3 min walkthrough: https://youtu.be/UvwHHWfqQhs
 - [x] Extra result tables / 1K CSV / run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log)
 
 ## 2. Public GitHub
@@ -71,7 +71,7 @@ Hidden numbers above are a one-time diagnostic after search. Organizers still sc
 - [ ] Public repo URL on Devpost
 - [ ] CSV uploaded wherever the form asks for model output
 - [ ] 1K is a finished bonus (optional, different id space); do not treat it as the Pure CSV
-- [x] ~3 min video: https://youtu.be/Yeg-JrrjtO4
+- [x] ~3 min video: https://youtu.be/UvwHHWfqQhs
 - [x] Extra tables / 1K CSV: https://github.com/wushi2333/techjam2026-recsys-agent_data-log
 - [ ] Rotate the AutoDL password (it was used in chat)
 

@@ -5,7 +5,7 @@ Two different boxes on the form:
 1. **About the project** — paste everything under [About the project](#about-the-project) into the Markdown story field (the one that already has `## Inspiration` … `## What's next`).
 2. The later headings ([Results](#results), Tools, APIs, …) are for the other Devpost fields, not that story box.
 
-Contest CSV: `deliverables/pure-v6/submission.csv`. Walkthrough: https://youtu.be/Yeg-JrrjtO4
+Contest CSV: `deliverables/pure-v6/submission.csv`. Walkthrough: https://youtu.be/UvwHHWfqQhs
 
 ---
 
@@ -38,7 +38,7 @@ The agent copies `templates/`, trains draft 0 as the official FM, then proposes 
 
 A second freeze-eval Pure search independently shipped DeepFM + BPR and also beat the official FM — same parent scorer, same gates. Bonus KuaiRand-1K (different id space, **not** in that CSV) selected its own recipe: train-only `use_time_decay` on FM, **0.65001** vs the 1K FM 0.64203 (**+0.00798**).
 
-Code: [techjam2026-recsys-agent](https://github.com/wushi2333/techjam2026-recsys-agent). Extra tables and the 1K CSV: [data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). Walkthrough (~3 min): [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO4).
+Code: [techjam2026-recsys-agent](https://github.com/wushi2333/techjam2026-recsys-agent). Extra tables and the 1K CSV: [data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log). Walkthrough (~3 min): [https://youtu.be/UvwHHWfqQhs](https://youtu.be/UvwHHWfqQhs).
 
 ## How we built it
 
@@ -134,7 +134,7 @@ Submitted Pure stopped on the iteration cap (50/50). LightGBM is wired; the one 
 
 ## Walkthrough
 
-~3 min: [https://youtu.be/Yeg-JrrjtO4](https://youtu.be/Yeg-JrrjtO4)
+~3 min: [https://youtu.be/UvwHHWfqQhs](https://youtu.be/UvwHHWfqQhs)
 
 ## Extra tables and data
 
