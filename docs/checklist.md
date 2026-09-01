@@ -1,6 +1,7 @@
 # Submission packing (official §2.5)
 
-Designated Pure run: **`run_pure_v5`** → slice `deliverables/pure-v5/`.  
+Designated Pure run: **`run_pure_v6`** → slice `deliverables/pure-v6/`.  
+Comparison (not contest): `deliverables/pure-v5/`.  
 KuaiRand-1K is bonus and optional; do not wait for it to file Pure.
 
 ## 1. Devpost written description
@@ -9,7 +10,7 @@ KuaiRand-1K is bonus and optional; do not wait for it to file Pure.
 - [ ] Fill team names if not solo
 - [ ] Tools / APIs / libraries / datasets already listed
 - [ ] Link the public GitHub
-- [ ] Attach or link `deliverables/pure-v5/submission.csv` if Devpost allows files
+- [ ] Attach or link `deliverables/pure-v6/submission.csv` if Devpost allows files
 - [x] ~3 min walkthrough: https://youtu.be/Yeg-JrrjtO4
 - [x] Extra result tables / 1K CSV / run dumps: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log)
 
@@ -42,7 +43,7 @@ README already has overview, setup, reproduce, limitations, team.
 
 ## 3. Run logs + interventions
 
-Already in `deliverables/pure-v5/`:
+Already in `deliverables/pure-v6/`:
 
 | Required | File |
 |---|---|
@@ -53,13 +54,13 @@ Already in `deliverables/pure-v5/`:
 
 | Required | Value |
 |---|---|
-| CSV | `deliverables/pure-v5/submission.csv` |
-| Valid GAUC / nDCG@5 / primary | 0.67105 / 0.53774 / **0.60440** |
-| Δ vs FM valid primary | **+0.00280** |
-| Hidden test GAUC / nDCG@5 / primary | 0.66486 / 0.53046 / **0.59766** |
-| Δ vs FM hidden primary | **+0.00306** (scored once after search; not used to pick the model) |
-| Tokens in+out | 862,773 |
-| Agent wall-clock | 2.91 h |
+| CSV | `deliverables/pure-v6/submission.csv` |
+| Valid GAUC / nDCG@5 / primary | 0.67099 / 0.53816 / **0.60458** |
+| Δ vs FM valid primary | **+0.00298** |
+| Hidden test GAUC / nDCG@5 / primary | 0.66528 / 0.53137 / **0.59833** |
+| Δ vs FM hidden primary | **+0.00373** (scored once after search; not used to pick the model) |
+| Tokens in+out | 525,257 (thinking off) |
+| Agent wall-clock | 1.87 h |
 | Iterations | 50 / 50 |
 | GPU-hours | 0.0 |
 

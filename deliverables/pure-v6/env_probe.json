@@ -1,0 +1,48 @@
+{
+  "cuda": true,
+  "cuda_name": "NVIDIA GeForce RTX 3070 Ti Laptop GPU",
+  "vram_gb": 8.0,
+  "torch": true,
+  "torch_version": "2.11.0+cu130",
+  "lightgbm": true,
+  "datasets": {
+    "pure": {
+      "present": true,
+      "data_dir": "D:\\tictokJam\\Kuairand\\KuaiRand-Pure\\data",
+      "published_rows": 1436609,
+      "published_users": 27285,
+      "published_items": 7551,
+      "log_bytes": 105726357,
+      "suffix": "pure"
+    },
+    "1k": {
+      "present": true,
+      "data_dir": "D:\\tictokJam\\Kuairand\\KuaiRand-1K\\data",
+      "published_rows": 11713045,
+      "published_users": 1000,
+      "published_items": 4369953,
+      "log_bytes": 865973843,
+      "suffix": "1k"
+    },
+    "27k": {
+      "present": false,
+      "data_dir": null,
+      "published_rows": 322278385,
+      "published_users": 27285,
+      "published_items": 32038725,
+      "log_bytes": 0,
+      "suffix": "27k"
+    }
+  },
+  "legal_families": [
+    "fm",
+    "gbm",
+    "torch"
+  ],
+  "legal_scales": [
+    "pure",
+    "1k"
+  ],
+  "contest_hidden_test": "pure",
+  "ids_reindexed": true
+}

@@ -1,0 +1,48 @@
+{
+  "alive": true,
+  "updated_at": "2026-09-01T01:33:19.094613+00:00",
+  "stage": "idle",
+  "phase": "1_local",
+  "iteration": 50,
+  "journal_nodes": 142,
+  "current_trial": null,
+  "current_arm": null,
+  "operator": "idle",
+  "stop_reason": "cap",
+  "baseline_ok": true,
+  "incumbent": {
+    "trial": "045_ablate_c0_s0",
+    "primary": 0.6039601564407349,
+    "gauc": 0.6700649261474609,
+    "ndcg5": 0.5378553867340088
+  },
+  "last_trial": {
+    "id": "141_architecture",
+    "buggy": false,
+    "primary": null
+  },
+  "convergence": {
+    "eps": 0.002,
+    "N": 3,
+    "no_improve_streak": 0,
+    "billed_no_improve_streak": 52
+  },
+  "budget": {
+    "tokens_in": 513033.0,
+    "tokens_out": 12224.0,
+    "wall_hours": 1.8712627971111215,
+    "compute_hours": 3.64603344142437,
+    "gpu_hours": 0.0,
+    "gpu_note": "Feasibility uses process wall-clock (§2.5/§2.6); compute_hours sums trial elapsed (parallel 3-seed counted separately)",
+    "compute_sum_hours": 3.64603344142437,
+    "agent_wall_clock_hours": 1.8712627971111215
+  },
+  "manual_interventions": 0,
+  "build_time_ledger": 5,
+  "reserved": {
+    "error_memory": true,
+    "jump": true,
+    "multitask": false,
+    "parallel_workers": 3
+  }
+}

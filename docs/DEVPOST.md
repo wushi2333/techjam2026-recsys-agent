@@ -7,17 +7,18 @@ An autonomous loop for within-user ranking on KuaiRand-Pure. It reproduces the o
 | | GAUC | nDCG@5 | primary |
 |---|---|---|---|
 | Official FM (valid) | 0.6674 | 0.5357 | 0.6016 |
-| Submitted Pure (valid) | 0.67105 | 0.53774 | **0.60440** |
+| **Submitted Pure (valid)** DeepFM + seq-100 + l2 | 0.67099 | 0.53816 | **0.60458** |
 | Official FM (hidden test) | 0.6610 | 0.5282 | 0.5946 |
-| Submitted Pure (hidden test) | 0.66486 | 0.53046 | **0.59766** |
+| **Submitted Pure (hidden test)** | 0.66528 | 0.53137 | **0.59833** |
+| Comparison v5 (valid / hidden) thinking-on BPR | 0.67105 / 0.66486 | 0.53774 / 0.53046 | 0.60440 / 0.59766 |
 
-Submitted Pure: 50 billed iterations, 2.91 hours, ~863k tokens, 0 GPU-hours, **0 runtime interventions**. Hidden test **0.59766** was scored once after search and was not used to pick the model. Contest CSV: `deliverables/pure-v5/submission.csv` (170,588 rows). Longer notes: `docs/report.md`.
+Submitted Pure (`run_pure_v6`): DeepSeek thinking **off**, 50 billed iterations, 1.87 hours, 525k tokens, 0 GPU-hours, **0 runtime interventions**. Hidden test **0.59833** was scored once after search and was not used to pick the model. Contest CSV: `deliverables/pure-v6/submission.csv` (170,588 rows). Thinking-on BPR comparison: `deliverables/pure-v5/`. Longer notes: `docs/report.md`.
 
-Bonus KuaiRand-1K (different id space, not in that CSV): the same loop **did not reuse Pure’s recipe**. Submitted Pure is DeepFM + BPR (`arch=deepfm` confirmed 0.60386, then the 3-seed BPR bag). 1K selected train-only `use_time_decay` on FM and finished **0.65001** vs the 1K FM 0.64203 (**+0.00798**). A 1-seed DCNv2 reached 0.65280; the 6 h wall at 31/50 stopped the 3-seed, so it is not in the CSV. Backbone, loss, and recency are all `config_patch` trials on the same scorer. Snapshot: `deliverables/1k/`.
+Bonus KuaiRand-1K (different id space, not in that CSV): the same loop **did not reuse Pure’s recipe**. Contest Pure is DeepFM + seq-100 pool + l2. 1K selected train-only `use_time_decay` on FM and finished **0.65001** vs the 1K FM 0.64203 (**+0.00798**). A 1-seed DCNv2 reached 0.65280; the 6 h wall at 31/50 stopped the 3-seed, so it is not in the CSV. Backbone, loss, sequence, and recency are all `config_patch` trials on the same scorer. Snapshot: `deliverables/1k/`.
 
 **A distribution-shift case (why the guards exist).** The first full search stacked recency with valid labels flowing in, and stored missing test labels as 0. Finalize bag **valid 0.63975**; the same CSV scored **test 0.56790**, below the official FM. Valid and test moved in opposite directions by 0.07. Kit ranking uses a user’s whole split as one list, so rolling `long_view` into decay is group leakage; zero is a real negative, so test-as-0 poisons test decay. Submitted Pure stores unseen labels as missing (`-1`), updates recency from train only, and never scores test during search.
 
-EDA on that split (`pair_cover = 0.016`, 43.5 vs 5.6 impressions / user) is why the surviving lever is pairwise BPR plus a 3-seed rank-average bag, not a deeper ID tower. Sequence then used 16 billed steps inside 1-seed noise; stop was the **iteration cap**, not ε. `log_random_*` at finalize (primary 0.367) is an off-policy check, not a candidate gate. Source-tree `src_hash` in `summary.json` is unchanged for the run (`05111ef2e81327ca`). Runtime interventions: 0; five build-time notes stay in `interventions.jsonl`.
+EDA on that split (`pair_cover = 0.016`, 43.5 vs 5.6 impressions / user) is why ranking losses and bags showed up early. Finalize on v6 preferred a stable DeepFM + seq-100 + l2 bag over the early BPR bag. Stop was the **iteration cap**, not ε. `log_random_*` at finalize (primary 0.373) is an off-policy check, not a candidate gate. Source-tree `src_hash` `193172377e3a5ad4` is unchanged for the v6 run. Runtime interventions: 0; five build-time notes stay in `interventions.jsonl`.
 
 ## Tools
 
@@ -37,7 +38,7 @@ KuaiRand-Pure only for the primary score. No extra training data. `log_random_*`
 
 ## Logs
 
-`deliverables/pure-v5/journal.jsonl` and `progress.log`. Runtime interventions: 0.
+`deliverables/pure-v6/journal.jsonl` and `progress.log`. Runtime interventions: 0. Comparison v5: `deliverables/pure-v5/`.
 
 ## Limits
 
