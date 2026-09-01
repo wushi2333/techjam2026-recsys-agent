@@ -2,7 +2,7 @@
 
 Optional scale. **Not** the contest primary CSV. User and item ids are re-indexed, so these numbers are not comparable with Pure.
 
-The loop is the same as submitted Pure. The **recipe is not**: Pure’s CSV is 3-seed BPR; this CSV is 3-seed train-only `use_time_decay`. Search stopped on the 6 h wall at **31 / 50** billed iterations. Finalize retrained the confirmed bag (`039`, `040`, `041`) on train and wrote test scores. A later 1-seed DCNv2 (0.65280) never got a 3-seed because the clock ran out; it is not in the CSV.
+The loop is the same as submitted Pure. The **recipe is not**: contest Pure is 3-seed DeepFM + seq-100 + l2; this CSV is 3-seed train-only `use_time_decay`. Search stopped on the 6 h wall at **31 / 50** billed iterations. Finalize retrained the confirmed bag (`039`, `040`, `041`) on train and wrote test scores. A later 1-seed DCNv2 (0.65280) never got a 3-seed because the clock ran out; it is not in the CSV.
 
 | | GAUC | nDCG@5 | primary | vs 1K FM |
 |---|---|---|---|---|
@@ -22,4 +22,4 @@ Search bag valid was 0.65045; retrain drifted **-0.00044**. Alignment check: **4
 
 This folder is the public snapshot: journal, progress, metrics. Extra tables and the 4.1M-row CSV: [techjam2026-recsys-agent_data-log](https://github.com/wushi2333/techjam2026-recsys-agent_data-log) (`1k/`).
 
-Pure contest files: [`../pure-v5/`](../pure-v5/).
+Pure contest files: [`../pure-v6/`](../pure-v6/). Repeat freeze-eval: [`../pure-v5/`](../pure-v5/).
